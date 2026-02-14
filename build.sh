@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 set -e
 
-# Install Flutter in the build container
 git clone https://github.com/flutter/flutter.git --depth 1 -b stable flutter_sdk
 export PATH="$PWD/flutter_sdk/bin:$PATH"
 
