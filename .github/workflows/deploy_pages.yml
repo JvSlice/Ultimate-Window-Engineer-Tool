@@ -22,7 +22,7 @@ jobs:
         run: flutter pub get
 
       - name: Build web app
-        run: flutter build web --release
+        run: flutter build web --release --base-href "/Ultimate-Window-Engineer-Tool/"
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
