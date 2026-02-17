@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:hello_pi/Tool_Four.dart';
+import 'package:ultimate_window_engineer_tool/Tool_Four.dart';
 import 'terminal_scaffold.dart';
 import 'conver_it_page.dart';
 import 'fabricate_it_page.dart';
@@ -77,9 +77,7 @@ class HomePage extends StatelessWidget {
     return TerminalScaffold(
       title: "Ultimate Window Engineer Tool",
       accent: accent,
-      child: SafeArea(
-        child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
+      
           child: Column(
             children: [
               Expanded(
@@ -104,7 +102,7 @@ class HomePage extends StatelessWidget {
                     //terminalButton("coming soon 5"),
                     //terminalButton("coming soon 6"),
                   ],
-                ),
+                ),// grid view
               ),
               SizedBox(height: verticalSpacing),
               Align(
@@ -130,8 +128,8 @@ class HomePage extends StatelessWidget {
               SizedBox(height: verticalSpacing),
             ],
           ),
-        ),
-      ),
+      // delete me
+      // delete me
     ); // stack
   }
 }

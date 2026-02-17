@@ -18,7 +18,7 @@ class TerminalScaffold extends StatelessWidget {
       body: Stack(
         children: [
           // Hamburger menu
-      
+
           //Glow here
           Positioned.fill(
             child: Container(
@@ -41,36 +41,47 @@ class TerminalScaffold extends StatelessWidget {
           SafeArea(
             child: Column(
               children: [
-                Padding(
-                  padding: const EdgeInsets.all(16),
-                  child: Text(
-                    title,
-                    style: TextStyle(
-                      color: accent,
-                      fontSize: 22,
-                      fontWeight: FontWeight.bold,
-                      letterSpacing: 2,
+                
+
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+            child: Row(
+              children: [
+                IconButton(
+                  icon: Icon(Icons.menu, color: accent),
+                  onPressed: () {
+                    Navigator.of(context).popUntil((route) => route.isFirst);
+                  },
+                ),
+                Expanded(
+                  child: Center(
+                    child: Text(
+                      title, // title 2 
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        color: accent,
+                        fontWeight: FontWeight.w700,
+                        fontSize: 18,
+                      ),
+                      //overflow: TextOverflow.ellipsis,
                     ),
                   ),
                 ),
-                Expanded(child: child),
+                const SizedBox(width: 48),
               ],
             ),
           ),
-
-          Positioned(
-            top: 16,
-            left: 16,
-            child: IconButton(
-              icon: Icon(Icons.menu, color: accent),
-              onPressed: () {
-                Navigator.of(context).popUntil((route) => route.isFirst);
-              },
-            ),
-          ),
+        Expanded(child: child),
         ],
+        
+      ),
+    ),
+        ], 
       ),
     );
+
+      
+
   }
 }
 
