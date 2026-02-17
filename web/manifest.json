@@ -1,6 +1,6 @@
 {
-    "name": "hello_pi",
-    "short_name": "hello_pi",
+    "name": "Ultimate Window Engineer Tool",
+    "short_name": "UWE Tool",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
@@ -15,7 +15,7 @@
             "type": "image/png"
         },
         {
-            "src": "icons/Icon-512.png",
+            "src": "app_icon.png",
             "sizes": "512x512",
             "type": "image/png"
         },
