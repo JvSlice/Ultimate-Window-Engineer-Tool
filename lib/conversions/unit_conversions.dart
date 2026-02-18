@@ -38,7 +38,7 @@ String conversionLabel(ConversionTypes t) {
 
 String directionLabel(Direction d) => d == Direction.to ? "To" : "From";
 
-String perfomConversion({
+String performConversion({
   required ConversionTypes type,
   required Direction direction,
   required double input,
