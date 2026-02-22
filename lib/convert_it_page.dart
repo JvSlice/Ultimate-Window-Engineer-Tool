@@ -51,90 +51,127 @@ class _ConvertItBodyState extends State<ConvertItBody> {
     return Center(
       child: ConstrainedBox(
         constraints: const BoxConstraints(maxWidth: 600),
-child:  Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        TextField(
-          controller: controller,
-          keyboardType: TextInputType.number,
-          style: TextStyle(color: widget.accent),
-          decoration: InputDecoration(
-            labelText: "Enter Value",
-            labelStyle: TextStyle(color: widget.accent),
-          ),
-        ),
-        const SizedBox(height: 20),
-        DropdownButton<ConversionTypes>(
-          value: selectedType,
-          dropdownColor: Colors.black,
-          style: TextStyle(color: widget.accent),
-          onChanged: (value) {
-            setState(() {
-              selectedType = value!;
-            });
-          },
-          items: ConversionTypes.values.map((type) {
-            return DropdownMenuItem(value: type, child: Text(conversionLabel(type))
-            );
-          }).toList(),
-        ),
-        const SizedBox(height: 20),
-        Row(
-         children: [
-          Expanded(
-            child: OutlinedButton(
-              onPressed: () => setState(() => direction = Direction.to),
-              style: OutlinedButton.styleFrom(
-                side: BorderSide(color: widget.accent, width: 2),
-                backgroundColor: direction == Direction.to
-                ? widget.accent.withValues(alpha: 0.15)
-                : null,
-
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            TextField(
+              controller: controller,
+              keyboardType: TextInputType.number,
+              style: TextStyle(color: widget.accent),
+              decoration: InputDecoration(
+                labelText: "Enter Value",
+                labelStyle: TextStyle(color: widget.accent),
               ),
-              child: Text(
-                "To" ,
+            ),
+            const SizedBox(height: 20),
+            DropdownButton<ConversionTypes>(
+              value: selectedType,
+              dropdownColor: Colors.black,
+              style: TextStyle(color: widget.accent),
+              onChanged: (value) {
+                setState(() {
+                  selectedType = value!;
+                });
+              },
+              items: ConversionTypes.values.map((type) {
+                return DropdownMenuItem(
+                  value: type,
+                  child: Text(conversionLabel(type)),
+                );
+              }).toList(),
+            ),
+            const SizedBox(height: 20),
+            Row(
+              children: [
+                Expanded(
+                  child: OutlinedButton(
+                    onPressed: () => setState(() => direction = Direction.to),
+                    style: OutlinedButton.styleFrom(
+                      side: BorderSide(color: widget.accent, width: 2),
+                      backgroundColor: direction == Direction.to
+                          ? widget.accent.withValues(alpha: 0.15)
+                          : null,
+                    ),
+                    child: Text(
+                      "To",
+                      style: TextStyle(
+                        color: widget.accent,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: OutlinedButton(
+                    onPressed: () => setState(() => direction = Direction.from),
+                    style: OutlinedButton.styleFrom(
+                      side: BorderSide(color: widget.accent, width: 2),
+                      backgroundColor: direction == Direction.from
+                          ? widget.accent.withValues(alpha: 0.15)
+                          : null,
+                    ),
+                    child: Text(
+                      "From",
+                      style: TextStyle(
+                        color: widget.accent,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(
+              width: double.infinity,
+              child: OutlinedButton(
+                onPressed: convert,
+                style: OutlinedButton.styleFrom(
+                  side: BorderSide(color: widget.accent, width: 2),
+                  backgroundColor: widget.accent.withValues(alpha: 0.08),
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  shape: const RoundedRectangleBorder(
+                    borderRadius: BorderRadius.zero,
+                  ),
+                ),
+                child: Text(
+                  "Run Conversion",
+                  style: TextStyle(
+                    color: widget.accent,
+                    fontWeight: FontWeight.bold,
+                    letterSpacing: 2,
+                  ),
+                ),
+              ),
+            ),
+
+            const SizedBox(height: 30),
+            Text(
+              result,
+              style: TextStyle(
+                color: widget.accent,
+                fontSize: 22,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const Spacer(),
+            // this doesn't work 
+            Opacity(opacity: .065,
+            child: Text(
+                'Convert Tool v0.1',
+                textAlign: TextAlign.center,
                 style: TextStyle(
                   color: widget.accent,
-                  fontWeight: FontWeight.bold,
+                  letterSpacing: 2,
+                  fontSize: 12,
                 ),
-                ),
-                ),
-                ),
-         const SizedBox(width: 12),
-         Expanded(
-          child: OutlinedButton(
-            onPressed: () => setState(()=> direction = Direction.from),
-            style: OutlinedButton.styleFrom(
-              side: BorderSide(color: widget.accent, width: 2),
-              backgroundColor: direction == Direction.from
-              ? widget.accent.withValues(alpha: 0.15)
-              : null,
+              ),
+              ),
 
-            ),
-            child: Text("From",
-            style: TextStyle(
-              color: widget.accent,
-              fontWeight: FontWeight.bold,
-            ),
-            ),
-          ),
-         ),
-         ],
+          ],
+
         ),
-        const SizedBox(height: 20),
-        ElevatedButton(onPressed: convert, child: const Text("Convert")),
-        const SizedBox(height: 30),
-        Text(
-          result,
-          style: TextStyle(
-            color: widget.accent,
-            fontSize: 22,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-      ],
-    ),
-    ),
-    );// add stuff after this one 
+      ),
+    ); // add stuff after this one
   }
 }
