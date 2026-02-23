@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:ultimate_window_engineer_tool/fabrication/drill_tap_Selector_page.dart';
 import 'terminal_scaffold.dart';
 import 'fabrication/drill_index_page.dart';
 
@@ -51,7 +52,12 @@ class _FabricateItBody extends StatelessWidget {
                 label: 'Drill & Tap Selector',
                 sublabel: 'Tap Drill, Clearance, engagement',
                 onPressed: () {
-                  //Navigator.push(context, MaterialPageRoute(builder: (_) => const DrillTapSelectorPage()));
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => const DrillTapSelectorPage(),
+                    ),
+                  );
                 },
               ),
               const SizedBox(height: 12),
