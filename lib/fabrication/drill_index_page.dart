@@ -105,13 +105,19 @@ class _DrillIndexPageState extends State<DrillIndexPage> {
                             borderRadius: BorderRadius.circular(10),
                           ),
                         ),
-                        child: Text(
-                          filterLabel(f),
-                          style: TextStyle(
-                            color: accent,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 11,
-                            letterSpacing: 1.2,
+                        child: FittedBox(
+                          fit: BoxFit.scaleDown,
+                          child: Text(
+                            filterLabel(f),
+                            maxLines: 1,
+                            softWrap: false,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                              color: accent,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 11,
+                              letterSpacing: 1.2,
+                            ),
                           ),
                         ),
                       ),

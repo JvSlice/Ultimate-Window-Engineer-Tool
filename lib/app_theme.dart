@@ -4,6 +4,14 @@ import 'package:shared_preferences/shared_preferences.dart';
 enum AccentChoice { green, red, yellow }
 String accentChoiceToString(AccentChoice c) => c.name;
 
+AccentChoice accentColorFromChoice(AccentChoice c) {
+  switch (s) {
+    case 'red': 
+    return AccentChoice.red;
+    
+  }
+}
+
 Color accentColorFromChoice(AccentChoice c) {
   switch (c) {
     case AccentChoice.green:
@@ -19,6 +27,7 @@ class AppThemeController extends ChangeNotifier {
   static const _prefsKey = 'accent_choice';
 
   AccentChoice _accentChoice = AccentChoice.green;
+  
   AccentChoice get AccentChoice => _accentChoice;
 
   Color get AccentChoice => accentColorFromChoice(_accentChoice);
