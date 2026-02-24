@@ -63,6 +63,7 @@ class _DrillTapSelectorPageState extends State<DrillTapSelectorPage> {
             DropdownButton<ThreadSpec>(
               value: selectedThread,
               hint: const Text('Select Thread Size'),
+              style: TextStyle(color: Colors.black),
               items: _threadsForSystem(system)
                   .map((t) => DropdownMenuItem(value: t, child: Text(t.label)))
                   .toList(),
@@ -88,12 +89,12 @@ class _DrillTapSelectorPageState extends State<DrillTapSelectorPage> {
                       style: OutlinedButton.styleFrom(
                         side: BorderSide(color: accent, width: 2),
                         backgroundColor: selected
-                            ? accent.withValues(alpha: 0.15)
+                            ? accent.withValues(alpha: 0.80)
                             : Colors.transparent,
                       ),
                       child: Text(
                         '${(e * 100).toInt()}%',
-                        style: TextStyle(color: accent),
+                        style: TextStyle(color: accent.withValues(alpha: 0.80)),
                       ),
                     ),
                   ),

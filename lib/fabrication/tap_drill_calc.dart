@@ -19,7 +19,8 @@ double _pitchInches(ThreadSpec t) {
 double tapDrillDecimalInches(ThreadSpec t, double engagement) {
   final majorIn = _toInches(t);
   final pitchIn = _pitchInches(t);
-  return majorIn - (engagement * pitchIn);
+  const fullThreadFactor = 1.299038;
+  return majorIn - (engagement * fullThreadFactor * pitchIn);
 }
 
 DrillSize closestDrill(double targetDecimalInches) {
