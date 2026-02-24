@@ -46,7 +46,7 @@ class _DrillTapSelectorPageState extends State<DrillTapSelectorPage> {
                       style: OutlinedButton.styleFrom(
                         side: BorderSide(color: accent, width: 2),
                         backgroundColor: selected
-                            ? accent.withValues(alpha: 0.15)
+                            ? accent.withValues(alpha: 0.80)
                             : Colors.transparent,
                       ),
                       child: Text(
@@ -137,9 +137,18 @@ class _DrillTapSelectorPageState extends State<DrillTapSelectorPage> {
           ),
         ),
         const SizedBox(height: 12),
-        Text(drill.name),
-        Text('${drill.decimal.toStringAsFixed(4)} in'),
-        Text('${drill.metric.toStringAsFixed(3)} mm'),
+        Text(
+          drill.name,
+          style: TextStyle(fontSize: 16, color: accent.withValues(alpha: 0.80)),
+        ),
+        Text(
+          '${drill.decimal.toStringAsFixed(4)} in',
+          style: TextStyle(fontSize: 16, color: accent.withValues(alpha: 0.80)),
+        ),
+        Text(
+          '${drill.metric.toStringAsFixed(3)} mm',
+          style: TextStyle(fontSize: 16, color: accent.withValues(alpha: 0.80)),
+        ),
       ],
     );
   }
