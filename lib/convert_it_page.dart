@@ -56,7 +56,7 @@ class _ConvertItBodyState extends State<ConvertItBody> {
           children: [
             TextField(
               controller: controller,
-              keyboardType: TextInputType.number,
+              keyboardType: TextInputType.numberWithOptions(decimal: true),
               style: TextStyle(color: widget.accent),
               decoration: InputDecoration(
                 labelText: "Enter Value",
@@ -155,9 +155,10 @@ class _ConvertItBodyState extends State<ConvertItBody> {
               ),
             ),
             const Spacer(),
-            // this doesn't work 
-            Opacity(opacity: .065,
-            child: Text(
+            // this doesn't work
+            Opacity(
+              opacity: .065,
+              child: Text(
                 'Convert Tool v0.1',
                 textAlign: TextAlign.center,
                 style: TextStyle(
@@ -166,10 +167,8 @@ class _ConvertItBodyState extends State<ConvertItBody> {
                   fontSize: 12,
                 ),
               ),
-              ),
-
+            ),
           ],
-
         ),
       ),
     ); // add stuff after this one
