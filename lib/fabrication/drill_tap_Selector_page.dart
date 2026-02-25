@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:ultimate_window_engineer_tool/drill_index_data.dart';
 import '../terminal_scaffold.dart';
 import 'thread_data.dart';
 import 'tap_drill_calc.dart';
@@ -122,9 +123,14 @@ class _DrillTapSelectorPageState extends State<DrillTapSelectorPage> {
   }
 
   Widget _buildResult(Color accent) {
-    final decimal = tapDrillDecimalInches(selectedThread!, engagement);
+    final t = selectedThread;
+    if (t == null) return const SizedBox.shrink();
+    final targetIn = tapDrillDecimalInches(t, engagement);
 
-    final drill = closestDrill(decimal);
+    final drill = _closestDrill(
+      targetIn,
+      allowedKinds: allowedKindsForThread(t),
+    );
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -152,5 +158,37 @@ class _DrillTapSelectorPageState extends State<DrillTapSelectorPage> {
         ),
       ],
     );
+  } // end of widget build
+}
+
+DrillSize _closestDrill(
+  double targetInches, {
+  required Set<DrillKind> allowedKinds,
+}) {
+  DrillSize? best;
+  var bestDelta = double.infinity;
+  for (final d in drillIndex) {
+    if (!allowedKinds.contains(d.kind)) continue;
+    final delta = (d.decimal - targetInches).abs();
+    if (delta < bestDelta) {
+      bestDelta = delta;
+      best = d;
+    }
+  }
+  return best!;
+}
+
+Set<DrillKind> allowedKindsForThread(ThreadSpec t) {
+  switch (t.system) {
+    case ThreadSystem.unc:
+    case ThreadSystem.unf:
+      return {DrillKind.fraction, DrillKind.letter, DrillKind.number};
+    case ThreadSystem.metric:
+      return {
+        DrillKind.metric,
+        DrillKind.fraction,
+        DrillKind.letter,
+        DrillKind.number,
+      };
   }
 }
