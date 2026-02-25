@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 enum ConversionTypes {
   windSpeedToPsf,
   pressurePsitoPsf,
+  psftoPa,
   inchesToCm,
   feetToInches,
   mmToInches,
@@ -21,6 +22,8 @@ String conversionLabel(ConversionTypes t) {
       return "Wind Speed to PSF";
     case ConversionTypes.pressurePsitoPsf:
       return "Pressure PSI to PSF";
+    case ConversionTypes.psftoPa:
+      return "Pressure PSF to PA";
     case ConversionTypes.inchesToCm:
       return "Inches to Cm";
     case ConversionTypes.feetToInches:
@@ -48,8 +51,11 @@ String performConversion({
       if (direction == Direction.to) {
         final psf = 0.00256 * pow(input, 2);
         return "${psf.toStringAsFixed(2)} psf";
+      } else {
+        final mph = sqrt(input / 0.00256);
+        return "${mph.toStringAsFixed(2)} mph";
       }
-      return "Calcuation coming soon";
+
     case ConversionTypes.pressurePsitoPsf:
       if (direction == Direction.to) {
         final psf = input * 144;
@@ -57,6 +63,14 @@ String performConversion({
       } else {
         final psi = input / 144;
         return "${psi.toStringAsFixed(2)} psi";
+      }
+    case ConversionTypes.psftoPa:
+      if (direction == Direction.to) {
+        final Pa = input * 47.88025898;
+        return "${Pa.toStringAsFixed(2)} Pa";
+      } else {
+        final psf = input / 47.88025898;
+        return "${psf.toStringAsFixed(2)} PSF";
       }
     case ConversionTypes.inchesToCm:
       if (direction == Direction.to) {
