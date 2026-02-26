@@ -5,25 +5,40 @@ import 'convert_it_page.dart';
 import 'fabricate_it_page.dart';
 import 'reference-it_page.dart';
 import 'settings_page.dart';
+import 'app_theme.dart';
 
-void main() {
-  runApp(const MyApp());
+
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  final themeController = AppThemeController();
+  await themeController.load();
+  runApp(MyApp(themeController: themeController));
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  final AppThemeController themeController;
+
+  const MyApp({super.key, required this.themeController});
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: const HomePage(),
+    return AnimatedBuilder(
+      animation: themeController,
+      builder: (context, _) {
+        return MaterialApp(
+          debugShowCheckedModeBanner: false,
+          theme: buildTerminalTheme(themeController.accentColor),
+          home: MainMenuPage(themeController: themeController),
+        );
+      },
     );
   }
 }
 
-class HomePage extends StatelessWidget {
-  const HomePage({super.key});
+class MainMenuPage extends StatelessWidget {
+  final AppThemeController themeController;
+  const MainMenuPage({super.key, required this.themeController});
 
   void openPage(BuildContext context, Widget page) {
     Navigator.of(context).push(MaterialPageRoute(builder: (_) => page));
@@ -77,57 +92,60 @@ class HomePage extends StatelessWidget {
     return TerminalScaffold(
       title: "Ultimate Window Engineer Tool",
       accent: accent,
-      
-          child: Column(
-            children: [
-              Expanded(
-                child: GridView.count(
-                  crossAxisCount: 2,
-                  crossAxisSpacing: gridSpacing,
-                  mainAxisSpacing: gridSpacing,
-                  childAspectRatio: 1.6,
-                  children: [
-                    terminalButton(context, "Convert it", () {
-                      openPage(context, const ConverItPage());
-                    }),
-                    terminalButton(context, "Fabricate it", () {
-                      openPage(context, const FabricateItPage());
-                    }),
-                    terminalButton(context, "Reference it", () {
-                      openPage(context, ReferenceitPage());
-                    }),
-                    terminalButton(context, "coming soon", () {
-                      openPage(context, ToolFour());
-                    }),
-                    //terminalButton("coming soon 5"),
-                    //terminalButton("coming soon 6"),
-                  ],
-                ),// grid view
-              ),
-              SizedBox(height: verticalSpacing),
-              Align(
-                alignment: Alignment.bottomRight,
-                child: OutlinedButton.icon(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (_) => const SettingsPage()),
-                    );
-                  },
-                  icon: Icon(Icons.settings, size: size.width * 0.02),
-                  label: Text(
-                    "settings",
-                    style: TextStyle(fontSize: size.width * 0.016),
-                  ),
-                  style: OutlinedButton.styleFrom(
-                    foregroundColor: accent,
-                    side: BorderSide(color: accent, width: size.width * 0.002),
-                  ),
-                ),
-              ),
-              SizedBox(height: verticalSpacing),
-            ],
+
+      child: Column(
+        children: [
+          Expanded(
+            child: GridView.count(
+              crossAxisCount: 2,
+              crossAxisSpacing: gridSpacing,
+              mainAxisSpacing: gridSpacing,
+              childAspectRatio: 1.6,
+              children: [
+                terminalButton(context, "Convert it", () {
+                  openPage(context, const ConverItPage());
+                }),
+                terminalButton(context, "Fabricate it", () {
+                  openPage(context, const FabricateItPage());
+                }),
+                terminalButton(context, "Reference it", () {
+                  openPage(context, ReferenceitPage());
+                }),
+                terminalButton(context, "coming soon", () {
+                  openPage(context, ToolFour());
+                }),
+                //terminalButton("coming soon 5"),
+                //terminalButton("coming soon 6"),
+              ],
+            ), // grid view
           ),
+          SizedBox(height: verticalSpacing),
+          Align(
+            alignment: Alignment.bottomRight,
+            child: OutlinedButton.icon(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) =>
+                        SettingsPage(themeController: themeController),
+                  ),
+                );
+              },
+              icon: Icon(Icons.settings, size: size.width * 0.02),
+              label: Text(
+                "settings",
+                style: TextStyle(fontSize: size.width * 0.016),
+              ),
+              style: OutlinedButton.styleFrom(
+                foregroundColor: accent,
+                side: BorderSide(color: accent, width: size.width * 0.002),
+              ),
+            ),
+          ),
+          SizedBox(height: verticalSpacing),
+        ],
+      ),
       // delete me
       // delete me
     ); // stack

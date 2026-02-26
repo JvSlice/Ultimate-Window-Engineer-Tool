@@ -1,4 +1,4 @@
-import 'dart:ui';
+
 
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -61,7 +61,7 @@ class AppThemeController extends ChangeNotifier {
     return ThemeData(
       brightness: Brightness.dark,
       colorScheme: scheme,
-      scaffoldBackgroundColor: const Color(0xFF0B0F14),
+      scaffoldBackgroundColor:const Color(0xFF0B0F14),
       useMaterial3: true,
       textTheme: const TextTheme(bodyMedium: TextStyle(fontSize: 16)),
     );
