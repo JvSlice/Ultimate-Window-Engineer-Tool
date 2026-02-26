@@ -1,5 +1,3 @@
-
-
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -31,7 +29,7 @@ Color accentColorFromChoice(AccentChoice c) {
 }
 
 class AppThemeController extends ChangeNotifier {
-  static const String _prefskey = 'accent_choice';
+  static const String _prefsKey = 'accent_choice';
 
   AccentChoice _accentChoice = AccentChoice.green;
 
@@ -40,17 +38,17 @@ class AppThemeController extends ChangeNotifier {
 
   Future<void> load() async {
     final prefs = await SharedPreferences.getInstance();
-    final saved = prefs.getString(_prefskey);
+    final saved = prefs.getString(_prefsKey);
     _accentChoice = accentChoiceFromString(saved);
     notifyListeners();
+  }
 
-    Future<void> setAccentChoices(AccentChoice choice) async {
-      _accentChoice = choice;
-      notifyListeners();
+  Future<void> setAccentChoice(AccentChoice choice) async {
+    _accentChoice = choice;
+    notifyListeners();
 
-      final prefs = await SharedPreferences.getInstance();
-      await prefs.setString(_prefskey, accentChoiceToString(choice));
-    }
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(_prefsKey, accentChoiceToString(choice));
   }
 
   ThemeData buildTerminalTheme(Color accent) {
@@ -58,12 +56,15 @@ class AppThemeController extends ChangeNotifier {
       seedColor: accent,
       brightness: Brightness.dark,
     );
+
     return ThemeData(
       brightness: Brightness.dark,
       colorScheme: scheme,
-      scaffoldBackgroundColor:const Color(0xFF0B0F14),
+      scaffoldBackgroundColor: const Color(0xFF0B0F14),
       useMaterial3: true,
-      textTheme: const TextTheme(bodyMedium: TextStyle(fontSize: 16)),
+      textTheme: const TextTheme(
+        bodyMedium: TextStyle(fontSize: 16),
+      ),
     );
   }
 }
