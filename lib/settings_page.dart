@@ -9,7 +9,7 @@ class SettingsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
-    const accent = Colors.green;
+    final accent = themeController.accentColor;
     return const TerminalScaffold(
       title: 'Settings',
       accent: accent,
