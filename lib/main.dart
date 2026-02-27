@@ -28,7 +28,7 @@ class MyApp extends StatelessWidget {
       builder: (context, _) {
         return MaterialApp(
           debugShowCheckedModeBanner: false,
-          theme: buildTerminalTheme(themeController.accentColor),
+          theme: themeController.buildTerminalTheme(themeController.accentColor),
           home: MainMenuPage(themeController: themeController),
         );
       },
@@ -47,7 +47,7 @@ class MainMenuPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
-    final accent = Colors.green;
+    final accent = themeController.accentColor;
 
     final horizontalPadding = size.width * 0.06;
     final verticalSpacing = size.height * 0.02;
