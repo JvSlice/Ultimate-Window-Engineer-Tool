@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:ultimate_window_engineer_tool/conversions/unit_conversions.dart';
 import 'terminal_scaffold.dart';
+import 'app_theme.dart';
 
 class ConverItPage extends StatelessWidget {
   const ConverItPage({super.key});
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
-    const accent = Colors.green;
-    return const TerminalScaffold(
+    final accent = Theme.of(context).colorScheme.primary;
+    return  TerminalScaffold(
       title: 'Convert It',
-      accent: accent,
+
       child: Padding(
         padding: const EdgeInsetsGeometry.all(24),
         child: ConvertItBody(accent: accent),

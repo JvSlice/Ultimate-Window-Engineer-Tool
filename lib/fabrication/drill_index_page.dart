@@ -52,14 +52,14 @@ class _DrillIndexPageState extends State<DrillIndexPage> {
 
   @override
   Widget build(BuildContext context) {
-    const accent = Colors.green;
+    final accent = Theme.of(context).colorScheme.primary;
     final filtered = drillIndex.where((d) {
       return d.name.toLowerCase().contains(query.toLowerCase()) ||
           d.decimal.toString().contains(query);
     }).toList();
     return TerminalScaffold(
       title: "Drill Index",
-      accent: accent,
+
       child: Center(
         child: ConstrainedBox(
           constraints: const BoxConstraints(maxWidth: 700),

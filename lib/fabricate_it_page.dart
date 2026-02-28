@@ -11,10 +11,10 @@ class FabricateItPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
-    const accent = Colors.green;
-    return const TerminalScaffold(
+    final accent = Theme.of(context).colorScheme.primary;
+    return TerminalScaffold(
       title: 'Fabricate it',
-      accent: accent,
+
       child: _FabricateItBody(accent: accent),
     );
   }

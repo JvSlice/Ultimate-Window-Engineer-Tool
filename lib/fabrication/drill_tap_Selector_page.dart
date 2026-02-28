@@ -19,11 +19,11 @@ class _DrillTapSelectorPageState extends State<DrillTapSelectorPage> {
 
   @override
   Widget build(BuildContext context) {
-    const accent = Colors.green;
+    final accent = Theme.of(context).colorScheme.primary;
 
     return TerminalScaffold(
       title: 'Drill & Tap Selector',
-      accent: accent,
+
       child: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(

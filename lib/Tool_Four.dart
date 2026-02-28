@@ -7,11 +7,11 @@ class ToolFour extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
-    const accent = Colors.green;
+    final accent = Theme.of(context).colorScheme.primary;
 
-    return const TerminalScaffold(
+    return TerminalScaffold(
       title: 'Coming Soon',
-      accent: accent,
+
       child: Center(
         child: Text(
           'Coming Soon',

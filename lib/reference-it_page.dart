@@ -6,11 +6,11 @@ class ReferenceitPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
-    const accent = Colors.green;
+    final accent = Theme.of(context).colorScheme.primary;
 
-    return const TerminalScaffold(
+    return TerminalScaffold(
       title: 'Reference it',
-      accent: accent,
+
       child: Center(
         child: Text(
           'Reference it page',

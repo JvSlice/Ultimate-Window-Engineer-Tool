@@ -15,7 +15,7 @@ class SettingsPage extends StatelessWidget {
 
         return TerminalScaffold(
           title: 'Settings',
-          accent: accent,
+          
           child: Padding(
             padding: const EdgeInsets.all(16),
             child: Column(
@@ -23,7 +23,11 @@ class SettingsPage extends StatelessWidget {
               children: [
                 Text(
                   "Accent Color",
-                  style: TextStyle(color: accent, fontSize: 20, fontWeight: FontWeight.w700),
+                  style: TextStyle(
+                    color: accent,
+                    fontSize: 20,
+                    fontWeight: FontWeight.w700,
+                  ),
                 ),
                 const SizedBox(height: 12),
 
@@ -38,7 +42,10 @@ class SettingsPage extends StatelessWidget {
                   alignment: Alignment.center,
                   child: Text(
                     "Current: ${themeController.accentChoice.name}",
-                    style: TextStyle(color: accent, fontWeight: FontWeight.w600),
+                    style: TextStyle(
+                      color: accent,
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
                 ),
 
@@ -51,20 +58,26 @@ class SettingsPage extends StatelessWidget {
                     _accentButton(
                       label: "Green",
                       accent: accent,
-                      selected: themeController.accentChoice == AccentChoice.green,
-                      onPressed: () => themeController.setAccentChoice(AccentChoice.green),
+                      selected:
+                          themeController.accentChoice == AccentChoice.green,
+                      onPressed: () =>
+                          themeController.setAccentChoice(AccentChoice.green),
                     ),
                     _accentButton(
                       label: "Red",
                       accent: accent,
-                      selected: themeController.accentChoice == AccentChoice.red,
-                      onPressed: () => themeController.setAccentChoice(AccentChoice.red),
+                      selected:
+                          themeController.accentChoice == AccentChoice.red,
+                      onPressed: () =>
+                          themeController.setAccentChoice(AccentChoice.red),
                     ),
                     _accentButton(
                       label: "Yellow",
                       accent: accent,
-                      selected: themeController.accentChoice == AccentChoice.yellow,
-                      onPressed: () => themeController.setAccentChoice(AccentChoice.yellow),
+                      selected:
+                          themeController.accentChoice == AccentChoice.yellow,
+                      onPressed: () =>
+                          themeController.setAccentChoice(AccentChoice.yellow),
                     ),
                   ],
                 ),
@@ -99,5 +112,5 @@ class SettingsPage extends StatelessWidget {
       ),
       child: Text(label, style: const TextStyle(fontWeight: FontWeight.w700)),
     );
-  
-
+  }
+}

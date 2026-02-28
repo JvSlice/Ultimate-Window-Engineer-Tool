@@ -91,7 +91,7 @@ class MainMenuPage extends StatelessWidget {
 
     return TerminalScaffold(
       title: "Ultimate Window Engineer Tool",
-      accent: accent,
+      
 
       child: Column(
         children: [
