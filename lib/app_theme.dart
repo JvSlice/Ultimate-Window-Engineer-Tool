@@ -52,18 +52,30 @@ class AppThemeController extends ChangeNotifier {
   }
 
   ThemeData buildTerminalTheme(Color accent) {
-    final scheme = ColorScheme.fromSeed(
-      seedColor: accent,
-      brightness: Brightness.dark,
-    );
+    const bg = Color(0xFF0B0F14);
+    final scheme =
+        ColorScheme.dark(
+          surface: bg,
+          surfaceContainerHighest: Color(0xFF121821),
+          onSurface: Colors.white,
+        ).copyWith(
+          primary: accent,
+          secondary: accent,
+          tertiary: accent,
+          outline: accent,
+        );
 
     return ThemeData(
+      useMaterial3: true,
       brightness: Brightness.dark,
       colorScheme: scheme,
-      scaffoldBackgroundColor: const Color(0xFF0B0F14),
-      useMaterial3: true,
-      textTheme: const TextTheme(
-        bodyMedium: TextStyle(fontSize: 16),
+      scaffoldBackgroundColor: bg,
+
+      outlinedButtonTheme: OutlinedButtonThemeData(
+        style: OutlinedButton.styleFrom(
+          foregroundColor: accent,
+          side: BorderSide(color: accent, width: 2),
+        ),
       ),
     );
   }
