@@ -3,10 +3,9 @@ import 'package:ultimate_window_engineer_tool/window_testing_tools_page.dart';
 import 'terminal_scaffold.dart';
 import 'convert_it_page.dart';
 import 'fabricate_it_page.dart';
-import 'reference-it_page.dart';
+import 'reference/reference_home_page.dart';
 import 'settings_page.dart';
 import 'app_theme.dart';
-
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -28,7 +27,9 @@ class MyApp extends StatelessWidget {
       builder: (context, _) {
         return MaterialApp(
           debugShowCheckedModeBanner: false,
-          theme: themeController.buildTerminalTheme(themeController.accentColor),
+          theme: themeController.buildTerminalTheme(
+            themeController.accentColor,
+          ),
           home: MainMenuPage(themeController: themeController),
         );
       },
@@ -91,7 +92,6 @@ class MainMenuPage extends StatelessWidget {
 
     return TerminalScaffold(
       title: "Ultimate Window Engineer Tool",
-      
 
       child: Column(
         children: [
@@ -109,7 +109,7 @@ class MainMenuPage extends StatelessWidget {
                   openPage(context, const FabricateItPage());
                 }),
                 terminalButton(context, "Reference it", () {
-                  openPage(context, ReferenceitPage());
+                  openPage(context, ReferenceHomePage());
                 }),
                 terminalButton(context, "window testing tools coming soon", () {
                   openPage(context, ToolFour());
