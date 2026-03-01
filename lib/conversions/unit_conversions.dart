@@ -6,6 +6,7 @@ enum ConversionTypes {
   windSpeedToPsf,
   pressurePsitoPsf,
   psftoPa,
+  CFMperSQfttoCLMperSQm,
   inchesToCm,
   feetToInches,
   mmToInches,
@@ -24,6 +25,9 @@ String conversionLabel(ConversionTypes t) {
       return "Pressure PSI to PSF";
     case ConversionTypes.psftoPa:
       return "Pressure PSF to PA";
+    case ConversionTypes.CFMperSQfttoCLMperSQm:
+      return "CFM per Sqft to Cubic liters per sqM";
+
     case ConversionTypes.inchesToCm:
       return "Inches to Cm";
     case ConversionTypes.feetToInches:
@@ -71,6 +75,14 @@ String performConversion({
       } else {
         final psf = input / 47.88025898;
         return "${psf.toStringAsFixed(2)} PSF";
+      }
+    case ConversionTypes.CFMperSQfttoCLMperSQm:
+      if (direction == Direction.to) {
+        final clm = input * 304.8;
+        return "${clm.toStringAsFixed(2)} Cubic litter per minute per sq Meter";
+      } else {
+        final cfm = input / 304.8;
+        return "${cfm.toStringAsFixed(2)} CFM per Sq ft";
       }
     case ConversionTypes.inchesToCm:
       if (direction == Direction.to) {
