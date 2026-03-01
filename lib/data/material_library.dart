@@ -1,4 +1,4 @@
-import 'material.dart';
+import 'materials.dart';
 
 const List<MaterialSpec> materialLibrary = [
   // STEEL

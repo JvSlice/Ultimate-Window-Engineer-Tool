@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import '../terminal_scaffold.dart';
-import '../data/material.dart';
+import '../data/materials.dart';
 import '../data/material_library.dart';
 
 enum ToolType { hss, carbide }
+
 enum Operation { drill, mill }
 
 class SpeedFeedPage extends StatefulWidget {
@@ -103,7 +104,10 @@ class _SpeedFeedPageState extends State<SpeedFeedPage> {
               decoration: BoxDecoration(
                 color: Colors.black,
                 borderRadius: BorderRadius.circular(10),
-                border: Border.all(color: accent.withValues(alpha: 0.6), width: 2),
+                border: Border.all(
+                  color: accent.withValues(alpha: 0.6),
+                  width: 2,
+                ),
                 boxShadow: [
                   BoxShadow(
                     color: accent.withValues(alpha: 0.25),
@@ -119,10 +123,12 @@ class _SpeedFeedPageState extends State<SpeedFeedPage> {
                   iconEnabledColor: accent,
                   style: TextStyle(color: accent),
                   items: materialLibrary
-                      .map((m) => DropdownMenuItem(
-                            value: m,
-                            child: Text(m.name, style: TextStyle(color: accent)),
-                          ))
+                      .map(
+                        (m) => DropdownMenuItem(
+                          value: m,
+                          child: Text(m.name, style: TextStyle(color: accent)),
+                        ),
+                      )
                       .toList(),
                   onChanged: (v) => setState(() => material = v ?? material),
                 ),
@@ -255,10 +261,12 @@ class _SpeedFeedPageState extends State<SpeedFeedPage> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: lines
-            .map((l) => Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 4),
-                  child: Text(l, style: TextStyle(color: accent)),
-                ))
+            .map(
+              (l) => Padding(
+                padding: const EdgeInsets.symmetric(vertical: 4),
+                child: Text(l, style: TextStyle(color: accent)),
+              ),
+            )
             .toList(),
       ),
     );
