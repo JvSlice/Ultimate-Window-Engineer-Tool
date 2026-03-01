@@ -4,6 +4,7 @@ import 'physics/torque_power_page.dart';
 import 'physics/cantilever_beam_page.dart';
 import 'physics/pulleys_page.dart';
 import 'physics/velocity_page.dart';
+import 'physics/section_i_page.dart';
 
 class PhysicsEquationsPage extends StatelessWidget {
   const PhysicsEquationsPage({super.key});
@@ -57,9 +58,11 @@ class PhysicsEquationsPage extends StatelessWidget {
             terminalButton("Pulleys (Coming Soon)", () => _open(context, const PulleysPage())),
             const SizedBox(height: 14),
             terminalButton("Velocity & Accel (Coming Soon)", () => _open(context, const VelocityPage())),
+            terminalButton("Section Properties (I)", () => _open(context, const SectionIPage())),
           ],
         ),
       ),
     );
   }
 }
+
