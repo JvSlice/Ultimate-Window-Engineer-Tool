@@ -1,3 +1,4 @@
+import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 import '../terminal_scaffold.dart';
 import '../data/materials.dart';
@@ -15,9 +16,6 @@ class SpeedFeedPage extends StatefulWidget {
 }
 
 class _SpeedFeedPageState extends State<SpeedFeedPage> {
-  late final TextEditingController _diameterController;
-  late final TextEditingController _flutesController;
-  late final TextEditingController _chiploadController;
   Operation op = Operation.drill;
   ToolType toolType = ToolType.hss;
 
@@ -26,21 +24,32 @@ class _SpeedFeedPageState extends State<SpeedFeedPage> {
   int flutes = 2; // milling
   double chiploadIn = 0.002; // milling (in/tooth)
 
+  late final TextEditingController _diameterController;
+  late final TextEditingController _flutesController;
+  late final TextEditingController _chiploadController;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _diameterController = TextEditingController(
+      text: diameterIn.toStringAsFixed(4),
+    );
+    _flutesController = TextEditingController(text: flutes.toStringAsFixed(2));
+    _chiploadController = TextEditingController(
+      text: chiploadIn.toStringAsFixed(4),
+    );
+  }
+
+  @override
+  void dispose() {
+    _diameterController.dispose();
+    _flutesController.dispose();
+    _chiploadController.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
-    void initState() {
-      super.initState();
-      _diameterController = TextEditingController(
-        text: diameterIn.toStringAsFixed(4),
-      );
-      _flutesController = TextEditingController(
-        text: flutes.toStringAsFixed(6),
-      );
-      _chiploadController = TextEditingController(
-        text: chiploadIn.toStringAsFixed(4),
-      );
-    }
-
     final accent = Theme.of(context).colorScheme.primary;
 
     final sfm = _sfmFor(material, op, toolType);
@@ -118,7 +127,7 @@ class _SpeedFeedPageState extends State<SpeedFeedPage> {
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 12),
               decoration: BoxDecoration(
-                color: Colors.black,
+                color: accent.withValues(alpha: 0.18),
                 borderRadius: BorderRadius.circular(10),
                 border: Border.all(
                   color: accent.withValues(alpha: 0.6),
@@ -266,7 +275,7 @@ class _SpeedFeedPageState extends State<SpeedFeedPage> {
     return Container(
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
-        color: Colors.black,
+        color: accent.withValues(alpha: 0.18),
         borderRadius: BorderRadius.circular(12),
         border: Border.all(color: accent.withValues(alpha: 0.7), width: 2),
         boxShadow: [
@@ -294,15 +303,14 @@ class _SpeedFeedPageState extends State<SpeedFeedPage> {
   Widget _numberField({
     required Color accent,
     required TextEditingController controller,
-    
+
     required void Function(String) onChanged,
     required String hint,
   }) {
-    
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12),
       decoration: BoxDecoration(
-        color: Colors.black,
+        color: accent.withValues(alpha: 0.18),
         borderRadius: BorderRadius.circular(10),
         border: Border.all(color: accent.withValues(alpha: 0.6), width: 2),
         boxShadow: [
