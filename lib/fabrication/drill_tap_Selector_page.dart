@@ -64,7 +64,7 @@ class _DrillTapSelectorPageState extends State<DrillTapSelectorPage> {
             DropdownButton<ThreadSpec>(
               value: selectedThread,
               hint: const Text('Select Thread Size'),
-              style: TextStyle(color: Colors.black),
+              style: TextStyle(color: accent),
               items: _threadsForSystem(system)
                   .map((t) => DropdownMenuItem(value: t, child: Text(t.label)))
                   .toList(),
