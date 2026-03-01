@@ -15,6 +15,9 @@ class SpeedFeedPage extends StatefulWidget {
 }
 
 class _SpeedFeedPageState extends State<SpeedFeedPage> {
+  late final TextEditingController _diameterController;
+  late final TextEditingController _flutesController;
+  late final TextEditingController _chiploadController;
   Operation op = Operation.drill;
   ToolType toolType = ToolType.hss;
 
@@ -25,6 +28,19 @@ class _SpeedFeedPageState extends State<SpeedFeedPage> {
 
   @override
   Widget build(BuildContext context) {
+    void initState() {
+      super.initState();
+      _diameterController = TextEditingController(
+        text: diameterIn.toStringAsFixed(4),
+      );
+      _flutesController = TextEditingController(
+        text: flutes.toStringAsFixed(6),
+      );
+      _chiploadController = TextEditingController(
+        text: chiploadIn.toStringAsFixed(4),
+      );
+    }
+
     final accent = Theme.of(context).colorScheme.primary;
 
     final sfm = _sfmFor(material, op, toolType);
@@ -140,12 +156,13 @@ class _SpeedFeedPageState extends State<SpeedFeedPage> {
             const SizedBox(height: 8),
             _numberField(
               accent: accent,
-              initial: diameterIn.toString(),
+              controller: _diameterController,
+              //initial: diameterIn.toString(),
               onChanged: (s) {
                 final v = double.tryParse(s);
                 if (v != null && v > 0) setState(() => diameterIn = v);
               },
-              hint: "e.g. 0.25",
+              hint: "e.g. 0.2500",
             ),
 
             if (op == Operation.mill) ...[
@@ -157,7 +174,8 @@ class _SpeedFeedPageState extends State<SpeedFeedPage> {
                   Expanded(
                     child: _numberField(
                       accent: accent,
-                      initial: flutes.toString(),
+                      controller: _flutesController,
+                      //initial: flutes.toString(),
                       onChanged: (s) {
                         final v = int.tryParse(s);
                         if (v != null && v > 0) setState(() => flutes = v);
@@ -169,7 +187,8 @@ class _SpeedFeedPageState extends State<SpeedFeedPage> {
                   Expanded(
                     child: _numberField(
                       accent: accent,
-                      initial: chiploadIn.toString(),
+                      controller: _chiploadController,
+                      //initial: chiploadIn.toString(),
                       onChanged: (s) {
                         final v = double.tryParse(s);
                         if (v != null && v > 0) setState(() => chiploadIn = v);
@@ -274,11 +293,12 @@ class _SpeedFeedPageState extends State<SpeedFeedPage> {
 
   Widget _numberField({
     required Color accent,
-    required String initial,
+    required TextEditingController controller,
+    
     required void Function(String) onChanged,
     required String hint,
   }) {
-    final controller = TextEditingController(text: initial);
+    
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12),
       decoration: BoxDecoration(
