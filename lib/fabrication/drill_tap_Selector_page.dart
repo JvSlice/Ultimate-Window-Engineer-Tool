@@ -61,19 +61,43 @@ class _DrillTapSelectorPageState extends State<DrillTapSelectorPage> {
             ),
             const SizedBox(height: 24),
             // thread dropdown
-            DropdownButton<ThreadSpec>(
-              value: selectedThread,
-              hint: const Text('Select Thread Size'),
-              style: TextStyle(color: accent),
-              items: _threadsForSystem(system)
-                  .map((t) => DropdownMenuItem(value: t, child: Text(t.label)))
-                  .toList(),
-              onChanged: (value) {
-                setState(() {
-                  selectedThread = value;
-                });
-              },
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 12),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+                border: Border.all(color: accent, width: 2),
+                boxShadow: [
+                BoxShadow(
+                  color: accent.withValues(alpha: 0.35),
+                  blurRadius: 12,
+                  spreadRadius: 1,
+                ),
+                ],
+              ),
+              child: DropdownButton<ThreadSpec>(
+                value: selectedThread,
+                isExpanded: true,
+                hint: Text('Select Thread Size', style: TextStyle(color: accent)),
+                dropdownColor: const Color(0xFF0B0F14),
+                iconEnabledColor: accent,
+                underline: const SizedBox(),
+                style: const TextStyle(color: Colors.white),
+                items: _threadsForSystem(system)
+                .map((t)=> DropdownMenuItem(
+                  value: t,
+                  child: Text(t.label, style: accent)),
+                ))
+                .toList(),
+                onChanged: (value){
+                  setState(() {
+                    setState(() => selectedThread = value);
+                  },
+                  ),
             ),
+                }
+              )
+            )
+       
             //Engagement Selector
             Row(
               children: [0.75, 0.65, 0.50].map((e) {
