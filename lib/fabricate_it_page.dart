@@ -4,7 +4,7 @@ import 'terminal_scaffold.dart';
 import 'fabrication/drill_index_page.dart';
 
 // import 'drill_tap_selector_page';
-// import 'speeds_feeds';
+import 'fabrication/speed_feed_page.dart';
 
 class FabricateItPage extends StatelessWidget {
   const FabricateItPage({super.key});
@@ -67,7 +67,10 @@ class _FabricateItBody extends StatelessWidget {
                 label: "Speed & Feeds",
                 sublabel: "RPM, IPM Calculator",
                 onPressed: () {
-                  //Navigator.push(context, MaterialPageRoute(builder: (_) => const SpeedFeedPage()));
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => const SpeedFeedPage()),
+                  );
                 },
               ),
 
