@@ -1,64 +1,65 @@
-import 'dart:math';
 import 'package:flutter/material.dart';
 import '../terminal_scaffold.dart';
-import '../widgets/terminal_fields.dart';
+import 'shapes/rect_page.dart';
+import 'shapes/circle_page.dart';
+import 'shapes/right_triangle_page.dart';
+import 'shapes/annulus_page.dart';
+import 'shapes/trapezoid_page.dart';
 
-class Geometry2DPage extends StatefulWidget {
+class Geometry2DPage extends StatelessWidget {
   const Geometry2DPage({super.key});
 
-  @override
-  State<Geometry2DPage> createState() => _Geometry2DPageState();
-}
-
-class _Geometry2DPageState extends State<Geometry2DPage> {
-  final radiusCtrl = TextEditingController(text: "1.0");
-
-  double? _parse(TextEditingController c) => double.tryParse(c.text.trim());
-
-  @override
-  void dispose() {
-    radiusCtrl.dispose();
-    super.dispose();
+  void _open(BuildContext context, Widget page) {
+    Navigator.of(context).push(MaterialPageRoute(builder: (_) => page));
   }
 
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
     final accent = Theme.of(context).colorScheme.primary;
-    final r = _parse(radiusCtrl);
 
-    final area = (r == null) ? null : pi * r * r;
-    final circ = (r == null) ? null : 2 * pi * r;
+    Widget terminalButton(String label, VoidCallback onPressed) {
+      return SizedBox(
+        width: double.infinity,
+        height: size.height * 0.10,
+        child: OutlinedButton(
+          onPressed: onPressed,
+          style: OutlinedButton.styleFrom(
+            foregroundColor: accent,
+            side: BorderSide(color: accent, width: 2),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+            padding: EdgeInsets.zero,
+          ).copyWith(
+            overlayColor: WidgetStateProperty.all(accent.withValues(alpha: 0.08)),
+          ),
+          child: Text(
+            label,
+            style: TextStyle(
+              color: accent,
+              fontWeight: FontWeight.w700,
+              letterSpacing: 1.1,
+              fontSize: size.width * 0.018,
+            ),
+          ),
+        ),
+      );
+    }
 
     return TerminalScaffold(
       title: "2D Shapes",
       child: Padding(
         padding: const EdgeInsets.all(16),
-        child: ListView(
+        child: Column(
           children: [
-            Text("Circle", style: TextStyle(color: accent, fontSize: 20, fontWeight: FontWeight.w800)),
-            const SizedBox(height: 8),
-            Text(
-              "Formulas:\nA = πr²\nC = 2πr",
-              style: TextStyle(color: accent.withValues(alpha: 0.75)),
-            ),
-            const SizedBox(height: 16),
-
-            terminalNumberField(
-              accent: accent,
-              label: "Radius (r)",
-              hint: "inches, mm, etc.",
-              controller: radiusCtrl,
-            ),
-
-            const SizedBox(height: 18),
-
-            terminalResultCard(
-              accent: accent,
-              lines: [
-                if (area == null) "Area: —" else "Area (A): ${area.toStringAsFixed(4)}",
-                if (circ == null) "Circumference: —" else "Circumference (C): ${circ.toStringAsFixed(4)}",
-              ],
-            ),
+            terminalButton("1) Rectangle", () => _open(context, const RectPage())),
+            const SizedBox(height: 14),
+            terminalButton("2) Circle", () => _open(context, const CirclePage())),
+            const SizedBox(height: 14),
+            terminalButton("3) Right Triangle", () => _open(context, const RightTrianglePage())),
+            const SizedBox(height: 14),
+            terminalButton("4) Annulus (Ring)", () => _open(context, const AnnulusPage())),
+            const SizedBox(height: 14),
+            terminalButton("5) Trapezoid", () => _open(context, const TrapezoidPage())),
           ],
         ),
       ),
