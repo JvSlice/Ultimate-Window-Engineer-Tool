@@ -82,11 +82,7 @@ class SettingsPage extends StatelessWidget {
                   ],
                 ),
 
-                const SizedBox(height: 24),
-                Text(
-                  "If something doesn't change when you tap these, it means that part of the UI is still using a hard-coded color (like Colors.green) instead of themeController.accentColor.",
-                  style: TextStyle(color: accent.withValues(alpha: 0.85)),
-                ),
+               
               ],
             ),
           ),
