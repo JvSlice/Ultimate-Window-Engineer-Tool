@@ -85,17 +85,14 @@ class TerminalScaffold extends StatelessWidget {
     ),
   ],
 ),
-                      const SizedBox(width: 48),
-                    ],
+                ),
+              ]
                   ),
                 ),
                 Expanded(child: child),
               ],
             ),
-          ),
-        ],
-      ),
-    );
+          );
   }
 }
 
