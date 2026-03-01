@@ -66,6 +66,25 @@ class TerminalScaffold extends StatelessWidget {
                           ),
                         ),
                       ),
+                      // RIGHT: Back button (only if can pop)
+    Builder(
+      builder: (context) {
+        final canPop = Navigator.of(context).canPop();
+
+        if (!canPop) {
+          return const SizedBox(width: 48); // keeps title centered
+        }
+
+        return IconButton(
+          icon: Icon(Icons.arrow_back, color: accent),
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+        );
+      },
+    ),
+  ],
+),
                       const SizedBox(width: 48),
                     ],
                   ),
