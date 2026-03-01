@@ -1,64 +1,65 @@
-import 'dart:math';
 import 'package:flutter/material.dart';
 import '../terminal_scaffold.dart';
-import '../widgets/terminal_fields.dart';
+import 'shapes3d/box_page.dart';
+import 'shapes3d/cylinder_page.dart';
+import 'shapes3d/sphere_page.dart';
+import 'shapes3d/cone_page.dart';
+import 'shapes3d/pipe_page.dart';
 
-class Geometry3DPage extends StatefulWidget {
+class Geometry3DPage extends StatelessWidget {
   const Geometry3DPage({super.key});
 
-  @override
-  State<Geometry3DPage> createState() => _Geometry3DPageState();
-}
-
-class _Geometry3DPageState extends State<Geometry3DPage> {
-  final radiusCtrl = TextEditingController(text: "1.0");
-  final heightCtrl = TextEditingController(text: "1.0");
-
-  double? _p(TextEditingController c) => double.tryParse(c.text.trim());
-
-  @override
-  void dispose() {
-    radiusCtrl.dispose();
-    heightCtrl.dispose();
-    super.dispose();
+  void _open(BuildContext context, Widget page) {
+    Navigator.of(context).push(MaterialPageRoute(builder: (_) => page));
   }
 
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
     final accent = Theme.of(context).colorScheme.primary;
-    final r = _p(radiusCtrl);
-    final h = _p(heightCtrl);
 
-    final volume = (r == null || h == null) ? null : pi * r * r * h;
-    final sa = (r == null || h == null) ? null : (2 * pi * r * h) + (2 * pi * r * r);
+    Widget terminalButton(String label, VoidCallback onPressed) {
+      return SizedBox(
+        width: double.infinity,
+        height: size.height * 0.10,
+        child: OutlinedButton(
+          onPressed: onPressed,
+          style: OutlinedButton.styleFrom(
+            foregroundColor: accent,
+            side: BorderSide(color: accent, width: 2),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+            padding: EdgeInsets.zero,
+          ).copyWith(
+            overlayColor: WidgetStateProperty.all(accent.withValues(alpha: 0.08)),
+          ),
+          child: Text(
+            label,
+            style: TextStyle(
+              color: accent,
+              fontWeight: FontWeight.w700,
+              letterSpacing: 1.1,
+              fontSize: size.width * 0.018,
+            ),
+          ),
+        ),
+      );
+    }
 
     return TerminalScaffold(
       title: "3D Shapes",
       child: Padding(
         padding: const EdgeInsets.all(16),
-        child: ListView(
+        child: Column(
           children: [
-            Text("Cylinder", style: TextStyle(color: accent, fontSize: 20, fontWeight: FontWeight.w800)),
-            const SizedBox(height: 8),
-            Text(
-              "Formulas:\nV = πr²h\nSA = 2πrh + 2πr²",
-              style: TextStyle(color: accent.withValues(alpha: 0.75)),
-            ),
-            const SizedBox(height: 16),
-
-            terminalNumberField(accent: accent, label: "Radius (r)", hint: "units", controller: radiusCtrl),
-            const SizedBox(height: 12),
-            terminalNumberField(accent: accent, label: "Height (h)", hint: "units", controller: heightCtrl),
-
-            const SizedBox(height: 18),
-
-            terminalResultCard(
-              accent: accent,
-              lines: [
-                if (volume == null) "Volume: —" else "Volume (V): ${volume.toStringAsFixed(4)}",
-                if (sa == null) "Surface Area: —" else "Surface Area (SA): ${sa.toStringAsFixed(4)}",
-              ],
-            ),
+            terminalButton("1) Box (Rectangular Prism)", () => _open(context, const BoxPage())),
+            const SizedBox(height: 14),
+            terminalButton("2) Cylinder", () => _open(context, const CylinderPage())),
+            const SizedBox(height: 14),
+            terminalButton("3) Sphere", () => _open(context, const SpherePage())),
+            const SizedBox(height: 14),
+            terminalButton("4) Cone", () => _open(context, const ConePage())),
+            const SizedBox(height: 14),
+            terminalButton("5) Pipe / Tube", () => _open(context, const PipePage())),
           ],
         ),
       ),
