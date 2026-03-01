@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:ultimate_window_engineer_tool/Tool_Four.dart';
+import 'package:ultimate_window_engineer_tool/window_testing_tools_page.dart';
 import 'terminal_scaffold.dart';
 import 'convert_it_page.dart';
 import 'fabricate_it_page.dart';
@@ -111,7 +111,7 @@ class MainMenuPage extends StatelessWidget {
                 terminalButton(context, "Reference it", () {
                   openPage(context, ReferenceitPage());
                 }),
-                terminalButton(context, "coming soon", () {
+                terminalButton(context, "window testing tools coming soon", () {
                   openPage(context, ToolFour());
                 }),
                 //terminalButton("coming soon 5"),

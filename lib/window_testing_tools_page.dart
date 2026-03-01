@@ -10,7 +10,7 @@ class ToolFour extends StatelessWidget {
     final accent = Theme.of(context).colorScheme.primary;
 
     return TerminalScaffold(
-      title: 'Coming Soon',
+      title: 'Window Testing Tools',
 
       child: Center(
         child: Text(
