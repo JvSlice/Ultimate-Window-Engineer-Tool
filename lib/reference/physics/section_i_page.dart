@@ -23,7 +23,20 @@ class _SectionIPageState extends State<SectionIPage> {
   final tCtrl = TextEditingController(text: "0.125"); // wall thickness (tube)
 
   double? _p(TextEditingController c) => double.tryParse(c.text.trim());
+double _convertVal(double v, double factor) => v * factor;
 
+void _convertInputs(double factor) {
+  void conv(TextEditingController c) {
+    final v = double.tryParse(c.text.trim());
+    if (v == null) return;
+    c.text = _convertVal(v, factor).toStringAsFixed(4);
+  }
+
+  conv(bCtrl);
+  conv(hCtrl);
+  conv(tCtrl);
+}
+  
   @override
   void dispose() {
     bCtrl.dispose();
@@ -249,3 +262,4 @@ class _SectionIPageState extends State<SectionIPage> {
     }
   }
 }
+
