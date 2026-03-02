@@ -76,12 +76,12 @@ class Geometry2DPage extends StatelessWidget {
             ),
             const SizedBox(height: 14),
             terminalButton(
-              "4) Annulus (Ring)",
+              "5) Annulus (Ring)",
               () => _open(context, const AnnulusPage()),
             ),
             const SizedBox(height: 14),
             terminalButton(
-              "5) Trapezoid",
+              "6) Trapezoid",
               () => _open(context, const TrapezoidPage()),
             ),
 
@@ -91,3 +91,4 @@ class Geometry2DPage extends StatelessWidget {
     );
   }
 }
+
