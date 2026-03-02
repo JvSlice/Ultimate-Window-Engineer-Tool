@@ -5,6 +5,7 @@ import 'shapes/circle_page.dart';
 import 'shapes/right_triangle_page.dart';
 import 'shapes/annulus_page.dart';
 import 'shapes/trapezoid_page.dart';
+import 'shapes/triangle_solver_page.dart';
 
 class Geometry2DPage extends StatelessWidget {
   const Geometry2DPage({super.key});
@@ -24,14 +25,19 @@ class Geometry2DPage extends StatelessWidget {
         height: size.height * 0.10,
         child: OutlinedButton(
           onPressed: onPressed,
-          style: OutlinedButton.styleFrom(
-            foregroundColor: accent,
-            side: BorderSide(color: accent, width: 2),
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-            padding: EdgeInsets.zero,
-          ).copyWith(
-            overlayColor: WidgetStateProperty.all(accent.withValues(alpha: 0.08)),
-          ),
+          style:
+              OutlinedButton.styleFrom(
+                foregroundColor: accent,
+                side: BorderSide(color: accent, width: 2),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                padding: EdgeInsets.zero,
+              ).copyWith(
+                overlayColor: WidgetStateProperty.all(
+                  accent.withValues(alpha: 0.08),
+                ),
+              ),
           child: Text(
             label,
             style: TextStyle(
@@ -51,15 +57,34 @@ class Geometry2DPage extends StatelessWidget {
         padding: const EdgeInsets.all(16),
         child: Column(
           children: [
-            terminalButton("1) Rectangle", () => _open(context, const RectPage())),
+            terminalButton(
+              "1) Rectangle",
+              () => _open(context, const RectPage()),
+            ),
             const SizedBox(height: 14),
-            terminalButton("2) Circle", () => _open(context, const CirclePage())),
+            terminalButton(
+              "2) Circle",
+              () => _open(context, const CirclePage()),
+            ),
             const SizedBox(height: 14),
-            terminalButton("3) Right Triangle", () => _open(context, const RightTrianglePage())),
+            terminalButton(
+              "3) Right Triangle",
+              () => _open(context, const RightTrianglePage()),
+            ),
+            const SizedBox(height: 14,),
+            terminalButton("4) Triangle Slover", () => _open(context, const TriangleSolverPage()),
+            ),
             const SizedBox(height: 14),
-            terminalButton("4) Annulus (Ring)", () => _open(context, const AnnulusPage())),
+            terminalButton(
+              "4) Annulus (Ring)",
+              () => _open(context, const AnnulusPage()),
+            ),
             const SizedBox(height: 14),
-            terminalButton("5) Trapezoid", () => _open(context, const TrapezoidPage())),
+            terminalButton(
+              "5) Trapezoid",
+              () => _open(context, const TrapezoidPage()),
+            ),
+
           ],
         ),
       ),

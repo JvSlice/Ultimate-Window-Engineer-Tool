@@ -200,9 +200,9 @@ class _TriangleSolverPageState extends State<TriangleSolverPage> {
       case TriangleMode.asa:
         // ASA: two angles with included side between them
         // We'll allow: A,B,c OR A,C,b OR B,C,a
-        if (A != null && B != null && c != null) return _solveASA(A, B, c, includedSide: "c");
-        if (A != null && C != null && b != null) return _solveASA(A, C, b, includedSide: "b");
-        if (B != null && C != null && a != null) return _solveASA(B, C, a, includedSide: "a");
+        if (A != null && B != null && c != null) return _solveASA(A, B, c, includedSideName: "c");
+        if (A != null && C != null && b != null) return _solveASA(A, C, b, includedSideName: "b");
+        if (B != null && C != null && a != null) return _solveASA(B, C, a, includedSideName: "a");
         return [];
 
       case TriangleMode.aas:
