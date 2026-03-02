@@ -78,10 +78,10 @@ String performConversion({
       }
     case ConversionTypes.CFMperSQfttoCLMperSQm:
       if (direction == Direction.to) {
-        final clm = input * 304.8;
+        final clm = input * 5.08;
         return "${clm.toStringAsFixed(2)} Cubic litter per minute per sq Meter";
       } else {
-        final cfm = input / 304.8;
+        final cfm = input / 5.08;
         return "${cfm.toStringAsFixed(2)} CFM per Sq ft";
       }
     case ConversionTypes.inchesToCm:
