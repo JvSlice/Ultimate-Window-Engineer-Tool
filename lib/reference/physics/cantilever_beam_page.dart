@@ -2,6 +2,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import '../../terminal_scaffold.dart';
 import '../../widgets/terminal_fields.dart';
+import 'section_props_store.dart';
 
 enum CantileverLoadType { endPoint, uniform }
 
@@ -165,3 +166,4 @@ class _CantileverBeamPageState extends State<CantileverBeamPage> {
     );
   }
 }
+
