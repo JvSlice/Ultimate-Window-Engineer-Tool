@@ -40,6 +40,8 @@ class _TriangleSolverPageState extends State<TriangleSolverPage> {
   final bAngCtrl = TextEditingController(text: "");
   final cAngCtrl = TextEditingController(text: "");
 
+  
+
   double? _p(TextEditingController c) => double.tryParse(c.text.trim());
   double _toRad(double deg) => deg * pi / 180.0;
   double _toDeg(double rad) => rad * 180.0 / pi;
@@ -59,7 +61,7 @@ class _TriangleSolverPageState extends State<TriangleSolverPage> {
   Widget build(BuildContext context) {
     final accent = Theme.of(context).colorScheme.primary;
 
-    final solutions = _solve();
+   
 
     return TerminalScaffold(
       title: "Triangle Solver",
@@ -405,4 +407,5 @@ class _TriangleSolverPageState extends State<TriangleSolverPage> {
     return sols;
   }
 }
+
 
