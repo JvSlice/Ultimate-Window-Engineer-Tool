@@ -303,7 +303,7 @@ OutlinedButton(
   }
 
   // Build a “record” to store (adjust names to match your store file)
-  final record = SectionPropsRecord(
+  final record = SectionProps(
     timestamp: DateTime.now(),
     units: units.name,          // "inch" or "mm"
     shape: shape.name,          // "rect", "rectTube", etc
