@@ -256,11 +256,75 @@ class _SectionIPageState extends State<SectionIPage> {
                 "ry: ${ry == null ? '—' : ry.toStringAsFixed(6)} $rUnitLabel",
               ],
             ),
+            const SizedBox(height: 14),
+
+OutlinedButton(
+  onPressed: () => _storeSection(
+    context: context,
+    area: area,
+    ix: ix,
+    iy: iy,
+    sx: sx,
+    sy: sy,
+    rx: rx,
+    ry: ry,
+  ),
+  style: OutlinedButton.styleFrom(
+    side: BorderSide(color: accent, width: 2),
+    foregroundColor: accent,
+    padding: const EdgeInsets.symmetric(vertical: 14),
+  ).copyWith(
+    overlayColor: WidgetStateProperty.all(accent.withValues(alpha: 0.08)),
+  ),
+  child: const Text("STORE I-VALUE"),
+),
           ],
         ),
       ),
     );
   }
+
+  void _storeSection({
+  required BuildContext context,
+  required double? area,
+  required double? ix,
+  required double? iy,
+  required double? sx,
+  required double? sy,
+  required double? rx,
+  required double? ry,
+}) {
+  // Don’t store junk if not solved yet
+  if (area == null || ix == null || iy == null) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text("Enter valid dimensions first.")),
+    );
+    return;
+  }
+
+  // Build a “record” to store (adjust names to match your store file)
+  final record = SectionPropsRecord(
+    timestamp: DateTime.now(),
+    units: units.name,          // "inch" or "mm"
+    shape: shape.name,          // "rect", "rectTube", etc
+    b: _p(bCtrl),
+    h: _p(hCtrl),
+    t: _p(tCtrl),
+    area: area,
+    ix: ix,
+    iy: iy,
+    sx: sx,
+    sy: sy,
+    rx: rx,
+    ry: ry,
+  );
+
+  SectionPropsStore.instance.add(record);
+
+  ScaffoldMessenger.of(context).showSnackBar(
+    const SnackBar(content: Text("Stored section properties.")),
+  );
+}
 
   Widget _shapeChip(Color accent, String label, SectionShape s) {
     final selected = shape == s;
@@ -356,3 +420,4 @@ class _SectionIPageState extends State<SectionIPage> {
     }
   }
 }
+
