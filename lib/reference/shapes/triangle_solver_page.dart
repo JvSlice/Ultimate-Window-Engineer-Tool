@@ -2,6 +2,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import '../../terminal_scaffold.dart';
 import '../../widgets/terminal_fields.dart';
+import '../../widgets/calc_button.dart';
 
 enum TriangleMode { sss, sas, asa, aas, ssa }
 
@@ -160,6 +161,8 @@ class _TriangleSolverPageState extends State<TriangleSolverPage> {
       terminalNumberField(accent: accent, label: "C", hint: "angle C", controller: cAngCtrl),
     ];
   }
+
+  terminalCaclcButton(accent: accent, onPressed: _calculate),
 
   List<String> _solutionLines(TriangleSolution s, {int? index}) {
     final header = (index == null) ? "Solution:" : "Solution $index:";
@@ -402,3 +405,4 @@ class _TriangleSolverPageState extends State<TriangleSolverPage> {
     return sols;
   }
 }
+
