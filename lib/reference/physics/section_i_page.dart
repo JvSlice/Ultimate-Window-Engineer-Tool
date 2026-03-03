@@ -2,6 +2,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import '../../terminal_scaffold.dart';
 import '../../widgets/terminal_fields.dart';
+import 'section_props_store.dart';
 
 enum Units { inch, mm }
 enum SectionShape { rect, rectTube, circle, pipe }
@@ -133,6 +134,38 @@ void _convertInputs(double factor) {
           "A = π(OD^2 - ID^2) / 4\n"
           "I = π(OD^4 - ID^4) / 64";
     }
+    double? sx;
+double? sy;
+double? rx;
+double? ry;
+
+double? cX; // for Sx (uses height)
+double? cY; // for Sy (uses width)
+
+// Determine c distances based on current shape outer dims
+if (shape == SectionShape.rect || shape == SectionShape.rectTube) {
+  if (h != null && b != null && h > 0 && b > 0) {
+    cX = h / 2.0;
+    cY = b / 2.0;
+  }
+} else if (shape == SectionShape.circle) {
+  if (b != null && b > 0) {
+    cX = b / 2.0;
+    cY = b / 2.0;
+  }
+} else if (shape == SectionShape.pipe) {
+  if (b != null && b > 0) {
+    cX = b / 2.0; // OD/2
+    cY = b / 2.0;
+  }
+}
+
+if (area != null && area > 0 && ix != null && iy != null && cX != null && cY != null) {
+  sx = ix / cX;
+  sy = iy / cY;
+  rx = sqrt(ix / area);
+  ry = sqrt(iy / area);
+}
 
     return TerminalScaffold(
       title: "Section Properties (I)",
@@ -205,6 +238,10 @@ void _convertInputs(double factor) {
                 "Area (A): ${area == null ? '—' : area.toStringAsFixed(6)} $aUnitLabel",
                 "Ix: ${ix == null ? '—' : ix.toStringAsFixed(6)} $iUnitLabel",
                 "Iy: ${iy == null ? '—' : iy.toStringAsFixed(6)} $iUnitLabel",
+                "Sx: ${sx == null ? '—' : sx.toStringAsFixed(6)} $sUnitLabel",
+                "Sy: ${sy == null ? '—' : sy.toStringAsFixed(6)} $sUnitLabel",
+                "rx: ${rx == null ? '—' : rx.toStringAsFixed(6)} $rUnitLabel",
+                "ry: ${ry == null ? '—' : ry.toStringAsFixed(6)} $rUnitLabel",
               ],
             ),
           ],
@@ -262,4 +299,5 @@ void _convertInputs(double factor) {
     }
   }
 }
+
 
