@@ -5,6 +5,7 @@ import '../../widgets/terminal_fields.dart';
 import 'section_props_store.dart';
 
 enum Units { inch, mm }
+
 enum SectionShape { rect, rectTube, circle, pipe }
 
 class SectionIPage extends StatefulWidget {
@@ -19,25 +20,25 @@ class _SectionIPageState extends State<SectionIPage> {
   SectionShape shape = SectionShape.rect;
 
   // Inputs (meaning changes by shape)
-  final bCtrl = TextEditingController(text: "2.0");  // width / OD
-  final hCtrl = TextEditingController(text: "1.0");  // height / ID
+  final bCtrl = TextEditingController(text: "2.0"); // width / OD
+  final hCtrl = TextEditingController(text: "1.0"); // height / ID
   final tCtrl = TextEditingController(text: "0.125"); // wall thickness (tube)
 
   double? _p(TextEditingController c) => double.tryParse(c.text.trim());
-double _convertVal(double v, double factor) => v * factor;
+  double _convertVal(double v, double factor) => v * factor;
 
-void _convertInputs(double factor) {
-  void conv(TextEditingController c) {
-    final v = double.tryParse(c.text.trim());
-    if (v == null) return;
-    c.text = _convertVal(v, factor).toStringAsFixed(4);
+  void _convertInputs(double factor) {
+    void conv(TextEditingController c) {
+      final v = double.tryParse(c.text.trim());
+      if (v == null) return;
+      c.text = _convertVal(v, factor).toStringAsFixed(4);
+    }
+
+    conv(bCtrl);
+    conv(hCtrl);
+    conv(tCtrl);
   }
 
-  conv(bCtrl);
-  conv(hCtrl);
-  conv(tCtrl);
-}
-  
   @override
   void dispose() {
     bCtrl.dispose();
@@ -49,6 +50,8 @@ void _convertInputs(double factor) {
   String get unitLabel => units == Units.inch ? "in" : "mm";
   String get iUnitLabel => units == Units.inch ? "in^4" : "mm^4";
   String get aUnitLabel => units == Units.inch ? "in^2" : "mm^2";
+  String get sUnitLabel => units == Units.inch ? "in^3" : "mm^3";
+  String get rUnitLabel => units == Units.inch ? "in" : "mm";
 
   @override
   Widget build(BuildContext context) {
@@ -75,7 +78,8 @@ void _convertInputs(double factor) {
         ix = b * pow(h, 3) / 12.0;
         iy = h * pow(b, 3) / 12.0;
       }
-      formulaText = "Rectangle (centroid axes)\n"
+      formulaText =
+          "Rectangle (centroid axes)\n"
           "A = b·h\n"
           "Ix = b·h^3 / 12\n"
           "Iy = h·b^3 / 12";
@@ -95,7 +99,8 @@ void _convertInputs(double factor) {
           iy = (h * pow(b, 3) - hi * pow(bi, 3)) / 12.0;
         }
       }
-      formulaText = "Hollow Rectangle / Tube\n"
+      formulaText =
+          "Hollow Rectangle / Tube\n"
           "bi = b - 2t,  hi = h - 2t\n"
           "A = b·h - bi·hi\n"
           "Ix = (b·h^3 - bi·hi^3) / 12\n"
@@ -112,7 +117,8 @@ void _convertInputs(double factor) {
         ix = pi * pow(d, 4) / 64.0;
         iy = ix;
       }
-      formulaText = "Solid Circle (D)\n"
+      formulaText =
+          "Solid Circle (D)\n"
           "A = πD^2 / 4\n"
           "I = πD^4 / 64";
     }
@@ -130,42 +136,48 @@ void _convertInputs(double factor) {
           iy = ix;
         }
       }
-      formulaText = "Hollow Circle / Pipe\n"
+      formulaText =
+          "Hollow Circle / Pipe\n"
           "A = π(OD^2 - ID^2) / 4\n"
           "I = π(OD^4 - ID^4) / 64";
     }
     double? sx;
-double? sy;
-double? rx;
-double? ry;
+    double? sy;
+    double? rx;
+    double? ry;
 
-double? cX; // for Sx (uses height)
-double? cY; // for Sy (uses width)
+    double? cX; // for Sx (uses height)
+    double? cY; // for Sy (uses width)
 
-// Determine c distances based on current shape outer dims
-if (shape == SectionShape.rect || shape == SectionShape.rectTube) {
-  if (h != null && b != null && h > 0 && b > 0) {
-    cX = h / 2.0;
-    cY = b / 2.0;
-  }
-} else if (shape == SectionShape.circle) {
-  if (b != null && b > 0) {
-    cX = b / 2.0;
-    cY = b / 2.0;
-  }
-} else if (shape == SectionShape.pipe) {
-  if (b != null && b > 0) {
-    cX = b / 2.0; // OD/2
-    cY = b / 2.0;
-  }
-}
+    // Determine c distances based on current shape outer dims
+    if (shape == SectionShape.rect || shape == SectionShape.rectTube) {
+      if (h != null && b != null && h > 0 && b > 0) {
+        cX = h / 2.0;
+        cY = b / 2.0;
+      }
+    } else if (shape == SectionShape.circle) {
+      if (b != null && b > 0) {
+        cX = b / 2.0;
+        cY = b / 2.0;
+      }
+    } else if (shape == SectionShape.pipe) {
+      if (b != null && b > 0) {
+        cX = b / 2.0; // OD/2
+        cY = b / 2.0;
+      }
+    }
 
-if (area != null && area > 0 && ix != null && iy != null && cX != null && cY != null) {
-  sx = ix / cX;
-  sy = iy / cY;
-  rx = sqrt(ix / area);
-  ry = sqrt(iy / area);
-}
+    if (area != null &&
+        area > 0 &&
+        ix != null &&
+        iy != null &&
+        cX != null &&
+        cY != null) {
+      sx = ix / cX;
+      sy = iy / cY;
+      rx = sqrt(ix / area);
+      ry = sqrt(iy / area);
+    }
 
     return TerminalScaffold(
       title: "Section Properties (I)",
@@ -259,9 +271,14 @@ if (area != null && area > 0 && ix != null && iy != null && cX != null && cY != 
         onPressed: () => setState(() => shape = s),
         style: OutlinedButton.styleFrom(
           side: BorderSide(color: accent, width: 2),
-          backgroundColor: selected ? accent.withValues(alpha: 0.80) : Colors.transparent,
+          backgroundColor: selected
+              ? accent.withValues(alpha: 0.80)
+              : Colors.transparent,
         ),
-        child: Text(label, style: TextStyle(color: accent, fontWeight: FontWeight.w700)),
+        child: Text(
+          label,
+          style: TextStyle(color: accent, fontWeight: FontWeight.w700),
+        ),
       ),
     );
   }
@@ -271,33 +288,71 @@ if (area != null && area > 0 && ix != null && iy != null && cX != null && cY != 
     switch (shape) {
       case SectionShape.rect:
         return [
-          terminalNumberField(accent: accent, label: "Width b ($unitLabel)", hint: unitLabel, controller: bCtrl),
+          terminalNumberField(
+            accent: accent,
+            label: "Width b ($unitLabel)",
+            hint: unitLabel,
+            controller: bCtrl,
+          ),
           const SizedBox(height: 12),
-          terminalNumberField(accent: accent, label: "Height h ($unitLabel)", hint: unitLabel, controller: hCtrl),
+          terminalNumberField(
+            accent: accent,
+            label: "Height h ($unitLabel)",
+            hint: unitLabel,
+            controller: hCtrl,
+          ),
         ];
 
       case SectionShape.rectTube:
         return [
-          terminalNumberField(accent: accent, label: "Outer width b ($unitLabel)", hint: unitLabel, controller: bCtrl),
+          terminalNumberField(
+            accent: accent,
+            label: "Outer width b ($unitLabel)",
+            hint: unitLabel,
+            controller: bCtrl,
+          ),
           const SizedBox(height: 12),
-          terminalNumberField(accent: accent, label: "Outer height h ($unitLabel)", hint: unitLabel, controller: hCtrl),
+          terminalNumberField(
+            accent: accent,
+            label: "Outer height h ($unitLabel)",
+            hint: unitLabel,
+            controller: hCtrl,
+          ),
           const SizedBox(height: 12),
-          terminalNumberField(accent: accent, label: "Wall thickness t ($unitLabel)", hint: unitLabel, controller: tCtrl),
+          terminalNumberField(
+            accent: accent,
+            label: "Wall thickness t ($unitLabel)",
+            hint: unitLabel,
+            controller: tCtrl,
+          ),
         ];
 
       case SectionShape.circle:
         return [
-          terminalNumberField(accent: accent, label: "Diameter D ($unitLabel)", hint: unitLabel, controller: bCtrl),
+          terminalNumberField(
+            accent: accent,
+            label: "Diameter D ($unitLabel)",
+            hint: unitLabel,
+            controller: bCtrl,
+          ),
         ];
 
       case SectionShape.pipe:
         return [
-          terminalNumberField(accent: accent, label: "Outer diameter OD ($unitLabel)", hint: unitLabel, controller: bCtrl),
+          terminalNumberField(
+            accent: accent,
+            label: "Outer diameter OD ($unitLabel)",
+            hint: unitLabel,
+            controller: bCtrl,
+          ),
           const SizedBox(height: 12),
-          terminalNumberField(accent: accent, label: "Inner diameter ID ($unitLabel)", hint: unitLabel, controller: hCtrl),
+          terminalNumberField(
+            accent: accent,
+            label: "Inner diameter ID ($unitLabel)",
+            hint: unitLabel,
+            controller: hCtrl,
+          ),
         ];
     }
   }
 }
-
-
