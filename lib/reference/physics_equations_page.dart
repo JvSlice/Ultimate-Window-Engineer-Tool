@@ -60,6 +60,7 @@ class PhysicsEquationsPage extends StatelessWidget {
             terminalButton("Velocity & Accel (Coming Soon)", () => _open(context, const VelocityPage())),
             const SizedBox(height: 14),
             terminalButton("Section Properties (I)", () => _open(context, const SectionIPage())),
+            const SizedBox(height: 14),
           ],
         ),
       ),
