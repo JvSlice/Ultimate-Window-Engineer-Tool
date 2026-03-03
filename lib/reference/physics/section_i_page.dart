@@ -345,14 +345,31 @@ OutlinedButton(
     return;
   }
 
-  // Build a “record” to store (adjust names to match your store file)
-  final record = SectionProps(
-    timestamp: DateTime.now(),
-    units: units.name,          // "inch" or "mm"
-    shape: shape.name,          // "rect", "rectTube", etc
-    b: _p(bCtrl),
-    h: _p(hCtrl),
-    t: _p(tCtrl),
+void _storeSection({
+  required Color accent,
+  required double? area,
+  required double? ix,
+  required double? iy,
+  required double? sx,
+  required double? sy,
+  required double? rx,
+  required double? ry,
+}) {
+  // Only store when everything exists
+  if (area == null ||
+      ix == null ||
+      iy == null ||
+      sx == null ||
+      sy == null ||
+      rx == null ||
+      ry == null) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text("Nothing to store yet — enter valid inputs.")),
+    );
+    return;
+  }
+
+  lastSectionProps.value = SectionProps(
     area: area,
     ix: ix,
     iy: iy,
@@ -360,14 +377,15 @@ OutlinedButton(
     sy: sy,
     rx: rx,
     ry: ry,
+    units: units == Units.inch ? SectionIUnits.inch : SectionIUnits.mm,
   );
-
-  SectionPropsStore.instance.add(record);
 
   ScaffoldMessenger.of(context).showSnackBar(
     const SnackBar(content: Text("Stored section properties.")),
   );
 }
+
+  }// i think this needs deleted
 
   Widget _shapeChip(Color accent, String label, SectionShape s) {
     final selected = shape == s;
@@ -463,5 +481,6 @@ OutlinedButton(
     }
   }
 }
+
 
 
