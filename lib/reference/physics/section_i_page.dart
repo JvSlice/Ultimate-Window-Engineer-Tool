@@ -53,6 +53,49 @@ class _SectionIPageState extends State<SectionIPage> {
   String get sUnitLabel => units == Units.inch ? "in^3" : "mm^3";
   String get rUnitLabel => units == Units.inch ? "in" : "mm";
 
+  SectionIUnits _toStoreUnits(Units u) {
+  switch (u) {
+    case Units.inch:
+      return SectionIUnits.inch;
+    case Units.mm:
+      return SectionIUnits.mm;
+  }
+}
+
+void _storeCurrent(
+  BuildContext context, {
+  required double? area,
+  required double? ix,
+  required double? iy,
+  required double? sx,
+  required double? sy,
+  required double? rx,
+  required double? ry,
+}) {
+  // Don’t store partial/invalid results
+  if (area == null || ix == null || iy == null || sx == null || sy == null || rx == null || ry == null) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text("Nothing to store yet — enter valid dimensions.")),
+    );
+    return;
+  }
+
+  lastSectionProps.value = SectionProps(
+    area: area,
+    ix: ix,
+    iy: iy,
+    sx: sx,
+    sy: sy,
+    rx: rx,
+    ry: ry,
+    units: _toStoreUnits(units),
+  );
+
+  ScaffoldMessenger.of(context).showSnackBar(
+    const SnackBar(content: Text("Stored section properties.")),
+  );
+}
+
   @override
   Widget build(BuildContext context) {
     final accent = Theme.of(context).colorScheme.primary;
@@ -256,11 +299,11 @@ class _SectionIPageState extends State<SectionIPage> {
                 "ry: ${ry == null ? '—' : ry.toStringAsFixed(6)} $rUnitLabel",
               ],
             ),
-            const SizedBox(height: 14),
+ const SizedBox(height: 14),
 
 OutlinedButton(
-  onPressed: () => _storeSection(
-    context: context,
+  onPressed: () => _storeCurrent(
+    context,
     area: area,
     ix: ix,
     iy: iy,
@@ -420,4 +463,5 @@ OutlinedButton(
     }
   }
 }
+
 
