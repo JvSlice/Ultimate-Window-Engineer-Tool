@@ -5,7 +5,6 @@ import '../../widgets/terminal_fields.dart';
 import 'section_props_store.dart';
 
 enum Units { inch, mm }
-
 enum SectionShape { rect, rectTube, circle, pipe }
 
 class SectionIPage extends StatefulWidget {
@@ -20,23 +19,26 @@ class _SectionIPageState extends State<SectionIPage> {
   SectionShape shape = SectionShape.rect;
 
   // Inputs (meaning changes by shape)
-  final bCtrl = TextEditingController(text: "2.0"); // width / OD
+  final bCtrl = TextEditingController(text: "2.0"); // width / OD / diameter
   final hCtrl = TextEditingController(text: "1.0"); // height / ID
   final tCtrl = TextEditingController(text: "0.125"); // wall thickness (tube)
 
+  // Stored results (so we can calculate on-demand)
+  double? _area;
+  double? _ix;
+  double? _iy;
+  double? _sx;
+  double? _sy;
+  double? _rx;
+  double? _ry;
+  String _formulaText = "";
+
   double? _p(TextEditingController c) => double.tryParse(c.text.trim());
-  double _convertVal(double v, double factor) => v * factor;
 
-  void _convertInputs(double factor) {
-    void conv(TextEditingController c) {
-      final v = double.tryParse(c.text.trim());
-      if (v == null) return;
-      c.text = _convertVal(v, factor).toStringAsFixed(4);
-    }
-
-    conv(bCtrl);
-    conv(hCtrl);
-    conv(tCtrl);
+  @override
+  void initState() {
+    super.initState();
+    _calculate(); // optional: pre-calc once on load
   }
 
   @override
@@ -53,70 +55,21 @@ class _SectionIPageState extends State<SectionIPage> {
   String get sUnitLabel => units == Units.inch ? "in^3" : "mm^3";
   String get rUnitLabel => units == Units.inch ? "in" : "mm";
 
-  SectionIUnits _toStoreUnits(Units u) {
-  switch (u) {
-    case Units.inch:
-      return SectionIUnits.inch;
-    case Units.mm:
-      return SectionIUnits.mm;
-  }
-}
+  SectionIUnits _storeUnits() =>
+      units == Units.inch ? SectionIUnits.inch : SectionIUnits.mm;
 
-void _storeCurrent(
-  BuildContext context, {
-  required double? area,
-  required double? ix,
-  required double? iy,
-  required double? sx,
-  required double? sy,
-  required double? rx,
-  required double? ry,
-}) {
-  // Don’t store partial/invalid results
-  if (area == null || ix == null || iy == null || sx == null || sy == null || rx == null || ry == null) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text("Nothing to store yet — enter valid dimensions.")),
-    );
-    return;
-  }
-
-  lastSectionProps.value = SectionProps(
-    area: area,
-    ix: ix,
-    iy: iy,
-    sx: sx,
-    sy: sy,
-    rx: rx,
-    ry: ry,
-    units: _toStoreUnits(units),
-  );
-
-  ScaffoldMessenger.of(context).showSnackBar(
-    const SnackBar(content: Text("Stored section properties.")),
-  );
-}
-
-  @override
-  Widget build(BuildContext context) {
-    final accent = Theme.of(context).colorScheme.primary;
-
-    // Read inputs
+  void _calculate() {
     final b = _p(bCtrl);
     final h = _p(hCtrl);
     final t = _p(tCtrl);
 
-    // Results
     double? area;
     double? ix;
     double? iy;
-
     String formulaText = "";
 
     if (shape == SectionShape.rect) {
-      // Rectangle (b = width, h = height)
-      // Ix = b*h^3/12
-      // Iy = h*b^3/12
-      if (b != null && h != null) {
+      if (b != null && h != null && b > 0 && h > 0) {
         area = b * h;
         ix = b * pow(h, 3) / 12.0;
         iy = h * pow(b, 3) / 12.0;
@@ -129,11 +82,7 @@ void _storeCurrent(
     }
 
     if (shape == SectionShape.rectTube) {
-      // Hollow rectangle: outer b,h and thickness t
-      // Inner dims: bi=b-2t, hi=h-2t
-      // Ix = (b*h^3 - bi*hi^3)/12
-      // Iy = (h*b^3 - hi*bi^3)/12
-      if (b != null && h != null && t != null) {
+      if (b != null && h != null && t != null && b > 0 && h > 0 && t > 0) {
         final bi = b - 2 * t;
         final hi = h - 2 * t;
         if (bi > 0 && hi > 0) {
@@ -151,10 +100,8 @@ void _storeCurrent(
     }
 
     if (shape == SectionShape.circle) {
-      // Solid circle: use b as diameter (D)
-      // A = πD^2/4
-      // I = πD^4/64 (same for x and y)
-      if (b != null) {
+      // Use b as Diameter D
+      if (b != null && b > 0) {
         final d = b;
         area = pi * d * d / 4.0;
         ix = pi * pow(d, 4) / 64.0;
@@ -167,13 +114,11 @@ void _storeCurrent(
     }
 
     if (shape == SectionShape.pipe) {
-      // Pipe: OD=b, ID=h
-      // A = π(OD^2 - ID^2)/4
-      // I = π(OD^4 - ID^4)/64
-      if (b != null && h != null) {
+      // OD=b, ID=h
+      if (b != null && h != null && b > 0 && h >= 0) {
         final od = b;
         final id = h;
-        if (id >= 0 && id < od) {
+        if (id < od) {
           area = pi * (od * od - id * id) / 4.0;
           ix = pi * (pow(od, 4) - pow(id, 4)) / 64.0;
           iy = ix;
@@ -184,28 +129,24 @@ void _storeCurrent(
           "A = π(OD^2 - ID^2) / 4\n"
           "I = π(OD^4 - ID^4) / 64";
     }
+
+    // Section modulus + radius of gyration
     double? sx;
     double? sy;
     double? rx;
     double? ry;
 
-    double? cX; // for Sx (uses height)
-    double? cY; // for Sy (uses width)
+    double? cX; // for Sx (uses height or diameter)
+    double? cY; // for Sy (uses width or diameter)
 
-    // Determine c distances based on current shape outer dims
     if (shape == SectionShape.rect || shape == SectionShape.rectTube) {
       if (h != null && b != null && h > 0 && b > 0) {
         cX = h / 2.0;
         cY = b / 2.0;
       }
-    } else if (shape == SectionShape.circle) {
+    } else if (shape == SectionShape.circle || shape == SectionShape.pipe) {
       if (b != null && b > 0) {
-        cX = b / 2.0;
-        cY = b / 2.0;
-      }
-    } else if (shape == SectionShape.pipe) {
-      if (b != null && b > 0) {
-        cX = b / 2.0; // OD/2
+        cX = b / 2.0; // OD/2 for pipe, D/2 for circle
         cY = b / 2.0;
       }
     }
@@ -215,12 +156,61 @@ void _storeCurrent(
         ix != null &&
         iy != null &&
         cX != null &&
-        cY != null) {
+        cY != null &&
+        cX > 0 &&
+        cY > 0) {
       sx = ix / cX;
       sy = iy / cY;
       rx = sqrt(ix / area);
       ry = sqrt(iy / area);
     }
+
+    setState(() {
+      _area = area;
+      _ix = ix;
+      _iy = iy;
+      _sx = sx;
+      _sy = sy;
+      _rx = rx;
+      _ry = ry;
+      _formulaText = formulaText;
+    });
+  }
+
+  void _storeSection() {
+    // Must have a valid calc first
+    if (_area == null ||
+        _ix == null ||
+        _iy == null ||
+        _sx == null ||
+        _sy == null ||
+        _rx == null ||
+        _ry == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Nothing to store yet — press Calculate.")),
+      );
+      return;
+    }
+
+    lastSectionProps.value = SectionProps(
+      area: _area!,
+      ix: _ix!,
+      iy: _iy!,
+      sx: _sx!,
+      sy: _sy!,
+      rx: _rx!,
+      ry: _ry!,
+      units: _storeUnits(),
+    );
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text("Stored section properties.")),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final accent = Theme.of(context).colorScheme.primary;
 
     return TerminalScaffold(
       title: "Section Properties (I)",
@@ -276,7 +266,7 @@ void _storeCurrent(
             const SizedBox(height: 18),
 
             Text(
-              formulaText,
+              _formulaText,
               style: TextStyle(color: accent.withValues(alpha: 0.75)),
             ),
 
@@ -290,102 +280,48 @@ void _storeCurrent(
             terminalResultCard(
               accent: accent,
               lines: [
-                "Area (A): ${area == null ? '—' : area.toStringAsFixed(6)} $aUnitLabel",
-                "Ix: ${ix == null ? '—' : ix.toStringAsFixed(6)} $iUnitLabel",
-                "Iy: ${iy == null ? '—' : iy.toStringAsFixed(6)} $iUnitLabel",
-                "Sx: ${sx == null ? '—' : sx.toStringAsFixed(6)} $sUnitLabel",
-                "Sy: ${sy == null ? '—' : sy.toStringAsFixed(6)} $sUnitLabel",
-                "rx: ${rx == null ? '—' : rx.toStringAsFixed(6)} $rUnitLabel",
-                "ry: ${ry == null ? '—' : ry.toStringAsFixed(6)} $rUnitLabel",
+                "Area (A): ${_area == null ? '—' : _area!.toStringAsFixed(6)} $aUnitLabel",
+                "Ix: ${_ix == null ? '—' : _ix!.toStringAsFixed(6)} $iUnitLabel",
+                "Iy: ${_iy == null ? '—' : _iy!.toStringAsFixed(6)} $iUnitLabel",
+                "Sx: ${_sx == null ? '—' : _sx!.toStringAsFixed(6)} $sUnitLabel",
+                "Sy: ${_sy == null ? '—' : _sy!.toStringAsFixed(6)} $sUnitLabel",
+                "rx: ${_rx == null ? '—' : _rx!.toStringAsFixed(6)} $rUnitLabel",
+                "ry: ${_ry == null ? '—' : _ry!.toStringAsFixed(6)} $rUnitLabel",
               ],
             ),
- const SizedBox(height: 14),
 
-OutlinedButton(
-  onPressed: () => _storeCurrent(
-    context,
-    area: area,
-    ix: ix,
-    iy: iy,
-    sx: sx,
-    sy: sy,
-    rx: rx,
-    ry: ry,
-  ),
-  style: OutlinedButton.styleFrom(
-    side: BorderSide(color: accent, width: 2),
-    foregroundColor: accent,
-    padding: const EdgeInsets.symmetric(vertical: 14),
-  ).copyWith(
-    overlayColor: WidgetStateProperty.all(accent.withValues(alpha: 0.08)),
-  ),
-  child: const Text("STORE I-VALUE"),
-),
+            const SizedBox(height: 12),
+
+            Row(
+              children: [
+                Expanded(
+                  child: OutlinedButton.icon(
+                    onPressed: _calculate,
+                    icon: Icon(Icons.calculate, color: accent),
+                    label: Text("Calculate", style: TextStyle(color: accent)),
+                    style: OutlinedButton.styleFrom(
+                      side: BorderSide(color: accent, width: 2),
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: OutlinedButton.icon(
+                    onPressed: _storeSection,
+                    icon: Icon(Icons.save, color: accent),
+                    label: Text("Store", style: TextStyle(color: accent)),
+                    style: OutlinedButton.styleFrom(
+                      side: BorderSide(color: accent, width: 2),
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ],
         ),
       ),
     );
   }
-
-  void _storeSection({
-  required BuildContext context,
-  required double? area,
-  required double? ix,
-  required double? iy,
-  required double? sx,
-  required double? sy,
-  required double? rx,
-  required double? ry,
-}) {
-  // Don’t store junk if not solved yet
-  if (area == null || ix == null || iy == null) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text("Enter valid dimensions first.")),
-    );
-    return;
-  }
-
-void _storeSection({
-  required Color accent,
-  required double? area,
-  required double? ix,
-  required double? iy,
-  required double? sx,
-  required double? sy,
-  required double? rx,
-  required double? ry,
-}) {
-  // Only store when everything exists
-  if (area == null ||
-      ix == null ||
-      iy == null ||
-      sx == null ||
-      sy == null ||
-      rx == null ||
-      ry == null) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text("Nothing to store yet — enter valid inputs.")),
-    );
-    return;
-  }
-
-  lastSectionProps.value = SectionProps(
-    area: area,
-    ix: ix,
-    iy: iy,
-    sx: sx,
-    sy: sy,
-    rx: rx,
-    ry: ry,
-    units: units == Units.inch ? SectionIUnits.inch : SectionIUnits.mm,
-  );
-
-  ScaffoldMessenger.of(context).showSnackBar(
-    const SnackBar(content: Text("Stored section properties.")),
-  );
-}
-
-  }// i think this needs deleted
 
   Widget _shapeChip(Color accent, String label, SectionShape s) {
     final selected = shape == s;
@@ -393,12 +329,14 @@ void _storeSection({
       width: 140,
       height: 44,
       child: OutlinedButton(
-        onPressed: () => setState(() => shape = s),
+        onPressed: () {
+          setState(() => shape = s);
+          _calculate(); // recalc using new shape
+        },
         style: OutlinedButton.styleFrom(
           side: BorderSide(color: accent, width: 2),
-          backgroundColor: selected
-              ? accent.withValues(alpha: 0.80)
-              : Colors.transparent,
+          backgroundColor:
+              selected ? accent.withValues(alpha: 0.80) : Colors.transparent,
         ),
         child: Text(
           label,
@@ -409,7 +347,6 @@ void _storeSection({
   }
 
   List<Widget> _buildInputs(Color accent) {
-    // For your terminalNumberField helper (same one you used elsewhere)
     switch (shape) {
       case SectionShape.rect:
         return [
@@ -481,6 +418,3 @@ void _storeSection({
     }
   }
 }
-
-
-
