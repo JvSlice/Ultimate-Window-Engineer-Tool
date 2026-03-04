@@ -2,6 +2,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import '../../terminal_scaffold.dart';
 import '../../widgets/terminal_fields.dart';
+import '../../widgets/calc_button.dart';
 
 class RightTrianglePage extends StatefulWidget {
   const RightTrianglePage({super.key});
@@ -14,7 +15,29 @@ class _RightTrianglePageState extends State<RightTrianglePage> {
   final aCtrl = TextEditingController(text: "3");
   final bCtrl = TextEditingController(text: "4");
 
+  double? c;
+  double? angleA;
+  double? angleB;
+
   double? _p(TextEditingController c) => double.tryParse(c.text.trim());
+
+  void _calculate() {
+    final a = _p(aCtrl);
+    final b = _p(bCtrl);
+
+    setState(() {
+      if (a == null || b == null || a <= 0 || b <= 0) {
+        c = null;
+        angleA = null;
+        angleB = null;
+      } else {
+        c = sqrt(a * a + b * b);
+        // angles in degrees
+        angleA = atan2(a, b) * 180.0 / pi; // opposite=a, adjacent=b
+        angleB = atan2(b, a) * 180.0 / pi; // opposite=b, adjacent=a
+      }
+    });
+  }
 
   @override
   void dispose() {
@@ -26,12 +49,6 @@ class _RightTrianglePageState extends State<RightTrianglePage> {
   @override
   Widget build(BuildContext context) {
     final accent = Theme.of(context).colorScheme.primary;
-    final a = _p(aCtrl);
-    final b = _p(bCtrl);
-
-    final c = (a == null || b == null) ? null : sqrt(a * a + b * b);
-    final angleA = (a == null || b == null) ? null : (atan2(a, b) * 180 / pi);
-    final angleB = (a == null || b == null) ? null : (atan2(b, a) * 180 / pi);
 
     return TerminalScaffold(
       title: "Right Triangle",
@@ -40,20 +57,46 @@ class _RightTrianglePageState extends State<RightTrianglePage> {
         child: ListView(
           children: [
             Text(
-              "Formulas:\nC = √(a² + b²)\nθ = atan(opposite/adjacent)",
+              "Formulas:\n"
+              "c = √(a² + b²)\n"
+              "A = atan(a / b)\n"
+              "B = atan(b / a)\n"
+              "(angles in degrees)",
               style: TextStyle(color: accent.withValues(alpha: 0.75)),
             ),
             const SizedBox(height: 16),
-            terminalNumberField(accent: accent, label: "Leg a", hint: "units", controller: aCtrl),
+
+            terminalNumberField(
+              accent: accent,
+              label: "Leg a",
+              hint: "units",
+              controller: aCtrl,
+            ),
             const SizedBox(height: 12),
-            terminalNumberField(accent: accent, label: "Leg b", hint: "units", controller: bCtrl),
+
+            terminalNumberField(
+              accent: accent,
+              label: "Leg b",
+              hint: "units",
+              controller: bCtrl,
+            ),
+            const SizedBox(height: 16),
+
+            SizedBox(
+              width: double.infinity,
+              child: terminalCalcButton(
+                accent: accent,
+                onPressed: _calculate,
+              ),
+            ),
             const SizedBox(height: 18),
+
             terminalResultCard(
               accent: accent,
               lines: [
-                if (c == null) "Hypotenuse (c): —" else "Hypotenuse (c): ${c.toStringAsFixed(4)}",
-                if (angleA == null) "Angle A: —" else "Angle A: ${angleA.toStringAsFixed(2)}°",
-                if (angleB == null) "Angle B: —" else "Angle B: ${angleB.toStringAsFixed(2)}°",
+                "Hypotenuse (c): ${c == null ? '—' : c!.toStringAsFixed(4)}",
+                "Angle A: ${angleA == null ? '—' : '${angleA!.toStringAsFixed(2)}°'}",
+                "Angle B: ${angleB == null ? '—' : '${angleB!.toStringAsFixed(2)}°'}",
               ],
             ),
           ],
