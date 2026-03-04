@@ -2,6 +2,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import '../../terminal_scaffold.dart';
 import '../../widgets/terminal_fields.dart';
+import '../../widgets/calc_button.dart';
 
 class PipePage extends StatefulWidget {
   const PipePage({super.key});
@@ -15,7 +16,39 @@ class _PipePageState extends State<PipePage> {
   final idCtrl = TextEditingController(text: "1.5");
   final lenCtrl = TextEditingController(text: "12.0");
 
+  double? area;
+  double? volume;
+  String? warning;
+
   double? _p(TextEditingController c) => double.tryParse(c.text.trim());
+
+  void _calculate() {
+    final od = _p(odCtrl);
+    final id = _p(idCtrl);
+    final len = _p(lenCtrl);
+
+    setState(() {
+      area = null;
+      volume = null;
+      warning = null;
+
+      if (od == null || id == null) return;
+
+      if (id > od) {
+        warning = "ID must be ≤ OD";
+        return;
+      }
+
+      final ro = od / 2.0;
+      final ri = id / 2.0;
+
+      area = pi * (ro * ro - ri * ri);
+
+      if (len != null) {
+        volume = area! * len;
+      }
+    });
+  }
 
   @override
   void dispose() {
@@ -28,24 +61,6 @@ class _PipePageState extends State<PipePage> {
   @override
   Widget build(BuildContext context) {
     final accent = Theme.of(context).colorScheme.primary;
-    final od = _p(odCtrl);
-    final id = _p(idCtrl);
-    final len = _p(lenCtrl);
-
-    double? area;
-    double? vol;
-    String? warning;
-
-    if (od != null && id != null) {
-      if (id > od) {
-        warning = "ID must be ≤ OD";
-      } else {
-        final ro = od / 2.0;
-        final ri = id / 2.0;
-        area = pi * (ro * ro - ri * ri); // cross-section area
-        if (len != null) vol = area * len;
-      }
-    }
 
     return TerminalScaffold(
       title: "Pipe / Tube",
@@ -57,20 +72,60 @@ class _PipePageState extends State<PipePage> {
               "Formulas:\nA = π(Ro² − Ri²)\nV = A × L",
               style: TextStyle(color: accent.withValues(alpha: 0.75)),
             ),
+
             const SizedBox(height: 16),
-            terminalNumberField(accent: accent, label: "OD", hint: "units", controller: odCtrl),
+
+            terminalNumberField(
+              accent: accent,
+              label: "OD",
+              hint: "units",
+              controller: odCtrl,
+            ),
+
             const SizedBox(height: 12),
-            terminalNumberField(accent: accent, label: "ID", hint: "units", controller: idCtrl),
+
+            terminalNumberField(
+              accent: accent,
+              label: "ID",
+              hint: "units",
+              controller: idCtrl,
+            ),
+
             const SizedBox(height: 12),
-            terminalNumberField(accent: accent, label: "Length (L)", hint: "units", controller: lenCtrl),
+
+            terminalNumberField(
+              accent: accent,
+              label: "Length (L)",
+              hint: "units",
+              controller: lenCtrl,
+            ),
+
+            const SizedBox(height: 16),
+
+            SizedBox(
+              width: double.infinity,
+              child: terminalCalcButton(
+                accent: accent,
+                onPressed: _calculate,
+              ),
+            ),
+
             const SizedBox(height: 18),
+
             if (warning != null)
-              Text(warning!, style: TextStyle(color: accent.withValues(alpha: 0.85))),
+              Padding(
+                padding: const EdgeInsets.only(bottom: 10),
+                child: Text(
+                  warning!,
+                  style: TextStyle(color: accent.withValues(alpha: 0.85)),
+                ),
+              ),
+
             terminalResultCard(
               accent: accent,
               lines: [
-                if (area == null) "Area (A): —" else "Area (A): ${area.toStringAsFixed(4)}",
-                if (vol == null) "Volume (V): —" else "Volume (V): ${vol.toStringAsFixed(4)}",
+                "Area (A): ${area == null ? '—' : area!.toStringAsFixed(4)}",
+                "Volume (V): ${volume == null ? '—' : volume!.toStringAsFixed(4)}",
               ],
             ),
           ],
