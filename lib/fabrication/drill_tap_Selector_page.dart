@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'dart:math';
 import 'package:ultimate_window_engineer_tool/drill_index_data.dart';
 import '../terminal_scaffold.dart';
 import 'thread_data.dart';
@@ -6,7 +7,7 @@ import 'tap_drill_calc.dart';
 
 enum DrillTapMode { tapDrill, clearnace }
 
-enum ClearanceFit { cose, normal, loose }
+enum ClearanceFit { close, normal, loose }
 
 class DrillTapSelectorPage extends StatefulWidget {
   const DrillTapSelectorPage({super.key});
@@ -296,13 +297,19 @@ Set<DrillKind> allowedKindsForThread(ThreadSpec t) {
   }
 }
 
-double clearanceDecimalInches(ThreadSpec t, ClearanceFit) {
-  final d = t.majorDiaIn;
-  final add = swith (fit){
+double clearanceDecimalInches(ThreadSpec t, ClearanceFit fit) {
+  final d = t.major;
+  
+  final add = switch (fit) {
     ClearanceFit.close => 0.010,
-    ClearanceFit.nomral => 0.020,
+    ClearanceFit.normal => 0.020,
     ClearanceFit.loose => 0.030,
   };
-  final bump = max(add, d* pct);
+  final pct = switch (fit) {
+    ClearanceFit.close => 0.03,
+    ClearanceFit.normal => 0.05,
+    ClearanceFit.loose => 0.08,
+  };
+  final bump = max(add, d * pct);
   return d + bump;
 }
