@@ -23,7 +23,7 @@ class _CirclePageState extends State<CirclePage> {
     final r = _p(rCtrl);
 
     setState(() {
-      if (r == null) {
+      if (r == null || r <= 0) {
         area = null;
         circ = null;
       } else {
@@ -49,11 +49,21 @@ class _CirclePageState extends State<CirclePage> {
         padding: const EdgeInsets.all(16),
         child: ListView(
           children: [
+            // DEBUG STAMP (leave it for now so you can confirm you're on the right file)
+            Text(
+              "CIRCLE PAGE v3",
+              style: TextStyle(
+                color: accent,
+                fontWeight: FontWeight.w800,
+                letterSpacing: 1.1,
+              ),
+            ),
+            const SizedBox(height: 12),
+
             Text(
               "Formulas:\nA = πr²\nC = 2πr",
               style: TextStyle(color: accent.withValues(alpha: 0.75)),
             ),
-
             const SizedBox(height: 16),
 
             terminalNumberField(
@@ -62,14 +72,16 @@ class _CirclePageState extends State<CirclePage> {
               hint: "units",
               controller: rCtrl,
             ),
-
             const SizedBox(height: 16),
 
-            terminalCalcButton(
-              accent: accent,
-              onPressed: _calculate,
+            // Force full-width so it can't disappear due to layout sizing
+            SizedBox(
+              width: double.infinity,
+              child: terminalCalcButton(
+                accent: accent,
+                onPressed: _calculate,
+              ),
             ),
-
             const SizedBox(height: 18),
 
             terminalResultCard(
