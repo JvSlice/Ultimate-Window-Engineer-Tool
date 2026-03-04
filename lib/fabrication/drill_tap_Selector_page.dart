@@ -4,6 +4,10 @@ import '../terminal_scaffold.dart';
 import 'thread_data.dart';
 import 'tap_drill_calc.dart';
 
+enum DrillTapMode { tapDrill, clearnace }
+
+enum ClearanceFit { cose, normal, loose }
+
 class DrillTapSelectorPage extends StatefulWidget {
   const DrillTapSelectorPage({super.key});
 
@@ -16,6 +20,8 @@ class _DrillTapSelectorPageState extends State<DrillTapSelectorPage> {
   double engagement = 0.75;
 
   ThreadSpec? selectedThread;
+  DrillTapMode mode = DrillTapMode.tapDrill;
+  ClearanceFit fit = ClearanceFit.normal;
 
   @override
   Widget build(BuildContext context) {
@@ -29,29 +35,28 @@ class _DrillTapSelectorPageState extends State<DrillTapSelectorPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // system selector
+            const SizedBox(height: 16),
+            // mode selector
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: ThreadSystem.values.map((s) {
-                final selected = system == s;
+              children: DrillTapMode.values.map((m) {
+                final selected = mode == m;
                 return Expanded(
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 4),
                     child: OutlinedButton(
                       onPressed: () {
                         setState(() {
-                          system = s;
-                          selectedThread = null;
+                          mode = m;
                         });
                       },
                       style: OutlinedButton.styleFrom(
                         side: BorderSide(color: accent, width: 2),
                         backgroundColor: selected
-                            ? accent.withValues(alpha: 0.80)
+                            ? accent.withValues(alpha: 0.8)
                             : Colors.transparent,
                       ),
                       child: Text(
-                        s.name.toUpperCase(),
+                        m == DrillTapMode.tapDrill ? "Tap Drill" : "Clearance",
                         style: TextStyle(color: accent),
                       ),
                     ),
@@ -59,55 +64,117 @@ class _DrillTapSelectorPageState extends State<DrillTapSelectorPage> {
                 );
               }).toList(),
             ),
+            const SizedBox(height: 12),
+            // if selector only show clearance
+            if (mode == DrillTapMode.clearnace)
+              Row(
+                children: ClearanceFit.values.map((f) {
+                  final selected = fit == f;
+                  return Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 4),
+                      child: OutlinedButton(
+                        onPressed: () {
+                          setState(() {
+                            fit = f;
+                          });
+                        },
+                        style: OutlinedButton.styleFrom(
+                          side: BorderSide(color: accent, width: 2),
+                          backgroundColor: selected
+                              ? accent.withValues(alpha: 0.80)
+                              : Colors.transparent,
+                        ),
+                        child: Text(
+                          f.name.toUpperCase(),
+                          style: TextStyle(
+                            color: accent.withValues(alpha: 0.90),
+                          ),
+                        ),
+                      ),
+                    ),
+                  );
+                }).toList(),
+              ),
+            // system selector
+            if (mode == DrillTapMode.tapDrill) ...[
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: ThreadSystem.values.map((s) {
+                  final selected = system == s;
+                  return Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 4),
+                      child: OutlinedButton(
+                        onPressed: () {
+                          setState(() {
+                            system = s;
+                            selectedThread = null;
+                          });
+                        },
+                        style: OutlinedButton.styleFrom(
+                          side: BorderSide(color: accent, width: 2),
+                          backgroundColor: selected
+                              ? accent.withValues(alpha: 0.80)
+                              : Colors.transparent,
+                        ),
+                        child: Text(
+                          s.name.toUpperCase(),
+                          style: TextStyle(color: accent),
+                        ),
+                      ),
+                    ),
+                  );
+                }).toList(),
+              ),
+              const SizedBox(height: 32),
+            ],
             const SizedBox(height: 24),
             // thread dropdown
             Container(
-  padding: const EdgeInsets.symmetric(horizontal: 12),
-  decoration: BoxDecoration(
-    borderRadius: BorderRadius.circular(10),
-    border: Border.all(color: accent, width: 2),
-    boxShadow: [
-      BoxShadow(
-        color: accent.withValues(alpha: 0.35),
-        blurRadius: 12,
-        spreadRadius: 1,
-      ),
-    ],
-  ),
-  child: DropdownButton<ThreadSpec>(
-    value: selectedThread,
-    isExpanded: true,
-    dropdownColor: Colors.black, // black popup background
-    iconEnabledColor: accent,
-    underline: const SizedBox(),
+              padding: const EdgeInsets.symmetric(horizontal: 12),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+                border: Border.all(color: accent, width: 2),
+                boxShadow: [
+                  BoxShadow(
+                    color: accent.withValues(alpha: 0.35),
+                    blurRadius: 12,
+                    spreadRadius: 1,
+                  ),
+                ],
+              ),
+              child: DropdownButton<ThreadSpec>(
+                value: selectedThread,
+                isExpanded: true,
+                dropdownColor: Colors.black, // black popup background
+                iconEnabledColor: accent,
+                underline: const SizedBox(),
 
-    hint: Text(
-      'Select Thread Size',
-      style: TextStyle(color: accent),
-    ),
+                hint: Text(
+                  'Select Thread Size',
+                  style: TextStyle(color: accent),
+                ),
 
-    style: TextStyle(color: accent), // selected value color
+                style: TextStyle(color: accent), // selected value color
 
-    items: _threadsForSystem(system)
-        .map(
-          (t) => DropdownMenuItem<ThreadSpec>(
-            value: t,
-            child: Text(
-              t.label,
-              style: TextStyle(color: accent),
+                items: _threadsForSystem(system)
+                    .map(
+                      (t) => DropdownMenuItem<ThreadSpec>(
+                        value: t,
+                        child: Text(t.label, style: TextStyle(color: accent)),
+                      ),
+                    )
+                    .toList(),
+
+                onChanged: (value) {
+                  setState(() {
+                    selectedThread = value;
+                  });
+                },
+              ),
             ),
-          ),
-        )
-        .toList(),
 
-    onChanged: (value) {
-      setState(() {
-        selectedThread = value;
-      });
-    },
-  ),
-),
-       
             //Engagement Selector
             Row(
               children: [0.75, 0.65, 0.50].map((e) {
@@ -159,7 +226,9 @@ class _DrillTapSelectorPageState extends State<DrillTapSelectorPage> {
   Widget _buildResult(Color accent) {
     final t = selectedThread;
     if (t == null) return const SizedBox.shrink();
-    final targetIn = tapDrillDecimalInches(t, engagement);
+    final targetIn = (mode == DrillTapMode.tapDrill)
+        ? tapDrillDecimalInches(t, engagement)
+        : clearanceDecimalInches(t, fit);
 
     final drill = _closestDrill(
       targetIn,
@@ -225,4 +294,15 @@ Set<DrillKind> allowedKindsForThread(ThreadSpec t) {
         DrillKind.number,
       };
   }
+}
+
+double clearanceDecimalInches(ThreadSpec t, ClearanceFit) {
+  final d = t.majorDiaIn;
+  final add = swith (fit){
+    ClearanceFit.close => 0.010,
+    ClearanceFit.nomral => 0.020,
+    ClearanceFit.loose => 0.030,
+  };
+  final bump = max(add, d* pct);
+  return d + bump;
 }
