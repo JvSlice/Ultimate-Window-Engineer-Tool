@@ -83,7 +83,7 @@ class _FabricateItBody extends StatelessWidget {
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (_) => const WeldIt()),
+                    MaterialPageRoute(builder: (_) => const WeldItPage()),
                   );
                 },
               ),
