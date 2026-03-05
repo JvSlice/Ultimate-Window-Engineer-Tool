@@ -24,14 +24,19 @@ class PhysicsEquationsPage extends StatelessWidget {
         height: size.height * 0.10,
         child: OutlinedButton(
           onPressed: onPressed,
-          style: OutlinedButton.styleFrom(
-            foregroundColor: accent,
-            side: BorderSide(color: accent, width: 2),
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-            padding: EdgeInsets.zero,
-          ).copyWith(
-            overlayColor: WidgetStateProperty.all(accent.withValues(alpha: 0.08)),
-          ),
+          style:
+              OutlinedButton.styleFrom(
+                foregroundColor: accent,
+                side: BorderSide(color: accent, width: 2),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                padding: EdgeInsets.zero,
+              ).copyWith(
+                overlayColor: WidgetStateProperty.all(
+                  accent.withValues(alpha: 0.08),
+                ),
+              ),
           child: Text(
             label,
             style: TextStyle(
@@ -51,15 +56,27 @@ class PhysicsEquationsPage extends StatelessWidget {
         padding: const EdgeInsets.all(16),
         child: Column(
           children: [
-            terminalButton("Torque & Power", () => _open(context, const TorquePowerPage())),
+            terminalButton(
+              "Torque & Power",
+              () => _open(context, const TorquePowerPage()),
+            ),
             const SizedBox(height: 14),
-            terminalButton("Cantilever Beam", () => _open(context, const CantileverBeamPage())),
+            terminalButton(
+              "Cantilever Beam",
+              () => _open(context, const CantileverBeamPage()),
+            ),
             const SizedBox(height: 14),
-            terminalButton("Pulleys (Coming Soon)", () => _open(context, const PulleyPage())),
+            terminalButton("Pulleys", () => _open(context, const PulleyPage())),
             const SizedBox(height: 14),
-            terminalButton("Velocity & Accel (Coming Soon)", () => _open(context, const VelocityAccelPage())),
+            terminalButton(
+              "Velocity & Accel",
+              () => _open(context, const VelocityAccelPage()),
+            ),
             const SizedBox(height: 14),
-            terminalButton("Section Properties (I)", () => _open(context, const SectionIPage())),
+            terminalButton(
+              "Section Properties (I)",
+              () => _open(context, const SectionIPage()),
+            ),
             const SizedBox(height: 14),
           ],
         ),
@@ -67,4 +84,3 @@ class PhysicsEquationsPage extends StatelessWidget {
     );
   }
 }
-

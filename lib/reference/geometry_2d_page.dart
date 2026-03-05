@@ -72,7 +72,7 @@ class Geometry2DPage extends StatelessWidget {
               () => _open(context, const RightTrianglePage()),
             ),
             const SizedBox(height: 14,),
-            terminalButton("4) Triangle Slover", () => _open(context, const TriangleSolverPage()),
+            terminalButton("4) Triangle Solver", () => _open(context, const TriangleSolverPage()),
             ),
             const SizedBox(height: 14),
             terminalButton(
