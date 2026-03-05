@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:ultimate_window_engineer_tool/fabrication/drill_tap_Selector_page.dart';
 import 'terminal_scaffold.dart';
 import 'fabrication/drill_index_page.dart';
+import 'fabrication/weld_it_page.dart';
 
 // import 'drill_tap_selector_page';
 import 'fabrication/speed_feed_page.dart';
@@ -80,10 +81,10 @@ class _FabricateItBody extends StatelessWidget {
                 label: "Weld It",
                 sublabel: "welding setting reference",
                 onPressed: () {
-                  //Naviagtor.push(
-                    //context,
-                    //MaterialPageRoute(builder: (_) => const WeldItPage()),
-                  //);
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => const WeldIt()),
+                  );
                 },
               ),
               const SizedBox (height: 12),
