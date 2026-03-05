@@ -73,6 +73,20 @@ class _FabricateItBody extends StatelessWidget {
                   );
                 },
               ),
+              const SizedBox(height: 12),
+
+              TerminalMenuButton(
+                accent: accent,
+                label: "Weld It",
+                sublabel: "welding setting reference",
+                onPressed: () {
+                  //Naviagtor.push(
+                    //context,
+                    //MaterialPageRoute(builder: (_) => const WeldItPage()),
+                  //);
+                },
+              ),
+              const SizedBox (height: 12),
 
               const Spacer(),
               Opacity(
