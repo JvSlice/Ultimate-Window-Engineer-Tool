@@ -3,7 +3,7 @@ import '../../terminal_scaffold.dart';
 import '../../widgets/terminal_fields.dart';
 import 'material_data.dart';
 import 'material_models.dart';
-import 'material_detail_page.dart';
+import 'material_details_page.dart';
 
 class MaterialReferencePage extends StatefulWidget {
   const MaterialReferencePage({super.key});

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import '../terminal_scaffold.dart';
 import 'physics_equations_page.dart';
 import 'geometry_page.dart';
-import 'material_properties_page.dart';
+import 'materials/material_reference_page.dart';
 
 class ReferenceHomePage extends StatelessWidget {
   const ReferenceHomePage({super.key});
@@ -59,7 +59,7 @@ class ReferenceHomePage extends StatelessWidget {
             }),
             const SizedBox(height: 14),
             terminalButton("Material Properties", () {
-              _open(context, const MaterialPropertiesPage());
+              _open(context, const MaterialReferencePage());
             }),
           ],
         ),
