@@ -29,6 +29,10 @@ class _StructuralTestMathPageState extends State<StructuralTestMathPage> {
   double? waterFromPsf;
   double? psfFromWater;
 
+  double? waterRaw;
+  double? waterPre22;
+  double? water2022;
+
   String? warning;
 
   double? _p(TextEditingController c) => double.tryParse(c.text.trim());
@@ -52,6 +56,9 @@ class _StructuralTestMathPageState extends State<StructuralTestMathPage> {
     final psf = _p(psfCtrl);
     final water = _p(waterPressureCtrl);
     final factor = _waterFactor();
+    waterRaw = null;
+    waterPre22 = null;
+    water2022 = null;
 
     setState(() {
       warning = null;
@@ -82,7 +89,10 @@ class _StructuralTestMathPageState extends State<StructuralTestMathPage> {
 
       // PSF -> Water
       if (psf != null) {
-        waterFromPsf = psf * factor;
+        waterRaw = psf * factor;
+
+        waterPre22 = waterRaw! > 12 ? 12 : waterRaw;
+        water2022 = waterRaw! > 15 ? 15 : waterRaw;
       }
 
       // Water -> PSF
@@ -95,10 +105,7 @@ class _StructuralTestMathPageState extends State<StructuralTestMathPage> {
       }
 
       final noInputs =
-          dp == null &&
-          overload == null &&
-          psf == null &&
-          water == null;
+          dp == null && overload == null && psf == null && water == null;
 
       if (noInputs) {
         warning = "Enter at least one value to calculate.";
@@ -106,11 +113,7 @@ class _StructuralTestMathPageState extends State<StructuralTestMathPage> {
     });
   }
 
-  Widget _factorButton(
-    Color accent,
-    String label,
-    WaterFactorMode mode,
-  ) {
+  Widget _factorButton(Color accent, String label, WaterFactorMode mode) {
     final selected = factorMode == mode;
 
     return Expanded(
@@ -128,10 +131,7 @@ class _StructuralTestMathPageState extends State<StructuralTestMathPage> {
         ),
         child: Text(
           label,
-          style: TextStyle(
-            color: accent,
-            fontWeight: FontWeight.w800,
-          ),
+          style: TextStyle(color: accent, fontWeight: FontWeight.w800),
         ),
       ),
     );
@@ -160,9 +160,7 @@ class _StructuralTestMathPageState extends State<StructuralTestMathPage> {
           children: [
             Text(
               "Quick math for design pressure, overload, and water test pressure.",
-              style: TextStyle(
-                color: accent.withValues(alpha: 0.75),
-              ),
+              style: TextStyle(color: accent.withValues(alpha: 0.75)),
             ),
             const SizedBox(height: 16),
 
@@ -178,9 +176,7 @@ class _StructuralTestMathPageState extends State<StructuralTestMathPage> {
 
             Text(
               "Overload = DP × 1.5\nDP = Overload ÷ 1.5",
-              style: TextStyle(
-                color: accent.withValues(alpha: 0.75),
-              ),
+              style: TextStyle(color: accent.withValues(alpha: 0.75)),
             ),
             const SizedBox(height: 14),
 
@@ -213,9 +209,7 @@ class _StructuralTestMathPageState extends State<StructuralTestMathPage> {
 
             Text(
               "Water pressure = PSF × factor\nPSF = Water pressure ÷ factor",
-              style: TextStyle(
-                color: accent.withValues(alpha: 0.75),
-              ),
+              style: TextStyle(color: accent.withValues(alpha: 0.75)),
             ),
             const SizedBox(height: 14),
 
@@ -259,10 +253,7 @@ class _StructuralTestMathPageState extends State<StructuralTestMathPage> {
 
             const SizedBox(height: 16),
 
-            terminalCalcButton(
-              accent: accent,
-              onPressed: _calculate,
-            ),
+            terminalCalcButton(accent: accent, onPressed: _calculate),
 
             const SizedBox(height: 18),
 
@@ -293,6 +284,8 @@ class _StructuralTestMathPageState extends State<StructuralTestMathPage> {
                 "Water factor: $factorPercent%",
                 "Water pressure from PSF: ${waterFromPsf == null ? '—' : waterFromPsf!.toStringAsFixed(3)}",
                 "PSF from water pressure: ${psfFromWater == null ? '—' : psfFromWater!.toStringAsFixed(3)}",
+                "Pre-2022 cap (12PSF): ${waterPre22 == null ? "-" : waterPre22!.toStringAsFixed(3)} psf",
+                "2022+ cap (15 psf): ${water2022 == null ? '-' : water2022!.toStringAsFixed(3)} PSF",
               ],
             ),
           ],
@@ -301,4 +294,3 @@ class _StructuralTestMathPageState extends State<StructuralTestMathPage> {
     );
   }
 }
-
