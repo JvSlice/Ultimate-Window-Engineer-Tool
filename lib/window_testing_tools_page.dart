@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import '../../terminal_scaffold.dart';
-import 'glass_deflection_page.dart';
-import 'structural_test_math_page.dart';
-import 'rating_reference_page.dart';
-import 'test_sequence_reference_page.dart';
+import '/window_testing_tools/glass_deflection_page.dart';
+import 'window_testing_tools/structural_test_math_page.dart';
+import '/window_testing_tools/rating_reference_page.dart';
+import 'window_testing_tools/test_sequence_reference_page.dart';
 
 class WindowTestingToolsPage extends StatelessWidget {
   const WindowTestingToolsPage({super.key});
