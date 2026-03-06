@@ -10,11 +10,16 @@ class MaterialDetailPage extends StatelessWidget {
 
   String _weldRatingText(WeldabilityRating r) {
     switch (r) {
-      case WeldabilityRating.excellent: return "Excellent";
-      case WeldabilityRating.good: return "Good";
-      case WeldabilityRating.fair: return "Fair";
-      case WeldabilityRating.poor: return "Poor";
-      case WeldabilityRating.notRecommended: return "Not recommended";
+      case WeldabilityRating.excellent:
+        return "Excellent";
+      case WeldabilityRating.good:
+        return "Good";
+      case WeldabilityRating.fair:
+        return "Fair";
+      case WeldabilityRating.poor:
+        return "Poor";
+      case WeldabilityRating.notRecommended:
+        return "Not recommended";
     }
   }
 
@@ -35,16 +40,25 @@ class MaterialDetailPage extends StatelessWidget {
       "• ${fmt3(lbFt3)} lb/ft³",
       "• ${fmt3(kgm3)} kg/m³",
     ];
+    if (material.melting != null) {
+      lines.add("");
+      lines.add("Melting:");
+      lines.add(" ${_fmtTemp(material.melting!)}");
+    }
 
     // Strength
     if (material.strength != null) {
       final s = material.strength!;
       lines.add("");
       lines.add("Strength:");
-      if (s.yieldPsi != null) lines.add("• Yield: ${s.yieldPsi!.toStringAsFixed(0)} psi");
-      if (s.tensilePsi != null) lines.add("• Tensile: ${s.tensilePsi!.toStringAsFixed(0)} psi");
-      if (s.yieldMpa != null) lines.add("• Yield: ${s.yieldMpa!.toStringAsFixed(0)} MPa");
-      if (s.tensileMpa != null) lines.add("• Tensile: ${s.tensileMpa!.toStringAsFixed(0)} MPa");
+      if (s.yieldPsi != null)
+        lines.add("• Yield: ${s.yieldPsi!.toStringAsFixed(0)} psi");
+      if (s.tensilePsi != null)
+        lines.add("• Tensile: ${s.tensilePsi!.toStringAsFixed(0)} psi");
+      if (s.yieldMpa != null)
+        lines.add("• Yield: ${s.yieldMpa!.toStringAsFixed(0)} MPa");
+      if (s.tensileMpa != null)
+        lines.add("• Tensile: ${s.tensileMpa!.toStringAsFixed(0)} MPa");
     }
 
     // Hardness
@@ -54,7 +68,9 @@ class MaterialDetailPage extends StatelessWidget {
       lines.add("Hardness:");
       final scale = h.scale ?? "";
       if (h.min != null && h.max != null) {
-        lines.add("• ${h.min!.toStringAsFixed(0)}–${h.max!.toStringAsFixed(0)} $scale");
+        lines.add(
+          "• ${h.min!.toStringAsFixed(0)}–${h.max!.toStringAsFixed(0)} $scale",
+        );
       } else {
         lines.add("• —");
       }
@@ -65,7 +81,8 @@ class MaterialDetailPage extends StatelessWidget {
       final m = material.machining!;
       lines.add("");
       lines.add("Machining:");
-      if (m.machinabilityPercent != null) lines.add("• Machinability: ${m.machinabilityPercent}%");
+      if (m.machinabilityPercent != null)
+        lines.add("• Machinability: ${m.machinabilityPercent}%");
       if (m.sfmNotes != null) lines.add("• SFM: ${m.sfmNotes}");
       if (m.notes != null) lines.add("• Notes: ${m.notes}");
     }
@@ -75,7 +92,8 @@ class MaterialDetailPage extends StatelessWidget {
       lines.add("");
       lines.add("Welding:");
       lines.add("• Rating: ${_weldRatingText(material.weldability!)}");
-      if (material.weldNotes != null) lines.add("• Notes: ${material.weldNotes}");
+      if (material.weldNotes != null)
+        lines.add("• Notes: ${material.weldNotes}");
     }
 
     // Forge / Heat treat
@@ -96,8 +114,10 @@ class MaterialDetailPage extends StatelessWidget {
       lines.add("");
       lines.add("Heat Treat:");
       final ht = material.heatTreat!;
-      if (ht.normalize != null) lines.add("• Normalize: ${_fmtTemp(ht.normalize!)}");
-      if (ht.austenitize != null) lines.add("• Austenitize: ${_fmtTemp(ht.austenitize!)}");
+      if (ht.normalize != null)
+        lines.add("• Normalize: ${_fmtTemp(ht.normalize!)}");
+      if (ht.austenitize != null)
+        lines.add("• Austenitize: ${_fmtTemp(ht.austenitize!)}");
       if (ht.quench != null) lines.add("• Quench: (see notes)");
       if (ht.temper != null) lines.add("• Temper: ${_fmtTemp(ht.temper!)}");
       if (ht.notes != null) lines.add("• Notes: ${ht.notes}");
@@ -114,9 +134,7 @@ class MaterialDetailPage extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.all(16),
         child: ListView(
-          children: [
-            terminalResultCard(accent: accent, lines: lines),
-          ],
+          children: [terminalResultCard(accent: accent, lines: lines)],
         ),
       ),
     );

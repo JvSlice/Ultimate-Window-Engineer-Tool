@@ -17,7 +17,12 @@ class StrengthProps {
   final double? yieldMpa;
   final double? tensileMpa;
 
-  const StrengthProps({this.yieldPsi, this.tensilePsi, this.yieldMpa, this.tensileMpa});
+  const StrengthProps({
+    this.yieldPsi,
+    this.tensilePsi,
+    this.yieldMpa,
+    this.tensileMpa,
+  });
 }
 
 class HardnessRange {
@@ -29,8 +34,9 @@ class HardnessRange {
 }
 
 class MachineProps {
-  final int? machinabilityPercent; // free-machining steel = 100 baseline (optional)
-  final String? sfmNotes;          // "HSS 80-120 SFM, Carbide 250-400 SFM"
+  final int?
+  machinabilityPercent; // free-machining steel = 100 baseline (optional)
+  final String? sfmNotes; // "HSS 80-120 SFM, Carbide 250-400 SFM"
   final String? notes;
 
   const MachineProps({this.machinabilityPercent, this.sfmNotes, this.notes});
@@ -61,10 +67,10 @@ class ForgeProps {
 }
 
 class MaterialSpec {
-  final String name;          // "A36", "1018", "1095", "6061-T6", "Delrin (Acetal)"
+  final String name; // "A36", "1018", "1095", "6061-T6", "Delrin (Acetal)"
   final MaterialCategory category;
   final String? commonUse;
-  final double densityKgM3;   // base storage
+  final double densityKgM3; // base storage
   final StrengthProps? strength;
   final HardnessRange? hardness;
   final MachineProps? machining;
@@ -72,6 +78,7 @@ class MaterialSpec {
   final String? weldNotes;
   final ForgeProps? forge;
   final HeatTreatProps? heatTreat;
+  final TempRange? melting;
   final String? notes;
 
   const MaterialSpec({
@@ -86,6 +93,7 @@ class MaterialSpec {
     this.weldNotes,
     this.forge,
     this.heatTreat,
+    this.melting,
     this.notes,
   });
 }
