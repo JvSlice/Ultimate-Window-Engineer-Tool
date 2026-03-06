@@ -40,11 +40,6 @@ class MaterialDetailPage extends StatelessWidget {
       "• ${fmt3(lbFt3)} lb/ft³",
       "• ${fmt3(kgm3)} kg/m³",
     ];
-    if (material.melting != null) {
-      lines.add("");
-      lines.add("Melting:");
-      lines.add(" ${_fmtTemp(material.melting!)}");
-    }
 
     // Strength
     if (material.strength != null) {
@@ -94,6 +89,14 @@ class MaterialDetailPage extends StatelessWidget {
       lines.add("• Rating: ${_weldRatingText(material.weldability!)}");
       if (material.weldNotes != null)
         lines.add("• Notes: ${material.weldNotes}");
+    }
+
+    //Melting Temp
+    
+    if (material.melting != null) {
+      lines.add("");
+      lines.add("Melting:");
+      lines.add("• ${_fmtTemp(material.melting!)}");
     }
 
     // Forge / Heat treat
@@ -164,3 +167,4 @@ class MaterialDetailPage extends StatelessWidget {
     return "—";
   }
 }
+
