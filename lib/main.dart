@@ -111,7 +111,7 @@ class MainMenuPage extends StatelessWidget {
                 terminalButton(context, "Reference it", () {
                   openPage(context, ReferenceHomePage());
                 }),
-                terminalButton(context, "window testing tools coming soon", () {
+                terminalButton(context, "Window Testing Tools", () {
                   openPage(context, WindowTestingToolsPage());
                 }),
                 //terminalButton("coming soon 5"),

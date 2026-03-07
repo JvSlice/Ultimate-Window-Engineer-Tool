@@ -209,8 +209,8 @@ class _GlassDeflectionPageState extends State<GlassDeflectionPage> {
 
             terminalNumberField(
               accent: accent,
-              label: 'Left End Reading (in)',
-              hint: 'Enter left end reading',
+              label: 'End 1 Reading (in)',
+              hint: 'Enter one end reading',
               controller: leftEndCtrl,
             ),
             const SizedBox(height: 12),
@@ -225,8 +225,8 @@ class _GlassDeflectionPageState extends State<GlassDeflectionPage> {
 
             terminalNumberField(
               accent: accent,
-              label: 'Right End Reading (in)',
-              hint: 'Enter right end reading',
+              label: 'End 2 Reading (in)',
+              hint: 'Enter End 2 reading',
               controller: rightEndCtrl,
             ),
 
