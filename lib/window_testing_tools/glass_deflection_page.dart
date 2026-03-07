@@ -104,6 +104,24 @@ class _GlassDeflectionPageState extends State<GlassDeflectionPage> {
 
             const SizedBox(height: 16),
 
+            OutlinedButton(
+  onPressed: () {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => const AstmE1300Page(),
+      ),
+    );
+  },
+  style: OutlinedButton.styleFrom(
+    side: BorderSide(color: accent, width: 2),
+  ),
+  child: Text(
+    "ASTM E1300 Glass Calculator",
+    style: TextStyle(color: accent),
+  ),
+),
+            const SizedBox(height: 16),
+
             Text(
               "Deflection Check",
               style: TextStyle(
@@ -210,4 +228,5 @@ class _GlassDeflectionPageState extends State<GlassDeflectionPage> {
     );
   }
 }
+
 
