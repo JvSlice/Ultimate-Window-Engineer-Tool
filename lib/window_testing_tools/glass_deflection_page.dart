@@ -16,12 +16,21 @@ class _GlassDeflectionPageState extends State<GlassDeflectionPage> {
   final spanCtrl = TextEditingController(text: "");
   final measuredDeflectionCtrl = TextEditingController(text: "");
 
+  // Measured deflection helper inputs
+  final leftEndCtrl = TextEditingController(text: "");
+  final centerCtrl = TextEditingController(text: "");
+  final rightEndCtrl = TextEditingController(text: "");
+
   // Permanent set inputs
   final permanentSetCtrl = TextEditingController(text: "");
 
   double? allowableDeflection;
   double? measuredDeflection;
   bool? deflectionPass;
+
+  double? endAverage;
+  double? netMeasuredDeflection;
+  bool? measuredCalcPass;
 
   double? allowablePermanentSet;
   double? measuredPermanentSet;
@@ -36,10 +45,18 @@ class _GlassDeflectionPageState extends State<GlassDeflectionPage> {
     final defl = _p(measuredDeflectionCtrl);
     final perm = _p(permanentSetCtrl);
 
+    final leftEnd = _p(leftEndCtrl);
+    final center = _p(centerCtrl);
+    final rightEnd = _p(rightEndCtrl);
+
     setState(() {
       allowableDeflection = null;
       measuredDeflection = null;
       deflectionPass = null;
+
+      endAverage = null;
+      netMeasuredDeflection = null;
+      measuredCalcPass = null;
 
       allowablePermanentSet = null;
       measuredPermanentSet = null;
@@ -60,10 +77,18 @@ class _GlassDeflectionPageState extends State<GlassDeflectionPage> {
         deflectionPass = defl <= allowableDeflection!;
       }
 
-      // Add warning if L/175 exceeds 0.75"
+      // Warning if L/175 exceeds 0.75"
       if (allowableDeflection! > 0.75) {
         warning =
             'Calculated L/175 allowable exceeds 0.75". Review project / code-specific requirements.';
+      }
+
+      // Measured deflection helper:
+      // net measured deflection = center - average of ends
+      if (leftEnd != null && center != null && rightEnd != null) {
+        endAverage = (leftEnd + rightEnd) / 2.0;
+        netMeasuredDeflection = (center - endAverage!).abs();
+        measuredCalcPass = netMeasuredDeflection! <= allowableDeflection!;
       }
 
       // Permanent set = 0.2% of L = 0.002 × L
@@ -80,6 +105,11 @@ class _GlassDeflectionPageState extends State<GlassDeflectionPage> {
   void dispose() {
     spanCtrl.dispose();
     measuredDeflectionCtrl.dispose();
+
+    leftEndCtrl.dispose();
+    centerCtrl.dispose();
+    rightEndCtrl.dispose();
+
     permanentSetCtrl.dispose();
     super.dispose();
   }
@@ -106,21 +136,22 @@ class _GlassDeflectionPageState extends State<GlassDeflectionPage> {
             const SizedBox(height: 16),
 
             OutlinedButton(
-  onPressed: () {
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (_) => const AstmE1300Page(),
-      ),
-    );
-  },
-  style: OutlinedButton.styleFrom(
-    side: BorderSide(color: accent, width: 2),
-  ),
-  child: Text(
-    "ASTM E1300 Glass Calculator",
-    style: TextStyle(color: accent),
-  ),
-),
+              onPressed: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (_) => const AstmE1300Page(),
+                  ),
+                );
+              },
+              style: OutlinedButton.styleFrom(
+                side: BorderSide(color: accent, width: 2),
+              ),
+              child: Text(
+                "ASTM E1300 Glass Calculator",
+                style: TextStyle(color: accent),
+              ),
+            ),
+
             const SizedBox(height: 16),
 
             Text(
@@ -152,8 +183,51 @@ class _GlassDeflectionPageState extends State<GlassDeflectionPage> {
             terminalNumberField(
               accent: accent,
               label: 'Measured Deflection (in)',
-              hint: 'Optional measured value',
+              hint: 'Optional direct measured value',
               controller: measuredDeflectionCtrl,
+            ),
+
+            const SizedBox(height: 22),
+
+            Text(
+              "Measured Deflection Helper",
+              style: TextStyle(
+                color: accent,
+                fontSize: 18,
+                fontWeight: FontWeight.w800,
+              ),
+            ),
+            const SizedBox(height: 8),
+
+            Text(
+              "Net measured deflection = Center − average of ends",
+              style: TextStyle(
+                color: accent.withValues(alpha: 0.75),
+              ),
+            ),
+            const SizedBox(height: 14),
+
+            terminalNumberField(
+              accent: accent,
+              label: 'Left End Reading (in)',
+              hint: 'Enter left end reading',
+              controller: leftEndCtrl,
+            ),
+            const SizedBox(height: 12),
+
+            terminalNumberField(
+              accent: accent,
+              label: 'Center Reading (in)',
+              hint: 'Enter center reading',
+              controller: centerCtrl,
+            ),
+            const SizedBox(height: 12),
+
+            terminalNumberField(
+              accent: accent,
+              label: 'Right End Reading (in)',
+              hint: 'Enter right end reading',
+              controller: rightEndCtrl,
             ),
 
             const SizedBox(height: 22),
@@ -218,6 +292,17 @@ class _GlassDeflectionPageState extends State<GlassDeflectionPage> {
             terminalResultCard(
               accent: accent,
               lines: [
+                "End Average: ${endAverage == null ? '—' : endAverage!.toStringAsFixed(4)} in",
+                "Net Measured Deflection: ${netMeasuredDeflection == null ? '—' : netMeasuredDeflection!.toStringAsFixed(4)} in",
+                "Measured Helper Result: ${measuredCalcPass == null ? '—' : (measuredCalcPass! ? 'PASS' : 'FAIL')}",
+              ],
+            ),
+
+            const SizedBox(height: 14),
+
+            terminalResultCard(
+              accent: accent,
+              lines: [
                 "Allowable Permanent Set (0.002 × L): ${allowablePermanentSet == null ? '—' : allowablePermanentSet!.toStringAsFixed(4)} in",
                 "Measured Permanent Set: ${measuredPermanentSet == null ? '—' : measuredPermanentSet!.toStringAsFixed(4)} in",
                 "Permanent Set Result: ${permanentSetPass == null ? '—' : (permanentSetPass! ? 'PASS' : 'FAIL')}",
@@ -229,5 +314,6 @@ class _GlassDeflectionPageState extends State<GlassDeflectionPage> {
     );
   }
 }
+
 
 
