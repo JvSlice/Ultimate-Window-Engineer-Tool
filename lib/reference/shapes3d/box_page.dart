@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import '../../terminal_scaffold.dart';
 import '../../widgets/terminal_fields.dart';
 import '../../widgets/calc_button.dart';
+import '../../reference/materials/material_data.dart';
+import '../../reference/materials/material_models.dart';
+import '../../reference/materials/material_units.dart';
 
 class BoxPage extends StatefulWidget {
   const BoxPage({super.key});
@@ -15,8 +18,11 @@ class _BoxPageState extends State<BoxPage> {
   final wCtrl = TextEditingController(text: "5");
   final hCtrl = TextEditingController(text: "2");
 
+  MaterialSpec? selectedMaterial;
+
   double? volume;
   double? surfaceArea;
+  double? weightLb;
 
   double? _p(TextEditingController c) => double.tryParse(c.text.trim());
 
@@ -29,9 +35,17 @@ class _BoxPageState extends State<BoxPage> {
       if (l == null || w == null || h == null) {
         volume = null;
         surfaceArea = null;
+        weightLb = null;
       } else {
         volume = l * w * h;
         surfaceArea = 2 * (l * w + l * h + w * h);
+
+        if (selectedMaterial != null) {
+          final densityLbIn3 = kgm3ToLbIn3(selectedMaterial!.densityKgM3);
+          weightLb = volume! * densityLbIn3;
+        } else {
+          weightLb = null;
+        }
       }
     });
   }
@@ -55,7 +69,7 @@ class _BoxPageState extends State<BoxPage> {
         child: ListView(
           children: [
             Text(
-              "Formulas:\nV = L × W × H\nSA = 2(LW + LH + WH)",
+              "Formulas:\nV = L × W × H\nSA = 2(LW + LH + WH)\nWeight = Volume × Density",
               style: TextStyle(color: accent.withValues(alpha: 0.75)),
             ),
 
@@ -64,7 +78,7 @@ class _BoxPageState extends State<BoxPage> {
             terminalNumberField(
               accent: accent,
               label: "Length (L)",
-              hint: "units",
+              hint: "inches",
               controller: lCtrl,
             ),
 
@@ -73,7 +87,7 @@ class _BoxPageState extends State<BoxPage> {
             terminalNumberField(
               accent: accent,
               label: "Width (W)",
-              hint: "units",
+              hint: "inches",
               controller: wCtrl,
             ),
 
@@ -82,8 +96,54 @@ class _BoxPageState extends State<BoxPage> {
             terminalNumberField(
               accent: accent,
               label: "Height (H)",
-              hint: "units",
+              hint: "inches",
               controller: hCtrl,
+            ),
+
+            const SizedBox(height: 16),
+
+            Text(
+              "Material",
+              style: TextStyle(
+                color: accent,
+                fontWeight: FontWeight.w800,
+              ),
+            ),
+            const SizedBox(height: 8),
+
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 12),
+              decoration: BoxDecoration(
+                border: Border.all(color: accent, width: 2),
+                borderRadius: BorderRadius.circular(10),
+                color: Colors.black,
+              ),
+              child: DropdownButton<MaterialSpec>(
+                value: selectedMaterial,
+                isExpanded: true,
+                underline: const SizedBox(),
+                dropdownColor: Colors.black,
+                iconEnabledColor: accent,
+                style: TextStyle(color: accent),
+                hint: Text(
+                  "Select material",
+                  style: TextStyle(color: accent.withValues(alpha: 0.7)),
+                ),
+                items: materials.map((m) {
+                  return DropdownMenuItem<MaterialSpec>(
+                    value: m,
+                    child: Text(
+                      m.name,
+                      style: TextStyle(color: accent),
+                    ),
+                  );
+                }).toList(),
+                onChanged: (value) {
+                  setState(() {
+                    selectedMaterial = value;
+                  });
+                },
+              ),
             ),
 
             const SizedBox(height: 16),
@@ -101,8 +161,10 @@ class _BoxPageState extends State<BoxPage> {
             terminalResultCard(
               accent: accent,
               lines: [
-                "Volume (V): ${volume == null ? '—' : volume!.toStringAsFixed(4)}",
-                "Surface Area (SA): ${surfaceArea == null ? '—' : surfaceArea!.toStringAsFixed(4)}",
+                "Volume (V): ${volume == null ? '—' : volume!.toStringAsFixed(4)} in³",
+                "Surface Area (SA): ${surfaceArea == null ? '—' : surfaceArea!.toStringAsFixed(4)} in²",
+                "Material: ${selectedMaterial?.name ?? '—'}",
+                "Weight: ${weightLb == null ? '—' : '${weightLb!.toStringAsFixed(4)} lb'}",
               ],
             ),
           ],
