@@ -16,7 +16,7 @@ class AstmE1300Page extends StatefulWidget {
 }
 
 class _AstmE1300PageState extends State<AstmE1300Page> {
-  GlassBuild build = GlassBuild.monolithic;
+  GlassBuild glassbuild = GlassBuild.monolithic;
   LoadDuration duration = LoadDuration.shortDuration;
 
   GlassType monoType = GlassType.tempered;
@@ -310,11 +310,11 @@ class _AstmE1300PageState extends State<AstmE1300Page> {
                 _toggleButton<GlassBuild>(
                   accent: accent,
                   label: "MONOLITHIC",
-                  current: build,
+                  current: glassbuild,
                   value: GlassBuild.monolithic,
                   onPressed: () {
                     setState(() {
-                      build = GlassBuild.monolithic;
+                      glassbuild = GlassBuild.monolithic;
                     });
                   },
                 ),
@@ -322,11 +322,11 @@ class _AstmE1300PageState extends State<AstmE1300Page> {
                 _toggleButton<GlassBuild>(
                   accent: accent,
                   label: "IGU",
-                  current: build,
+                  current: glassbuild,
                   value: GlassBuild.igu,
                   onPressed: () {
                     setState(() {
-                      build = GlassBuild.igu;
+                      glassbuild = GlassBuild.igu;
                     });
                   },
                 ),
