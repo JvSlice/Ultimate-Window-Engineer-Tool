@@ -63,18 +63,18 @@ String performConversion({
     case ConversionTypes.pressurePsitoPsf:
       if (direction == Direction.to) {
         final psf = input * 144;
-        return "${psf.toStringAsFixed(2)} psf";
+        return "${psf.toStringAsFixed(4)} psf";
       } else {
         final psi = input / 144;
-        return "${psi.toStringAsFixed(2)} psi";
+        return "${psi.toStringAsFixed(4)} psi";
       }
     case ConversionTypes.psftoPa:
       if (direction == Direction.to) {
         final Pa = input * 47.88025898;
-        return "${Pa.toStringAsFixed(2)} Pa";
+        return "${Pa.toStringAsFixed(4)} Pa";
       } else {
         final psf = input / 47.88025898;
-        return "${psf.toStringAsFixed(2)} PSF";
+        return "${psf.toStringAsFixed(4)} PSF";
       }
     case ConversionTypes.CFMperSQfttoCLMperSQm:
       if (direction == Direction.to) {
@@ -87,7 +87,7 @@ String performConversion({
     case ConversionTypes.inchesToCm:
       if (direction == Direction.to) {
         final cm = input * 2.54;
-        return "${cm.toStringAsFixed(2)} cm";
+        return "${cm.toStringAsFixed(4)} cm";
       } else {
         final inches = input / 2.54;
         return "${inches.toStringAsFixed(3)} inches";
@@ -95,31 +95,31 @@ String performConversion({
     case ConversionTypes.feetToInches:
       if (direction == Direction.to) {
         final inches = input * 12;
-        return "${inches.toStringAsFixed(2)} inches";
+        return "${inches.toStringAsFixed(4)} inches";
       } else {
         final feet = input / 12;
-        return "${feet.toStringAsFixed(2)} feet";
+        return "${feet.toStringAsFixed(4)} feet";
       }
     case ConversionTypes.mmToInches:
       if (direction == Direction.to) {
         final inches = input / 25.4;
-        return "${inches.toStringAsFixed(2)} inches";
+        return "${inches.toStringAsFixed(4} inches";
       } else {
         final mm = input * 25.4;
-        return "${mm.toStringAsFixed(2)} mm";
+        return "${mm.toStringAsFixed(4)} mm";
       }
     case ConversionTypes.kgToLbs:
       if (direction == Direction.to) {
         final lbs = input * 2.20462;
-        return "${lbs.toStringAsFixed(2)} lbs";
+        return "${lbs.toStringAsFixed(4)} lbs";
       } else {
         final kg = input / 2.20462;
-        return "${kg.toStringAsFixed(2)} kg";
+        return "${kg.toStringAsFixed(4)} kg";
       }
     case ConversionTypes.forceNToLbsfAndKn:
       if (direction == Direction.to) {
         final lbf = input * 0.224809;
-        return "${lbf.toStringAsFixed(2)} lbsf";
+        return "${lbf.toStringAsFixed(4)} lbsf";
       } else {
         final double newtons = (input >= 1)
             ? (input / 0.224809)
@@ -129,10 +129,10 @@ String performConversion({
     case ConversionTypes.literToGallons:
       if (direction == Direction.to) {
         final gallons = input * 0.264172;
-        return "${gallons.toStringAsFixed(2)} gallons";
+        return "${gallons.toStringAsFixed(4)} gallons";
       } else {
         final liters = input / 0.264172;
-        return "${liters.toStringAsFixed(2)} liters";
+        return "${liters.toStringAsFixed(4)} liters";
       }
   }
 }
