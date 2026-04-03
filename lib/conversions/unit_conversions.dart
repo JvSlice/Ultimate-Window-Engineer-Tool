@@ -11,7 +11,7 @@ enum ConversionTypes {
   feetToInches,
   mmToInches,
   kgToLbs,
-  forceNToLbsfAndKn,
+  forceNToLbsf,
   literToGallons,
 }
 
@@ -36,7 +36,7 @@ String conversionLabel(ConversionTypes t) {
       return "MM to Inches";
     case ConversionTypes.kgToLbs:
       return "Kg to LBS";
-    case ConversionTypes.forceNToLbsfAndKn:
+    case ConversionTypes.forceNToLbsf:
       return "N to LBSF to kn";
     case ConversionTypes.literToGallons:
       return "L to Gallons";
@@ -116,7 +116,7 @@ String performConversion({
         final kg = input / 2.20462;
         return "${kg.toStringAsFixed(3)} kg";
       }
-    case ConversionTypes.forceNToLbsfAndKn:
+    case ConversionTypes.forceNToLbsf:
       if (direction == Direction.to) {
         final lbf = input * 0.224809;
         return "${lbf.toStringAsFixed(3)} lbsf";
