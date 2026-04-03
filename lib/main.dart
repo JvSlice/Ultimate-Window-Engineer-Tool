@@ -6,6 +6,7 @@ import 'fabricate_it_page.dart';
 import 'reference/reference_home_page.dart';
 import 'settings_page.dart';
 import 'app_theme.dart';
+import 'fun_links_page.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -50,7 +51,6 @@ class MainMenuPage extends StatelessWidget {
     final size = MediaQuery.of(context).size;
     final accent = themeController.accentColor;
 
-    final horizontalPadding = size.width * 0.06;
     final verticalSpacing = size.height * 0.02;
     final gridSpacing = size.width * 0.02;
 
@@ -64,19 +64,18 @@ class MainMenuPage extends StatelessWidget {
         height: size.height * 0.10,
         child: OutlinedButton(
           onPressed: onPressed,
-          style:
-              OutlinedButton.styleFrom(
-                foregroundColor: accent,
-                side: BorderSide(color: accent, width: 2),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                padding: EdgeInsets.zero,
-              ).copyWith(
-                overlayColor: WidgetStateProperty.all(
-                  accent.withValues(alpha: 0.08),
-                ),
-              ),
+          style: OutlinedButton.styleFrom(
+            foregroundColor: accent,
+            side: BorderSide(color: accent, width: 2),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
+            ),
+            padding: EdgeInsets.zero,
+          ).copyWith(
+            overlayColor: WidgetStateProperty.all(
+              accent.withValues(alpha: 0.08),
+            ),
+          ),
           child: Text(
             label,
             textAlign: TextAlign.center,
@@ -90,9 +89,31 @@ class MainMenuPage extends StatelessWidget {
       );
     }
 
+    Widget bottomCornerButton({
+      required IconData icon,
+      required String label,
+      required VoidCallback onPressed,
+    }) {
+      return OutlinedButton.icon(
+        onPressed: onPressed,
+        icon: Icon(icon, size: size.width * 0.02),
+        label: Text(
+          label,
+          style: TextStyle(fontSize: size.width * 0.016),
+        ),
+        style: OutlinedButton.styleFrom(
+          foregroundColor: accent,
+          side: BorderSide(color: accent, width: size.width * 0.002),
+          padding: EdgeInsets.symmetric(
+            horizontal: size.width * 0.02,
+            vertical: size.height * 0.012,
+          ),
+        ),
+      );
+    }
+
     return TerminalScaffold(
       title: "Ultimate Window Engineer Tool",
-
       child: Column(
         children: [
           Expanded(
@@ -114,42 +135,46 @@ class MainMenuPage extends StatelessWidget {
                 terminalButton(context, "Window Testing Tools", () {
                   openPage(context, WindowTestingToolsPage());
                 }),
-                //terminalButton("coming soon 5"),
-                //terminalButton("coming soon 6"),
               ],
-            ), // grid view
-          ),
-          SizedBox(height: verticalSpacing),
-          Align(
-            alignment: Alignment.bottomRight,
-            child: OutlinedButton.icon(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) =>
-                        SettingsPage(themeController: themeController),
-                  ),
-                );
-              },
-              icon: Icon(Icons.settings, size: size.width * 0.02),
-              label: Text(
-                "settings",
-                style: TextStyle(fontSize: size.width * 0.016),
-              ),
-              style: OutlinedButton.styleFrom(
-                foregroundColor: accent,
-                side: BorderSide(color: accent, width: size.width * 0.002),
-              ),
             ),
           ),
+
+          SizedBox(height: verticalSpacing),
+
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              bottomCornerButton(
+                icon: Icons.videogame_asset_outlined,
+                label: "FUN?",
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => const FunLinksPage(),
+                    ),
+                  );
+                },
+              ),
+              bottomCornerButton(
+                icon: Icons.settings,
+                label: "settings",
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) =>
+                          SettingsPage(themeController: themeController),
+                    ),
+                  );
+                },
+              ),
+            ],
+          ),
+
           SizedBox(height: verticalSpacing),
         ],
       ),
-      // delete me
-      // delete me
-    ); // stack
+    );
   }
 }
-
-//scan line class was here
