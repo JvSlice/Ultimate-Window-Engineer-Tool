@@ -37,7 +37,7 @@ String conversionLabel(ConversionTypes t) {
     case ConversionTypes.kgToLbs:
       return "Kg to LBS";
     case ConversionTypes.forceNToLbsf:
-      return "N to LBSF to kn";
+      return "N to LBSF";
     case ConversionTypes.literToGallons:
       return "L to Gallons";
   }
