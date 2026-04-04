@@ -7,6 +7,7 @@ enum ConversionCategory {
   volume,
   temperature,
   cooking,
+  electrical,
 }
 
 enum Direction { to, from }
@@ -25,6 +26,8 @@ String categoryLabel(ConversionCategory c) {
       return "Temp";
     case ConversionCategory.cooking:
       return "Cooking";
+    case ConversionCategory.electrical:
+      return "Electrical";
   }
 }
 
@@ -255,5 +258,87 @@ final List<ConversionTool> conversionTools = [
     fromUnit: "qt",
     toFn: (input) => input * 0.946353,
     fromFn: (input) => input / 0.946353,
+  ),
+  ConversionTool(
+    label: "Cups ↔ Tablespoons",
+    category: ConversionCategory.cooking,
+    toUnit: "tbsp",
+    fromUnit: "cups",
+    toFn: (input) => input * 16.0,
+    fromFn: (input) => input / 16.0,
+  ),
+  ConversionTool(
+    label: "Cups ↔ Teaspoons",
+    category: ConversionCategory.cooking,
+    toUnit: "tsp",
+    fromUnit: "cups",
+    toFn: (input) => input * 48.0,
+    fromFn: (input) => input / 48.0,
+  ),
+  ConversionTool(
+    label: "Tablespoons ↔ Teaspoons",
+    category: ConversionCategory.cooking,
+    toUnit: "tsp",
+    fromUnit: "tbsp",
+    toFn: (input) => input * 3.0,
+    fromFn: (input) => input / 3.0,
+  ),
+  ConversionTool(
+    label: "Cups ↔ Pints",
+    category: ConversionCategory.cooking,
+    toUnit: "pt",
+    fromUnit: "cups",
+    toFn: (input) => input / 2.0,
+    fromFn: (input) => input * 2.0,
+  ),
+  ConversionTool(
+    label: "Cups ↔ Quarts",
+    category: ConversionCategory.cooking,
+    toUnit: "qt",
+    fromUnit: "cups",
+    toFn: (input) => input / 4.0,
+    fromFn: (input) => input * 4.0,
+  ),
+
+  // Electrical
+  ConversionTool(
+    label: "Volts ↔ Millivolts",
+    category: ConversionCategory.electrical,
+    toUnit: "mV",
+    fromUnit: "V",
+    toFn: (input) => input * 1000.0,
+    fromFn: (input) => input / 1000.0,
+  ),
+  ConversionTool(
+    label: "Amps ↔ Milliamps",
+    category: ConversionCategory.electrical,
+    toUnit: "mA",
+    fromUnit: "A",
+    toFn: (input) => input * 1000.0,
+    fromFn: (input) => input / 1000.0,
+  ),
+  ConversionTool(
+    label: "Watts ↔ Kilowatts",
+    category: ConversionCategory.electrical,
+    toUnit: "kW",
+    fromUnit: "W",
+    toFn: (input) => input / 1000.0,
+    fromFn: (input) => input * 1000.0,
+  ),
+  ConversionTool(
+    label: "Ohms ↔ Kilohms",
+    category: ConversionCategory.electrical,
+    toUnit: "kΩ",
+    fromUnit: "Ω",
+    toFn: (input) => input / 1000.0,
+    fromFn: (input) => input * 1000.0,
+  ),
+  ConversionTool(
+    label: "Ohms ↔ Megohms",
+    category: ConversionCategory.electrical,
+    toUnit: "MΩ",
+    fromUnit: "Ω",
+    toFn: (input) => input / 1000000.0,
+    fromFn: (input) => input * 1000000.0,
   ),
 ];
