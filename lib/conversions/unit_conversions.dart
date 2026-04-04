@@ -3,11 +3,15 @@ import 'dart:math';
 enum ConversionCategory {
   pressureAir,
   length,
+  area,
   massForce,
   volume,
   temperature,
   cooking,
   electrical,
+  speed,
+  powerEnergy,
+  torque,
 }
 
 enum Direction { to, from }
@@ -18,6 +22,8 @@ String categoryLabel(ConversionCategory c) {
       return "Pressure / Air";
     case ConversionCategory.length:
       return "Length";
+    case ConversionCategory.area:
+      return "Area";
     case ConversionCategory.massForce:
       return "Mass / Force";
     case ConversionCategory.volume:
@@ -28,6 +34,12 @@ String categoryLabel(ConversionCategory c) {
       return "Cooking";
     case ConversionCategory.electrical:
       return "Electrical";
+    case ConversionCategory.speed:
+      return "Speed";
+    case ConversionCategory.powerEnergy:
+      return "Power / Energy";
+    case ConversionCategory.torque:
+      return "Torque";
   }
 }
 
@@ -56,7 +68,7 @@ class ConversionTool {
 }
 
 final List<ConversionTool> conversionTools = [
-  // Pressure / Air
+  // ---------------- Pressure / Air ----------------
   ConversionTool(
     label: "Wind Speed ↔ PSF",
     category: ConversionCategory.pressureAir,
@@ -70,8 +82,8 @@ final List<ConversionTool> conversionTools = [
     category: ConversionCategory.pressureAir,
     toUnit: "psf",
     fromUnit: "psi",
-    toFn: (input) => input * 144,
-    fromFn: (input) => input / 144,
+    toFn: (input) => input * 144.0,
+    fromFn: (input) => input / 144.0,
   ),
   ConversionTool(
     label: "PSF ↔ Pa",
@@ -82,6 +94,22 @@ final List<ConversionTool> conversionTools = [
     fromFn: (input) => input / 47.88025898,
   ),
   ConversionTool(
+    label: "PSI ↔ kPa",
+    category: ConversionCategory.pressureAir,
+    toUnit: "kPa",
+    fromUnit: "psi",
+    toFn: (input) => input * 6.89475729,
+    fromFn: (input) => input / 6.89475729,
+  ),
+  ConversionTool(
+    label: "PSI ↔ Pa",
+    category: ConversionCategory.pressureAir,
+    toUnit: "Pa",
+    fromUnit: "psi",
+    toFn: (input) => input * 6894.75729,
+    fromFn: (input) => input / 6894.75729,
+  ),
+  ConversionTool(
     label: "CFM/ft² ↔ L/min/m²",
     category: ConversionCategory.pressureAir,
     toUnit: "L/min/m²",
@@ -90,7 +118,7 @@ final List<ConversionTool> conversionTools = [
     fromFn: (input) => input / 5.08,
   ),
 
-  // Length
+  // ---------------- Length ----------------
   ConversionTool(
     label: "Inches ↔ Centimeters",
     category: ConversionCategory.length,
@@ -104,8 +132,8 @@ final List<ConversionTool> conversionTools = [
     category: ConversionCategory.length,
     toUnit: "in",
     fromUnit: "ft",
-    toFn: (input) => input * 12,
-    fromFn: (input) => input / 12,
+    toFn: (input) => input * 12.0,
+    fromFn: (input) => input / 12.0,
   ),
   ConversionTool(
     label: "Millimeters ↔ Inches",
@@ -128,11 +156,61 @@ final List<ConversionTool> conversionTools = [
     category: ConversionCategory.length,
     toUnit: "yd",
     fromUnit: "m",
-    toFn: (input) => input * 1.09361,
-    fromFn: (input) => input / 1.09361,
+    toFn: (input) => input * 1.0936133,
+    fromFn: (input) => input / 1.0936133,
+  ),
+  ConversionTool(
+    label: "Miles ↔ Kilometers",
+    category: ConversionCategory.length,
+    toUnit: "km",
+    fromUnit: "mi",
+    toFn: (input) => input * 1.609344,
+    fromFn: (input) => input / 1.609344,
+  ),
+  ConversionTool(
+    label: "Microns ↔ Millimeters",
+    category: ConversionCategory.length,
+    toUnit: "mm",
+    fromUnit: "µm",
+    toFn: (input) => input / 1000.0,
+    fromFn: (input) => input * 1000.0,
   ),
 
-  // Mass / Force
+  // ---------------- Area ----------------
+  ConversionTool(
+    label: "Square Inches ↔ Square Centimeters",
+    category: ConversionCategory.area,
+    toUnit: "cm²",
+    fromUnit: "in²",
+    toFn: (input) => input * 6.4516,
+    fromFn: (input) => input / 6.4516,
+  ),
+  ConversionTool(
+    label: "Square Feet ↔ Square Meters",
+    category: ConversionCategory.area,
+    toUnit: "m²",
+    fromUnit: "ft²",
+    toFn: (input) => input * 0.092903,
+    fromFn: (input) => input / 0.092903,
+  ),
+  ConversionTool(
+    label: "Square Meters ↔ Square Yards",
+    category: ConversionCategory.area,
+    toUnit: "yd²",
+    fromUnit: "m²",
+    toFn: (input) => input * 1.19599,
+    fromFn: (input) => input / 1.19599,
+  ),
+  ConversionTool(
+    label: "Acres ↔ Square Feet",
+    category: ConversionCategory.area,
+    toUnit: "ft²",
+    fromUnit: "acres",
+    toFn: (input) => input * 43560.0,
+    fromFn: (input) => input / 43560.0,
+  ),
+
+  // ---------------- Mass / Force ----------------
   ConversionTool(
     label: "Kilograms ↔ Pounds",
     category: ConversionCategory.massForce,
@@ -140,6 +218,22 @@ final List<ConversionTool> conversionTools = [
     fromUnit: "kg",
     toFn: (input) => input * 2.20462,
     fromFn: (input) => input / 2.20462,
+  ),
+  ConversionTool(
+    label: "Grams ↔ Ounces",
+    category: ConversionCategory.massForce,
+    toUnit: "oz",
+    fromUnit: "g",
+    toFn: (input) => input * 0.035274,
+    fromFn: (input) => input / 0.035274,
+  ),
+  ConversionTool(
+    label: "Ounces ↔ Pounds",
+    category: ConversionCategory.massForce,
+    toUnit: "lb",
+    fromUnit: "oz",
+    toFn: (input) => input / 16.0,
+    fromFn: (input) => input * 16.0,
   ),
   ConversionTool(
     label: "Newtons ↔ lbf",
@@ -158,15 +252,15 @@ final List<ConversionTool> conversionTools = [
     fromFn: (input) => input / 224.809,
   ),
   ConversionTool(
-    label: "Grams ↔ Ounces",
+    label: "N ↔ kN",
     category: ConversionCategory.massForce,
-    toUnit: "oz",
-    fromUnit: "g",
-    toFn: (input) => input * 0.035274,
-    fromFn: (input) => input / 0.035274,
+    toUnit: "kN",
+    fromUnit: "N",
+    toFn: (input) => input / 1000.0,
+    fromFn: (input) => input * 1000.0,
   ),
 
-  // Volume
+  // ---------------- Volume ----------------
   ConversionTool(
     label: "Liters ↔ Gallons",
     category: ConversionCategory.volume,
@@ -199,15 +293,23 @@ final List<ConversionTool> conversionTools = [
     toFn: (input) => input * 0.0283168,
     fromFn: (input) => input / 0.0283168,
   ),
+  ConversionTool(
+    label: "Gallons ↔ Cubic Feet",
+    category: ConversionCategory.volume,
+    toUnit: "ft³",
+    fromUnit: "gal",
+    toFn: (input) => input * 0.133681,
+    fromFn: (input) => input / 0.133681,
+  ),
 
-  // Temperature
+  // ---------------- Temperature ----------------
   ConversionTool(
     label: "°F ↔ °C",
     category: ConversionCategory.temperature,
     toUnit: "°C",
     fromUnit: "°F",
-    toFn: (input) => (input - 32) * 5 / 9,
-    fromFn: (input) => (input * 9 / 5) + 32,
+    toFn: (input) => (input - 32.0) * 5.0 / 9.0,
+    fromFn: (input) => (input * 9.0 / 5.0) + 32.0,
   ),
   ConversionTool(
     label: "°C ↔ K",
@@ -218,7 +320,7 @@ final List<ConversionTool> conversionTools = [
     fromFn: (input) => input - 273.15,
   ),
 
-  // Cooking
+  // ---------------- Cooking ----------------
   ConversionTool(
     label: "Teaspoons ↔ Milliliters",
     category: ConversionCategory.cooking,
@@ -299,8 +401,24 @@ final List<ConversionTool> conversionTools = [
     toFn: (input) => input / 4.0,
     fromFn: (input) => input * 4.0,
   ),
+  ConversionTool(
+    label: "Gallons ↔ Quarts",
+    category: ConversionCategory.cooking,
+    toUnit: "qt",
+    fromUnit: "gal",
+    toFn: (input) => input * 4.0,
+    fromFn: (input) => input / 4.0,
+  ),
+  ConversionTool(
+    label: "Quarts ↔ Pints",
+    category: ConversionCategory.cooking,
+    toUnit: "pt",
+    fromUnit: "qt",
+    toFn: (input) => input * 2.0,
+    fromFn: (input) => input / 2.0,
+  ),
 
-  // Electrical
+  // ---------------- Electrical ----------------
   ConversionTool(
     label: "Volts ↔ Millivolts",
     category: ConversionCategory.electrical,
@@ -340,5 +458,107 @@ final List<ConversionTool> conversionTools = [
     fromUnit: "Ω",
     toFn: (input) => input / 1000000.0,
     fromFn: (input) => input * 1000000.0,
+  ),
+  ConversionTool(
+    label: "Farads ↔ Microfarads",
+    category: ConversionCategory.electrical,
+    toUnit: "µF",
+    fromUnit: "F",
+    toFn: (input) => input * 1000000.0,
+    fromFn: (input) => input / 1000000.0,
+  ),
+  ConversionTool(
+    label: "Hertz ↔ Kilohertz",
+    category: ConversionCategory.electrical,
+    toUnit: "kHz",
+    fromUnit: "Hz",
+    toFn: (input) => input / 1000.0,
+    fromFn: (input) => input * 1000.0,
+  ),
+
+  // ---------------- Speed ----------------
+  ConversionTool(
+    label: "MPH ↔ Meters/Second",
+    category: ConversionCategory.speed,
+    toUnit: "m/s",
+    fromUnit: "mph",
+    toFn: (input) => input * 0.44704,
+    fromFn: (input) => input / 0.44704,
+  ),
+  ConversionTool(
+    label: "Feet/Second ↔ Meters/Second",
+    category: ConversionCategory.speed,
+    toUnit: "m/s",
+    fromUnit: "ft/s",
+    toFn: (input) => input * 0.3048,
+    fromFn: (input) => input / 0.3048,
+  ),
+  ConversionTool(
+    label: "MPH ↔ KM/H",
+    category: ConversionCategory.speed,
+    toUnit: "km/h",
+    fromUnit: "mph",
+    toFn: (input) => input * 1.609344,
+    fromFn: (input) => input / 1.609344,
+  ),
+
+  // ---------------- Power / Energy ----------------
+  ConversionTool(
+    label: "Horsepower ↔ Watts",
+    category: ConversionCategory.powerEnergy,
+    toUnit: "W",
+    fromUnit: "hp",
+    toFn: (input) => input * 745.699872,
+    fromFn: (input) => input / 745.699872,
+  ),
+  ConversionTool(
+    label: "Horsepower ↔ Kilowatts",
+    category: ConversionCategory.powerEnergy,
+    toUnit: "kW",
+    fromUnit: "hp",
+    toFn: (input) => input * 0.745699872,
+    fromFn: (input) => input / 0.745699872,
+  ),
+  ConversionTool(
+    label: "BTU ↔ Joules",
+    category: ConversionCategory.powerEnergy,
+    toUnit: "J",
+    fromUnit: "BTU",
+    toFn: (input) => input * 1055.06,
+    fromFn: (input) => input / 1055.06,
+  ),
+  ConversionTool(
+    label: "Kilowatt-hours ↔ Joules",
+    category: ConversionCategory.powerEnergy,
+    toUnit: "J",
+    fromUnit: "kWh",
+    toFn: (input) => input * 3600000.0,
+    fromFn: (input) => input / 3600000.0,
+  ),
+
+  // ---------------- Torque ----------------
+  ConversionTool(
+    label: "Foot-Pounds ↔ Newton-Meters",
+    category: ConversionCategory.torque,
+    toUnit: "N·m",
+    fromUnit: "ft·lbf",
+    toFn: (input) => input * 1.35582,
+    fromFn: (input) => input / 1.35582,
+  ),
+  ConversionTool(
+    label: "Inch-Pounds ↔ Foot-Pounds",
+    category: ConversionCategory.torque,
+    toUnit: "ft·lbf",
+    fromUnit: "in·lbf",
+    toFn: (input) => input / 12.0,
+    fromFn: (input) => input * 12.0,
+  ),
+  ConversionTool(
+    label: "Inch-Pounds ↔ Newton-Meters",
+    category: ConversionCategory.torque,
+    toUnit: "N·m",
+    fromUnit: "in·lbf",
+    toFn: (input) => input * 0.112985,
+    fromFn: (input) => input / 0.112985,
   ),
 ];
