@@ -88,6 +88,7 @@ class _FabricateItBody extends StatelessWidget {
                   );
                 },
               ),
+              const SizedBox(height: 12),
 
               TerminalMenuButton(
                 accent: accent,
