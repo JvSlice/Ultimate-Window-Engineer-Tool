@@ -1,19 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:ultimate_window_engineer_tool/conversions/unit_conversions.dart';
 import 'terminal_scaffold.dart';
-import 'app_theme.dart';
 
 class ConverItPage extends StatelessWidget {
   const ConverItPage({super.key});
+
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
     final accent = Theme.of(context).colorScheme.primary;
-    return  TerminalScaffold(
-      title: 'Convert It',
 
+    return TerminalScaffold(
+      title: 'Convert It',
       child: Padding(
-        padding: const EdgeInsetsGeometry.all(24),
+        padding: const EdgeInsets.all(16),
         child: ConvertItBody(accent: accent),
       ),
     );
@@ -28,150 +27,267 @@ class ConvertItBody extends StatefulWidget {
   State<ConvertItBody> createState() => _ConvertItBodyState();
 }
 
-class _ConvertItBodyState extends State<ConvertItBody> {
+class _ConvertItBodyState extends State<ConvertItBody>
+    with SingleTickerProviderStateMixin {
   final TextEditingController controller = TextEditingController();
-  ConversionTypes selectedType = ConversionTypes.inchesToCm;
+
+  late final TabController _tabController;
+
   Direction direction = Direction.to;
-
   String result = "";
-  void convert() {
-    final input = double.tryParse(controller.text);
-    if (input == null) return;
 
-    setState(() {
-      result = performConversion(
-        input: input,
-        type: selectedType,
-        direction: direction,
-      );
+  final List<ConversionCategory> categories = ConversionCategory.values;
+
+  late final Map<ConversionCategory, ConversionTool> selectedByCategory;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _tabController = TabController(length: categories.length, vsync: this);
+
+    selectedByCategory = {
+      for (final category in categories)
+        category: conversionTools.firstWhere((tool) => tool.category == category),
+    };
+
+    _tabController.addListener(() {
+      if (_tabController.indexIsChanging) return;
+      setState(() {
+        result = "";
+      });
     });
   }
 
   @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: ConstrainedBox(
-        constraints: const BoxConstraints(maxWidth: 600),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            TextField(
-              controller: controller,
-              keyboardType: TextInputType.numberWithOptions(decimal: true),
-              style: TextStyle(color: widget.accent),
-              decoration: InputDecoration(
-                labelText: "Enter Value",
-                labelStyle: TextStyle(color: widget.accent),
-              ),
-            ),
-            const SizedBox(height: 20),
-            DropdownButton<ConversionTypes>(
-              value: selectedType,
-              dropdownColor: Colors.black,
-              style: TextStyle(color: widget.accent),
-              onChanged: (value) {
-                setState(() {
-                  selectedType = value!;
-                });
-              },
-              items: ConversionTypes.values.map((type) {
-                return DropdownMenuItem(
-                  value: type,
-                  child: Text(conversionLabel(type)),
-                );
-              }).toList(),
-            ),
-            const SizedBox(height: 20),
-            Row(
-              children: [
-                Expanded(
-                  child: OutlinedButton(
-                    onPressed: () => setState(() => direction = Direction.to),
-                    style: OutlinedButton.styleFrom(
-                      side: BorderSide(color: widget.accent, width: 2),
-                      backgroundColor: direction == Direction.to
-                          ? widget.accent.withValues(alpha: 0.15)
-                          : null,
-                    ),
-                    child: Text(
-                      "To",
-                      style: TextStyle(
-                        color: widget.accent,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: OutlinedButton(
-                    onPressed: () => setState(() => direction = Direction.from),
-                    style: OutlinedButton.styleFrom(
-                      side: BorderSide(color: widget.accent, width: 2),
-                      backgroundColor: direction == Direction.from
-                          ? widget.accent.withValues(alpha: 0.15)
-                          : null,
-                    ),
-                    child: Text(
-                      "From",
-                      style: TextStyle(
-                        color: widget.accent,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            SizedBox(
-              width: double.infinity,
-              child: OutlinedButton(
-                onPressed: convert,
-                style: OutlinedButton.styleFrom(
-                  side: BorderSide(color: widget.accent, width: 2),
-                  backgroundColor: widget.accent.withValues(alpha: 0.08),
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                  shape: const RoundedRectangleBorder(
-                    borderRadius: BorderRadius.zero,
-                  ),
-                ),
-                child: Text(
-                  "Run Conversion",
-                  style: TextStyle(
-                    color: widget.accent,
-                    fontWeight: FontWeight.bold,
-                    letterSpacing: 2,
-                  ),
-                ),
-              ),
-            ),
+  void dispose() {
+    controller.dispose();
+    _tabController.dispose();
+    super.dispose();
+  }
 
-            const SizedBox(height: 30),
-            Text(
-              result,
-              style: TextStyle(
-                color: widget.accent,
-                fontSize: 22,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            const Spacer(),
-            // this doesn't work
-            Opacity(
-              opacity: .065,
-              child: Text(
-                'Convert Tool v0.1',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  color: widget.accent,
-                  letterSpacing: 2,
-                  fontSize: 12,
-                ),
-              ),
-            ),
-          ],
+  ConversionCategory get currentCategory => categories[_tabController.index];
+
+  List<ConversionTool> get currentTools =>
+      conversionTools.where((tool) => tool.category == currentCategory).toList();
+
+  ConversionTool get selectedTool => selectedByCategory[currentCategory]!;
+
+  void convert() {
+    final input = double.tryParse(controller.text.trim());
+
+    if (input == null) {
+      setState(() {
+        result = "Enter a valid number";
+      });
+      return;
+    }
+
+    setState(() {
+      result = selectedTool.convert(direction, input);
+    });
+  }
+
+  Widget _directionButton({
+    required String label,
+    required Direction value,
+  }) {
+    final selected = direction == value;
+
+    return Expanded(
+      child: OutlinedButton(
+        onPressed: () {
+          setState(() {
+            direction = value;
+          });
+        },
+        style: OutlinedButton.styleFrom(
+          side: BorderSide(color: widget.accent, width: 2),
+          backgroundColor: selected
+              ? widget.accent.withValues(alpha: 0.15)
+              : Colors.transparent,
+        ),
+        child: Text(
+          label,
+          style: TextStyle(
+            color: widget.accent,
+            fontWeight: FontWeight.bold,
+          ),
         ),
       ),
-    ); // add stuff after this one
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final accent = widget.accent;
+
+    return Column(
+      children: [
+        TabBar(
+          controller: _tabController,
+          isScrollable: true,
+          labelColor: accent,
+          unselectedLabelColor: accent.withValues(alpha: 0.65),
+          indicatorColor: accent,
+          tabs: categories.map((category) {
+            return Tab(text: categoryLabel(category));
+          }).toList(),
+        ),
+        const SizedBox(height: 16),
+
+        Expanded(
+          child: TabBarView(
+            controller: _tabController,
+            children: categories.map((category) {
+              final toolsForCategory = conversionTools
+                  .where((tool) => tool.category == category)
+                  .toList();
+
+              final selectedToolForCategory = selectedByCategory[category]!;
+
+              return Center(
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: 700),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      TextField(
+                        controller: controller,
+                        keyboardType: const TextInputType.numberWithOptions(
+                          decimal: true,
+                          signed: true,
+                        ),
+                        style: TextStyle(color: accent),
+                        decoration: InputDecoration(
+                          labelText: "Enter Value",
+                          labelStyle: TextStyle(color: accent),
+                          enabledBorder: UnderlineInputBorder(
+                            borderSide: BorderSide(color: accent),
+                          ),
+                          focusedBorder: UnderlineInputBorder(
+                            borderSide: BorderSide(color: accent, width: 2),
+                          ),
+                        ),
+                      ),
+
+                      const SizedBox(height: 20),
+
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 12),
+                        decoration: BoxDecoration(
+                          border: Border.all(color: accent, width: 2),
+                          borderRadius: BorderRadius.circular(10),
+                          color: Colors.black,
+                        ),
+                        child: DropdownButton<ConversionTool>(
+                          value: selectedToolForCategory,
+                          isExpanded: true,
+                          underline: const SizedBox(),
+                          dropdownColor: Colors.black,
+                          style: TextStyle(color: accent),
+                          iconEnabledColor: accent,
+                          onChanged: (value) {
+                            if (value == null) return;
+                            setState(() {
+                              selectedByCategory[category] = value;
+                              result = "";
+                            });
+                          },
+                          items: toolsForCategory.map((tool) {
+                            return DropdownMenuItem<ConversionTool>(
+                              value: tool,
+                              child: Text(
+                                tool.label,
+                                style: TextStyle(color: accent),
+                              ),
+                            );
+                          }).toList(),
+                        ),
+                      ),
+
+                      const SizedBox(height: 20),
+
+                      Row(
+                        children: [
+                          _directionButton(label: "To", value: Direction.to),
+                          const SizedBox(width: 12),
+                          _directionButton(
+                            label: "From",
+                            value: Direction.from,
+                          ),
+                        ],
+                      ),
+
+                      const SizedBox(height: 20),
+
+                      SizedBox(
+                        width: double.infinity,
+                        child: OutlinedButton(
+                          onPressed: convert,
+                          style: OutlinedButton.styleFrom(
+                            side: BorderSide(color: accent, width: 2),
+                            backgroundColor: accent.withValues(alpha: 0.08),
+                            padding: const EdgeInsets.symmetric(vertical: 16),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                          ),
+                          child: Text(
+                            "Run Conversion",
+                            style: TextStyle(
+                              color: accent,
+                              fontWeight: FontWeight.bold,
+                              letterSpacing: 2,
+                            ),
+                          ),
+                        ),
+                      ),
+
+                      const SizedBox(height: 30),
+
+                      Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.all(16),
+                        decoration: BoxDecoration(
+                          border: Border.all(color: accent, width: 2),
+                          borderRadius: BorderRadius.circular(10),
+                          color: Colors.black,
+                        ),
+                        child: Text(
+                          result.isEmpty ? "Result will appear here" : result,
+                          style: TextStyle(
+                            color: accent,
+                            fontSize: 22,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+
+                      const Spacer(),
+
+                      Center(
+                        child: Opacity(
+                          opacity: 0.12,
+                          child: Text(
+                            'Convert Tool v0.2',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              color: accent,
+                              letterSpacing: 2,
+                              fontSize: 12,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            }).toList(),
+          ),
+        ),
+      ],
+    );
   }
 }
