@@ -3,6 +3,7 @@ import 'package:ultimate_window_engineer_tool/fabrication/drill_tap_Selector_pag
 import 'terminal_scaffold.dart';
 import 'fabrication/drill_index_page.dart';
 import 'fabrication/weld_it_page.dart';
+import 'fabrication/fraction_decimal_page.dart';
 
 // import 'drill_tap_selector_page';
 import 'fabrication/speed_feed_page.dart';
@@ -87,7 +88,21 @@ class _FabricateItBody extends StatelessWidget {
                   );
                 },
               ),
-              const SizedBox (height: 12),
+
+              TerminalMenuButton(
+                accent: accent,
+                label: "Fraction Calculator",
+                sublabel: "convert to and from fractions",
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => const FractionDecimalPage(),
+                    ),
+                  );
+                },
+              ),
+              const SizedBox(height: 12),
 
               const Spacer(),
               Opacity(
