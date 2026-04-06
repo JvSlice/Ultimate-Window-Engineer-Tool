@@ -3,6 +3,9 @@ import '../../terminal_scaffold.dart';
 import 'ohms_law_page.dart';
 import 'power_law_page.dart';
 import 'electrical_reference_page.dart';
+import 'voltage_divider_page.dart';
+import 'battery_runtime_page.dart';
+import 'awg_reference_page.dart';
 
 class ElectricalToolsPage extends StatelessWidget {
   const ElectricalToolsPage({super.key});
@@ -23,17 +26,17 @@ class ElectricalToolsPage extends StatelessWidget {
       VoidCallback onPressed,
     ) {
       return Padding(
-        padding: EdgeInsets.symmetric(vertical: size.height * 0.012),
+        padding: EdgeInsets.symmetric(vertical: size.height * 0.010),
         child: SizedBox(
           width: double.infinity,
-          height: size.height * 0.09,
+          height: size.height * 0.085,
           child: OutlinedButton(
             onPressed: onPressed,
             child: Text(
               label,
               textAlign: TextAlign.center,
               style: TextStyle(
-                fontSize: size.width * 0.045,
+                fontSize: size.width * 0.043,
                 fontWeight: FontWeight.bold,
               ),
             ),
@@ -62,14 +65,28 @@ class ElectricalToolsPage extends StatelessWidget {
               ),
               terminalButton(
                 context,
+                'Voltage Divider Calculator',
+                () => openPage(context, const VoltageDividerPage()),
+              ),
+              terminalButton(
+                context,
+                'Battery Runtime Estimator',
+                () => openPage(context, const BatteryRuntimePage()),
+              ),
+              terminalButton(
+                context,
+                'AWG Quick Reference',
+                () => openPage(context, const AwgReferencePage()),
+              ),
+              terminalButton(
+                context,
                 'Electrical Reference',
                 () => openPage(context, const ElectricalReferencePage()),
               ),
               const Spacer(),
               Text(
-                'Quick electrical math and basic reference values for field and design work.',
+                'Quick electrical math and reference tools for design, shop, and field use.',
                 textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.bodyMedium,
               ),
             ],
           ),
