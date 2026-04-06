@@ -3,6 +3,7 @@ import '../terminal_scaffold.dart';
 import 'physics_equations_page.dart';
 import 'geometry_page.dart';
 import 'materials/material_reference_page.dart';
+import 'eletrical_tools/eletrical_reference_page.dart';
 
 class ReferenceHomePage extends StatelessWidget {
   const ReferenceHomePage({super.key});
@@ -22,14 +23,19 @@ class ReferenceHomePage extends StatelessWidget {
         height: size.height * 0.10,
         child: OutlinedButton(
           onPressed: onPressed,
-          style: OutlinedButton.styleFrom(
-            foregroundColor: accent,
-            side: BorderSide(color: accent, width: 2),
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-            padding: EdgeInsets.zero,
-          ).copyWith(
-            overlayColor: WidgetStateProperty.all(accent.withValues(alpha: 0.08)),
-          ),
+          style:
+              OutlinedButton.styleFrom(
+                foregroundColor: accent,
+                side: BorderSide(color: accent, width: 2),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                padding: EdgeInsets.zero,
+              ).copyWith(
+                overlayColor: WidgetStateProperty.all(
+                  accent.withValues(alpha: 0.08),
+                ),
+              ),
           child: Text(
             label,
             textAlign: TextAlign.center,
@@ -60,6 +66,10 @@ class ReferenceHomePage extends StatelessWidget {
             const SizedBox(height: 14),
             terminalButton("Material Properties", () {
               _open(context, const MaterialReferencePage());
+            }),
+            const SizedBox(height: 14),
+            terminalButton("Eletrical References", () {
+              _open(context, const ElectricalReferencePage());
             }),
           ],
         ),
