@@ -51,11 +51,24 @@ class ElectricalReferencePage extends StatelessWidget {
             ),
             refCard(
               context,
+              'Voltage Divider',
+              'Vout = Vin × (R2 / (R1 + R2))\n'
+              'Use for simple unloaded resistor divider circuits.',
+            ),
+            refCard(
+              context,
+              'Battery Runtime',
+              'Runtime (hours) = Usable Ah ÷ Load Current\n'
+              'This is an estimate. Real runtime varies with temperature, chemistry, age, and discharge rate.',
+            ),
+            refCard(
+              context,
               'Common Units',
               'Voltage = volts (V)\n'
               'Current = amps (A)\n'
               'Resistance = ohms (Ω)\n'
-              'Power = watts (W)',
+              'Power = watts (W)\n'
+              'Capacity = amp-hours (Ah)',
             ),
             refCard(
               context,
@@ -73,11 +86,9 @@ class ElectricalReferencePage extends StatelessWidget {
             ),
             refCard(
               context,
-              'Helpful Reminder',
-              'For quick field math:\n'
-              '12 V × 2 A = 24 W\n'
-              '120 V × 0.5 A = 60 W\n'
-              '24 V ÷ 6 Ω = 4 A',
+              'AWG Reminder',
+              'Smaller AWG number means a larger wire.\n'
+              'Larger wire usually means lower resistance and less voltage drop.',
             ),
           ],
         ),
