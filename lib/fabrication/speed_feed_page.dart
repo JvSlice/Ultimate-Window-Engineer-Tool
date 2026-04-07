@@ -1,8 +1,8 @@
-import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 import '../terminal_scaffold.dart';
 import '../data/materials.dart';
 import '../data/material_library.dart';
+import '../widgets/calc_button.dart';
 
 enum ToolType { hss, carbide }
 
@@ -28,6 +28,12 @@ class _SpeedFeedPageState extends State<SpeedFeedPage> {
   late final TextEditingController _flutesController;
   late final TextEditingController _chiploadController;
 
+  // Stored result values so the page updates only when Run Calc is pressed.
+  double _shownSfm = 0;
+  double _shownRpm = 0;
+  double _shownFeedIpm = 0;
+  double _shownDrillIpr = 0;
+
   @override
   void initState() {
     super.initState();
@@ -35,10 +41,12 @@ class _SpeedFeedPageState extends State<SpeedFeedPage> {
     _diameterController = TextEditingController(
       text: diameterIn.toStringAsFixed(4),
     );
-    _flutesController = TextEditingController(text: flutes.toStringAsFixed(2));
+    _flutesController = TextEditingController(text: flutes.toString());
     _chiploadController = TextEditingController(
       text: chiploadIn.toStringAsFixed(4),
     );
+
+    _runCalc();
   }
 
   @override
@@ -46,19 +54,42 @@ class _SpeedFeedPageState extends State<SpeedFeedPage> {
     _diameterController.dispose();
     _flutesController.dispose();
     _chiploadController.dispose();
+    super.dispose();
+  }
+
+  void _runCalc() {
+    final parsedDiameter = double.tryParse(_diameterController.text.trim());
+    if (parsedDiameter != null && parsedDiameter > 0) {
+      diameterIn = parsedDiameter;
+    }
+
+    final parsedFlutes = int.tryParse(_flutesController.text.trim());
+    if (parsedFlutes != null && parsedFlutes > 0) {
+      flutes = parsedFlutes;
+    }
+
+    final parsedChipload = double.tryParse(_chiploadController.text.trim());
+    if (parsedChipload != null && parsedChipload > 0) {
+      chiploadIn = parsedChipload;
+    }
+
+    final sfm = _sfmFor(material, op, toolType);
+    final rpm = _rpmFromSfm(sfm, diameterIn);
+    final drillIpr = _drillIprForDiameter(diameterIn);
+    final drillFeedIpm = rpm * drillIpr;
+    final millFeedIpm = rpm * chiploadIn * flutes;
+
+    setState(() {
+      _shownSfm = sfm;
+      _shownRpm = rpm;
+      _shownDrillIpr = drillIpr;
+      _shownFeedIpm = op == Operation.drill ? drillFeedIpm : millFeedIpm;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     final accent = Theme.of(context).colorScheme.primary;
-
-    final sfm = _sfmFor(material, op, toolType);
-    final rpm = _rpmFromSfm(sfm, diameterIn);
-
-    final drillIpr = _drillIprForDiameter(diameterIn);
-    final drillFeedIpm = rpm * drillIpr;
-
-    final millFeedIpm = rpm * chiploadIn * flutes;
 
     return TerminalScaffold(
       title: "Speed & Feed",
@@ -123,7 +154,6 @@ class _SpeedFeedPageState extends State<SpeedFeedPage> {
             _sectionTitle("Material", accent),
             const SizedBox(height: 8),
 
-            // Dropdown styled like your terminal
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 12),
               decoration: BoxDecoration(
@@ -166,11 +196,7 @@ class _SpeedFeedPageState extends State<SpeedFeedPage> {
             _numberField(
               accent: accent,
               controller: _diameterController,
-              //initial: diameterIn.toString(),
-              onChanged: (s) {
-                final v = double.tryParse(s);
-                if (v != null && v > 0) setState(() => diameterIn = v);
-              },
+              onChanged: (_) {},
               hint: "e.g. 0.2500",
             ),
 
@@ -184,11 +210,7 @@ class _SpeedFeedPageState extends State<SpeedFeedPage> {
                     child: _numberField(
                       accent: accent,
                       controller: _flutesController,
-                      //initial: flutes.toString(),
-                      onChanged: (s) {
-                        final v = int.tryParse(s);
-                        if (v != null && v > 0) setState(() => flutes = v);
-                      },
+                      onChanged: (_) {},
                       hint: "Flutes",
                     ),
                   ),
@@ -197,11 +219,7 @@ class _SpeedFeedPageState extends State<SpeedFeedPage> {
                     child: _numberField(
                       accent: accent,
                       controller: _chiploadController,
-                      //initial: chiploadIn.toString(),
-                      onChanged: (s) {
-                        final v = double.tryParse(s);
-                        if (v != null && v > 0) setState(() => chiploadIn = v);
-                      },
+                      onChanged: (_) {},
                       hint: "Chipload (in/tooth)",
                     ),
                   ),
@@ -210,18 +228,28 @@ class _SpeedFeedPageState extends State<SpeedFeedPage> {
             ],
 
             const SizedBox(height: 24),
+            SizedBox(
+              width: double.infinity,
+              child: terminalCalcButton(
+                accent: accent,
+                label: "Run Calc",
+                onPressed: _runCalc,
+              ),
+            ),
+
+            const SizedBox(height: 24),
             _sectionTitle("Results", accent),
             const SizedBox(height: 8),
 
             _resultCard(
               accent: accent,
               lines: [
-                "SFM: ${sfm.toStringAsFixed(0)}",
-                "RPM: ${rpm.toStringAsFixed(0)}",
+                "SFM: ${_shownSfm.toStringAsFixed(0)}",
+                "RPM: ${_shownRpm.toStringAsFixed(0)}",
                 if (op == Operation.drill)
-                  "Feed: ${drillFeedIpm.toStringAsFixed(1)} IPM (IPR ${drillIpr.toStringAsFixed(4)})",
+                  "Feed: ${_shownFeedIpm.toStringAsFixed(1)} IPM (IPR ${_shownDrillIpr.toStringAsFixed(4)})",
                 if (op == Operation.mill)
-                  "Feed: ${millFeedIpm.toStringAsFixed(1)} IPM",
+                  "Feed: ${_shownFeedIpm.toStringAsFixed(1)} IPM",
               ],
             ),
 
@@ -303,7 +331,6 @@ class _SpeedFeedPageState extends State<SpeedFeedPage> {
   Widget _numberField({
     required Color accent,
     required TextEditingController controller,
-
     required void Function(String) onChanged,
     required String hint,
   }) {
