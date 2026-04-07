@@ -61,51 +61,21 @@ class MainMenuSearchEngine {
         }
       }
 
-      if (lower.contains('e1300') && label.contains('astm e1300')) {
-        score += 120;
-      }
-      if (lower.contains('tap') && label.contains('drill & tap')) {
-        score += 70;
-      }
-      if (lower.contains('awg') && label.contains('awg')) {
-        score += 85;
-      }
-      if (lower.contains('glass') && label.contains('glass')) {
-        score += 50;
-      }
-      if (lower.contains('deflection') && label.contains('deflection')) {
-        score += 50;
-      }
-      if (lower.contains('ohm') && label.contains('ohms')) {
-        score += 70;
-      }
-      if (lower.contains('triangle') && label.contains('triangle')) {
-        score += 45;
-      }
-      if (lower.contains('weld') && label.contains('weld')) {
-        score += 55;
-      }
-      if (lower.contains('tig') && label.contains('tig')) {
-        score += 65;
-      }
-      if (lower.contains('stick') && label.contains('stick')) {
-        score += 65;
-      }
-      if (lower.contains('gas') && label.contains('gas')) {
-        score += 35;
-      }
-      if (lower.contains('battery') && label.contains('battery')) {
-        score += 60;
-      }
-      if (lower.contains('torque') && label.contains('torque')) {
-        score += 60;
-      }
-      if (lower.contains('beam') && label.contains('beam')) {
-        score += 60;
-      }
-      if (lower.contains('geometry') && label.contains('geometry')) {
-        score += 50;
-      }
+      if (lower.contains('e1300') && label.contains('astm e1300')) score += 120;
+      if (lower.contains('tap') && label.contains('drill & tap')) score += 70;
+      if (lower.contains('awg') && label.contains('awg')) score += 85;
+      if (lower.contains('glass') && label.contains('glass')) score += 50;
+      if (lower.contains('deflection') && label.contains('deflection')) score += 50;
+      if (lower.contains('ohm') && label.contains('ohms')) score += 70;
+      if (lower.contains('triangle') && label.contains('triangle')) score += 45;
+      if (lower.contains('weld') && label.contains('weld')) score += 55;
+      if (lower.contains('tig') && label.contains('tig')) score += 65;
+      if (lower.contains('stick') && label.contains('stick')) score += 65;
+      if (lower.contains('gas') && label.contains('gas')) score += 35;
+      if (lower.contains('battery') && label.contains('battery')) score += 60;
+      if (lower.contains('torque') && label.contains('torque')) score += 60;
+      if (lower.contains('beam') && label.contains('beam')) score += 60;
+      if (lower.contains('geometry') && label.contains('geometry')) score += 50;
 
       if (score > 0) {
         scored.add(MapEntry(target, score));
@@ -233,12 +203,6 @@ class MainMenuSearchEngine {
       'pascal': 'pa',
       'pascals': 'pa',
       'kpa': 'kpa',
-      'cfm/ft2': 'cfm/ft2',
-      'cfm/ft^2': 'cfm/ft2',
-      'cfmft2': 'cfm/ft2',
-      'l/min/m2': 'l/min/m2',
-      'l/min/m^2': 'l/min/m2',
-      'lminm2': 'l/min/m2',
       'mph': 'mph',
       'in': 'in',
       'inch': 'in',
@@ -247,98 +211,28 @@ class MainMenuSearchEngine {
       'foot': 'ft',
       'feet': 'ft',
       'mm': 'mm',
-      'millimeter': 'mm',
-      'millimeters': 'mm',
       'cm': 'cm',
-      'centimeter': 'cm',
-      'centimeters': 'cm',
       'm': 'm',
-      'meter': 'm',
-      'meters': 'm',
       'yd': 'yd',
-      'yard': 'yd',
-      'yards': 'yd',
       'mi': 'mi',
-      'mile': 'mi',
-      'miles': 'mi',
       'km': 'km',
-      'kilometer': 'km',
-      'kilometers': 'km',
-      'um': 'um',
-      'micron': 'um',
-      'microns': 'um',
-      'in2': 'in2',
-      'in^2': 'in2',
-      'sqin': 'in2',
-      'cm2': 'cm2',
-      'cm^2': 'cm2',
-      'sqcm': 'cm2',
-      'ft2': 'ft2',
-      'ft^2': 'ft2',
-      'sqft': 'ft2',
-      'm2': 'm2',
-      'm^2': 'm2',
-      'sqm': 'm2',
-      'yd2': 'yd2',
-      'yd^2': 'yd2',
-      'sqyd': 'yd2',
-      'acre': 'acres',
-      'acres': 'acres',
       'kg': 'kg',
-      'kilogram': 'kg',
-      'kilograms': 'kg',
       'lb': 'lb',
       'lbs': 'lb',
-      'pound': 'lb',
-      'pounds': 'lb',
       'g': 'g',
-      'gram': 'g',
-      'grams': 'g',
       'oz': 'oz',
-      'ounce': 'oz',
-      'ounces': 'oz',
       'n': 'n',
-      'newton': 'n',
-      'newtons': 'n',
       'kn': 'kn',
-      'kilonewton': 'kn',
-      'kilonewtons': 'kn',
-      'lbf': 'lbf',
       'l': 'l',
-      'liter': 'l',
-      'liters': 'l',
-      'litre': 'l',
-      'litres': 'l',
       'ml': 'ml',
-      'milliliter': 'ml',
-      'milliliters': 'ml',
-      'millilitre': 'ml',
-      'millilitres': 'ml',
       'gal': 'gal',
-      'gallon': 'gal',
-      'gallons': 'gal',
       'floz': 'floz',
-      'fl.oz': 'floz',
-      'in3': 'in3',
-      'in^3': 'in3',
-      'ft3': 'ft3',
-      'ft^3': 'ft3',
-      'm3': 'm3',
-      'm^3': 'm3',
       'tsp': 'tsp',
-      'teaspoon': 'tsp',
-      'teaspoons': 'tsp',
       'tbsp': 'tbsp',
-      'tablespoon': 'tbsp',
-      'tablespoons': 'tbsp',
       'cup': 'cups',
       'cups': 'cups',
       'pt': 'pt',
-      'pint': 'pt',
-      'pints': 'pt',
       'qt': 'qt',
-      'quart': 'qt',
-      'quarts': 'qt',
       'f': 'f',
       'fahrenheit': 'f',
       'c': 'c',
@@ -346,58 +240,30 @@ class MainMenuSearchEngine {
       'k': 'k',
       'kelvin': 'k',
       'v': 'v',
-      'volt': 'v',
-      'volts': 'v',
-      'mv': 'mv',
-      'millivolt': 'mv',
-      'millivolts': 'mv',
       'a': 'a',
-      'amp': 'a',
-      'amps': 'a',
-      'ampere': 'a',
-      'amperes': 'a',
       'ma': 'ma',
-      'milliamp': 'ma',
-      'milliamps': 'ma',
       'w': 'w',
-      'watt': 'w',
-      'watts': 'w',
       'kw': 'kw',
-      'kilowatt': 'kw',
-      'kilowatts': 'kw',
       'ohm': 'ohm',
       'ohms': 'ohm',
       'kohm': 'kohm',
-      'kilohm': 'kohm',
-      'kilohms': 'kohm',
       'mohm': 'mohm',
-      'megohm': 'mohm',
-      'megohms': 'mohm',
       'hz': 'hz',
-      'hertz': 'hz',
       'khz': 'khz',
-      'kilohertz': 'khz',
       'm/s': 'm/s',
-      'ms': 'm/s',
       'ft/s': 'ft/s',
-      'fps': 'ft/s',
       'km/h': 'km/h',
       'kph': 'km/h',
       'kmh': 'km/h',
       'hp': 'hp',
-      'horsepower': 'hp',
       'btu': 'btu',
       'j': 'j',
-      'joule': 'j',
-      'joules': 'j',
       'kwh': 'kwh',
       'ftlbf': 'ftlbf',
       'ftlb': 'ftlbf',
       'inlbf': 'inlbf',
       'inlb': 'inlbf',
       'nm': 'nm',
-      'newtonmeter': 'nm',
-      'newtonmeters': 'nm',
     };
 
     return aliases[s] ?? s;
