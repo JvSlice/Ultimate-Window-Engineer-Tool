@@ -32,24 +32,13 @@ class MainMenuSearchOverlay extends StatelessWidget {
         border: Border.all(color: accent, width: 2),
         borderRadius: BorderRadius.circular(12),
         color: Colors.black,
-        boxShadow: [
-          BoxShadow(
-            color: accent.withValues(alpha: 0.10),
-            blurRadius: 22,
-            spreadRadius: 2,
-          ),
-        ],
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
           Row(
             children: [
-              Icon(
-                Icons.search,
-                color: accent.withValues(alpha: 0.85),
-                size: 20,
-              ),
+              Icon(Icons.search, color: accent),
               const SizedBox(width: 10),
               Expanded(
                 child: TextField(
@@ -73,17 +62,13 @@ class MainMenuSearchOverlay extends StatelessWidget {
                 ),
               ),
               IconButton(
-                tooltip: 'Close search',
                 onPressed: onClose,
                 icon: Icon(Icons.close, color: accent),
               ),
             ],
           ),
           const SizedBox(height: 10),
-          Divider(
-            color: accent.withValues(alpha: 0.25),
-            height: 1,
-          ),
+          Divider(color: accent.withValues(alpha: 0.25), height: 1),
           const SizedBox(height: 8),
           Flexible(
             child: hits.isEmpty
@@ -100,7 +85,6 @@ class MainMenuSearchOverlay extends StatelessWidget {
                             : 'No results found',
                         style: TextStyle(
                           color: accent.withValues(alpha: 0.55),
-                          letterSpacing: 0.5,
                         ),
                       ),
                     ),
@@ -108,17 +92,14 @@ class MainMenuSearchOverlay extends StatelessWidget {
                 : ListView.separated(
                     shrinkWrap: true,
                     itemCount: hits.length,
-                    separatorBuilder: (_, _) => Divider(
-                      color: accent.withValues(alpha: 0.12),
-                      height: 1,
-                    ),
+                    separatorBuilder: (_, _) =>
+                        Divider(color: accent.withValues(alpha: 0.12), height: 1),
                     itemBuilder: (context, index) {
                       final hit = hits[index];
                       final isInstant = hit.kindLabel == 'instant';
 
                       return InkWell(
                         onTap: hit.onTap,
-                        borderRadius: BorderRadius.circular(8),
                         child: Padding(
                           padding: const EdgeInsets.symmetric(
                             horizontal: 8,
@@ -143,7 +124,6 @@ class MainMenuSearchOverlay extends StatelessWidget {
                                       style: TextStyle(
                                         color: accent,
                                         fontWeight: FontWeight.w700,
-                                        letterSpacing: 0.6,
                                       ),
                                     ),
                                     const SizedBox(height: 3),
@@ -155,19 +135,6 @@ class MainMenuSearchOverlay extends StatelessWidget {
                                       ),
                                     ),
                                   ],
-                                ),
-                              ),
-                              const SizedBox(width: 10),
-                              Opacity(
-                                opacity: 0.55,
-                                child: Text(
-                                  hit.kindLabel.toUpperCase(),
-                                  style: TextStyle(
-                                    color: accent,
-                                    fontSize: 10,
-                                    letterSpacing: 1.2,
-                                    fontWeight: FontWeight.w700,
-                                  ),
                                 ),
                               ),
                             ],
