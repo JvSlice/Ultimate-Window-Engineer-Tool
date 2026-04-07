@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../terminal_scaffold.dart';
-import '../../widgets/terminal_fields.dart'; // for terminalResultCard if you want it
+// for terminalResultCard if you want it
 import 'stick_rod_page.dart';
 import 'tig_tungsten_page.dart';
 import 'shielding_gas_page.dart';

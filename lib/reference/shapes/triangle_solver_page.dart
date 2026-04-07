@@ -660,11 +660,11 @@ class _TriangleSolverPageState extends State<TriangleSolverPage> {
 
     if (angles.length < 2) return [];
 
-    if (AA == null) AA = 180.0 - (BB ?? 0) - (CC ?? 0);
+    AA ??= 180.0 - (BB ?? 0) - (CC ?? 0);
 
-    if (BB == null) BB = 180.0 - (AA ?? 0) - (CC ?? 0);
+    BB ??= 180.0 - (AA ?? 0) - (CC ?? 0);
 
-    if (CC == null) CC = 180.0 - (AA ?? 0) - (BB ?? 0);
+    CC ??= 180.0 - (AA ?? 0) - (BB ?? 0);
 
     if (AA <= 0 || BB <= 0 || CC <= 0) return [];
 

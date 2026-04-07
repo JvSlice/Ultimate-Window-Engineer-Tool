@@ -46,14 +46,18 @@ class MaterialDetailPage extends StatelessWidget {
       final s = material.strength!;
       lines.add("");
       lines.add("Strength:");
-      if (s.yieldPsi != null)
+      if (s.yieldPsi != null) {
         lines.add("• Yield: ${s.yieldPsi!.toStringAsFixed(0)} psi");
-      if (s.tensilePsi != null)
+      }
+      if (s.tensilePsi != null) {
         lines.add("• Tensile: ${s.tensilePsi!.toStringAsFixed(0)} psi");
-      if (s.yieldMpa != null)
+      }
+      if (s.yieldMpa != null) {
         lines.add("• Yield: ${s.yieldMpa!.toStringAsFixed(0)} MPa");
-      if (s.tensileMpa != null)
+      }
+      if (s.tensileMpa != null) {
         lines.add("• Tensile: ${s.tensileMpa!.toStringAsFixed(0)} MPa");
+      }
     }
 
     // Hardness
@@ -76,8 +80,9 @@ class MaterialDetailPage extends StatelessWidget {
       final m = material.machining!;
       lines.add("");
       lines.add("Machining:");
-      if (m.machinabilityPercent != null)
+      if (m.machinabilityPercent != null) {
         lines.add("• Machinability: ${m.machinabilityPercent}%");
+      }
       if (m.sfmNotes != null) lines.add("• SFM: ${m.sfmNotes}");
       if (m.notes != null) lines.add("• Notes: ${m.notes}");
     }
@@ -87,8 +92,9 @@ class MaterialDetailPage extends StatelessWidget {
       lines.add("");
       lines.add("Welding:");
       lines.add("• Rating: ${_weldRatingText(material.weldability!)}");
-      if (material.weldNotes != null)
+      if (material.weldNotes != null) {
         lines.add("• Notes: ${material.weldNotes}");
+      }
     }
 
     //Melting Temp
@@ -117,10 +123,12 @@ class MaterialDetailPage extends StatelessWidget {
       lines.add("");
       lines.add("Heat Treat:");
       final ht = material.heatTreat!;
-      if (ht.normalize != null)
+      if (ht.normalize != null) {
         lines.add("• Normalize: ${_fmtTemp(ht.normalize!)}");
-      if (ht.austenitize != null)
+      }
+      if (ht.austenitize != null) {
         lines.add("• Austenitize: ${_fmtTemp(ht.austenitize!)}");
+      }
       if (ht.quench != null) lines.add("• Quench: (see notes)");
       if (ht.temper != null) lines.add("• Temper: ${_fmtTemp(ht.temper!)}");
       if (ht.notes != null) lines.add("• Notes: ${ht.notes}");

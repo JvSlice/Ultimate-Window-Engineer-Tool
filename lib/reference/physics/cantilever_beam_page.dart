@@ -31,8 +31,8 @@ class _CantileverBeamPageState extends State<CantileverBeamPage> {
   double? _p(TextEditingController c) => double.tryParse(c.text.trim());
 
   void _calculate() {
-    final L_in = _p(lengthInCtrl);
-    final P_total = _p(loadLbfCtrl);
+    final lIn = _p(lengthInCtrl);
+    final pTotal = _p(loadLbfCtrl);
     final E = _p(ePsiCtrl);
     final I = _p(iIn4Ctrl);
 
@@ -41,21 +41,21 @@ class _CantileverBeamPageState extends State<CantileverBeamPage> {
       Mmax_inlb = null;
       defl_in = null;
 
-      if (L_in == null || P_total == null || L_in <= 0) return;
+      if (lIn == null || pTotal == null || lIn <= 0) return;
 
       if (loadType == CantileverLoadType.endPoint) {
-        Vmax_lbf = P_total;
-        Mmax_inlb = P_total * L_in;
+        Vmax_lbf = pTotal;
+        Mmax_inlb = pTotal * lIn;
 
         if (E != null && I != null && E > 0 && I > 0) {
-          defl_in = (P_total * pow(L_in, 3)) / (3.0 * E * I);
+          defl_in = (pTotal * pow(lIn, 3)) / (3.0 * E * I);
         }
       } else {
-        Vmax_lbf = P_total;
-        Mmax_inlb = (P_total * L_in) / 2.0;
+        Vmax_lbf = pTotal;
+        Mmax_inlb = (pTotal * lIn) / 2.0;
 
         if (E != null && I != null && E > 0 && I > 0) {
-          defl_in = (P_total * pow(L_in, 3)) / (8.0 * E * I);
+          defl_in = (pTotal * pow(lIn, 3)) / (8.0 * E * I);
         }
       }
     });
@@ -98,7 +98,7 @@ class _CantileverBeamPageState extends State<CantileverBeamPage> {
   @override
   Widget build(BuildContext context) {
     final accent = Theme.of(context).colorScheme.primary;
-    final Mmax_ftlb = (Mmax_inlb == null) ? null : Mmax_inlb! / 12.0;
+    final mmaxFtlb = (Mmax_inlb == null) ? null : Mmax_inlb! / 12.0;
 
     return TerminalScaffold(
       title: "Cantilever Beam",
@@ -219,7 +219,7 @@ class _CantileverBeamPageState extends State<CantileverBeamPage> {
               lines: [
                 "Max Shear Vmax: ${Vmax_lbf == null ? '—' : Vmax_lbf!.toStringAsFixed(2)} lbf",
                 "Max Moment Mmax: ${Mmax_inlb == null ? '—' : Mmax_inlb!.toStringAsFixed(2)} in-lb",
-                "Max Moment Mmax: ${Mmax_ftlb == null ? '—' : Mmax_ftlb.toStringAsFixed(2)} ft-lb",
+                "Max Moment Mmax: ${mmaxFtlb == null ? '—' : mmaxFtlb.toStringAsFixed(2)} ft-lb",
                 defl_in == null
                     ? "Tip Deflection δ: — (need E and I)"
                     : "Tip Deflection δ: ${defl_in!.toStringAsFixed(4)} in",
