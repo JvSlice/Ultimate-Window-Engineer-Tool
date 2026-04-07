@@ -10,7 +10,7 @@ import '../window_testing_tools_page.dart';
 import '../reference/reference_home_page.dart';
 
 import 'search/main_menu_search_engine.dart';
-import 'search/main_menu_search_overlay.dart';
+import 'search/main_menu_search_overylay.dart';
 import 'search/main_menu_search_targets.dart';
 import 'search/search_models.dart';
 
@@ -118,18 +118,19 @@ class _MainMenuPageState extends State<MainMenuPage> {
         height: size.height * 0.10,
         child: OutlinedButton(
           onPressed: onPressed,
-          style: OutlinedButton.styleFrom(
-            foregroundColor: accent,
-            side: BorderSide(color: accent, width: 2),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10),
-            ),
-            padding: EdgeInsets.zero,
-          ).copyWith(
-            overlayColor: WidgetStateProperty.all(
-              accent.withValues(alpha: 0.08),
-            ),
-          ),
+          style:
+              OutlinedButton.styleFrom(
+                foregroundColor: accent,
+                side: BorderSide(color: accent, width: 2),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                padding: EdgeInsets.zero,
+              ).copyWith(
+                overlayColor: WidgetStateProperty.all(
+                  accent.withValues(alpha: 0.08),
+                ),
+              ),
           child: Text(
             label,
             textAlign: TextAlign.center,
@@ -151,10 +152,7 @@ class _MainMenuPageState extends State<MainMenuPage> {
       return OutlinedButton.icon(
         onPressed: onPressed,
         icon: Icon(icon, size: size.width * 0.02),
-        label: Text(
-          label,
-          style: TextStyle(fontSize: size.width * 0.016),
-        ),
+        label: Text(label, style: TextStyle(fontSize: size.width * 0.016)),
         style: OutlinedButton.styleFrom(
           foregroundColor: accent,
           side: BorderSide(color: accent, width: size.width * 0.002),
@@ -223,9 +221,7 @@ class _MainMenuPageState extends State<MainMenuPage> {
                     label: "settings",
                     onPressed: () {
                       _openPage(
-                        SettingsPage(
-                          themeController: widget.themeController,
-                        ),
+                        SettingsPage(themeController: widget.themeController),
                       );
                     },
                   ),
