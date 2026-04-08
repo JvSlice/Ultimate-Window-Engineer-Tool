@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'app_theme.dart';
 import 'home/main_menu_page.dart';
+//commet to get code to rerun
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
