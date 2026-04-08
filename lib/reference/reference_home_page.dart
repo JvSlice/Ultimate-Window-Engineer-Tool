@@ -4,7 +4,7 @@ import 'physics_equations_page.dart';
 import 'geometry_page.dart';
 import 'materials/material_reference_page.dart';
 import 'eletrical_tools/eletrical_reference_page.dart';
-import 'reference/forklift_load_calculator_page.dart';
+import 'forklift_load_calculator_page.dart';
 
 class ReferenceHomePage extends StatelessWidget {
   const ReferenceHomePage({super.key});
