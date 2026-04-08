@@ -24,19 +24,18 @@ class ReferenceHomePage extends StatelessWidget {
         height: size.height * 0.10,
         child: OutlinedButton(
           onPressed: onPressed,
-          style:
-              OutlinedButton.styleFrom(
-                foregroundColor: accent,
-                side: BorderSide(color: accent, width: 2),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                padding: EdgeInsets.zero,
-              ).copyWith(
-                overlayColor: WidgetStateProperty.all(
-                  accent.withValues(alpha: 0.08),
-                ),
-              ),
+          style: OutlinedButton.styleFrom(
+            foregroundColor: accent,
+            side: BorderSide(color: accent, width: 2),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
+            ),
+            padding: EdgeInsets.zero,
+          ).copyWith(
+            overlayColor: WidgetStateProperty.all(
+              accent.withValues(alpha: 0.08),
+            ),
+          ),
           child: Text(
             label,
             textAlign: TextAlign.center,
@@ -72,9 +71,9 @@ class ReferenceHomePage extends StatelessWidget {
             terminalButton("Eletrical References", () {
               _open(context, const ElectricalReferencePage());
             }),
-                 const SizedBox(height: 14),
+            const SizedBox(height: 14),
             terminalButton("Fork Lift Load Calculator", () {
-              _open(context, const ForkLiftCalculatorPage());
+              _open(context, const ForkliftLoadCalculatorPage());
             }),
           ],
         ),
