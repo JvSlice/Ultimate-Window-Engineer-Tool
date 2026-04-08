@@ -153,12 +153,12 @@ List<SearchTarget> buildMainMenuSearchTargets(
       keywords: ['weld', 'welding', 'mig', 'tig', 'stick'],
       builder: (_) => const WeldItPage(),
     ),
-    SearchTarget(
-      label: 'TIG Amps',
-      subtitle: 'TIG amperage reference',
-      keywords: ['tig amps', 'tig amp', 'amperage'],
-      builder: (_) => const TigAmpsPage(),
-    ),
+    //SearchTarget(
+    //label: 'TIG Amps',
+    //subtitle: 'TIG amperage reference',
+    //keywords: ['tig amps', 'tig amp', 'amperage'],
+    //builder: (_) => const TigAmpPage(),
+    //),
     SearchTarget(
       label: 'TIG Tungsten',
       subtitle: 'TIG tungsten reference',
@@ -305,7 +305,12 @@ List<SearchTarget> buildMainMenuSearchTargets(
     SearchTarget(
       label: 'Section Properties (I)',
       subtitle: 'Section property formulas',
-      keywords: ['section', 'moment of inertia', 'inertia', 'section properties'],
+      keywords: [
+        'section',
+        'moment of inertia',
+        'inertia',
+        'section properties',
+      ],
       builder: (_) => const SectionIPage(),
     ),
 
