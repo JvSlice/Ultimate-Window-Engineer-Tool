@@ -2,37 +2,6 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import '../terminal_scaffold.dart';
 
-/// ============================================================
-/// FORKLIFT LOAD CALCULATOR PAGE
-/// ============================================================
-///
-/// Purpose:
-/// - Allow user to build a simplified forklift rating plate / chart
-/// - Estimate capacity as load center changes
-/// - Optionally account for attachment weight and forward CG shift
-/// - Optionally select by lift height when multiple chart rows exist
-///
-/// IMPORTANT:
-/// This is an estimate tool only.
-/// Always verify against OEM load charts, truck documentation,
-/// and site safety rules.
-///
-/// Assumptions in this version:
-/// - Static moment-based approximation
-/// - Mast vertical / level condition
-/// - No dynamic effects
-/// - No tilt effects
-/// - No tire / stability / axle / attachment-specific hard limits
-///
-/// HACKABLE NOTES:
-/// - You can later add:
-///   1) saved charts
-///   2) import/export
-///   3) multiple truck profiles
-///   4) stricter attachment handling
-///   5) warnings by threshold / color
-/// ============================================================
-
 class ForkliftLoadCalculatorPage extends StatefulWidget {
   const ForkliftLoadCalculatorPage({super.key});
 
@@ -46,9 +15,6 @@ class _ForkliftLoadCalculatorPageState
     with SingleTickerProviderStateMixin {
   late final TabController _tabController;
 
-  /// ---------------------------
-  /// QUICK CALC CONTROLLERS
-  /// ---------------------------
   final TextEditingController _quickRatedCapacityController =
       TextEditingController(text: '9400');
   final TextEditingController _quickRatedLoadCenterController =
@@ -60,9 +26,6 @@ class _ForkliftLoadCalculatorPageState
   final TextEditingController _quickAttachmentShiftController =
       TextEditingController(text: '0');
 
-  /// ---------------------------
-  /// CHART INPUT CONTROLLERS
-  /// ---------------------------
   final TextEditingController _rowMaxHeightController =
       TextEditingController(text: '189');
   final TextEditingController _rowRatedCapacityController =
@@ -79,7 +42,6 @@ class _ForkliftLoadCalculatorPageState
   final TextEditingController _chartAttachmentShiftController =
       TextEditingController(text: '0');
 
-  /// Example starter row based on the photo
   final List<ForkliftChartRow> _chartRows = [
     const ForkliftChartRow(
       maxHeightIn: 189,
@@ -128,32 +90,35 @@ class _ForkliftLoadCalculatorPageState
 
     return TerminalScaffold(
       title: 'Forklift Load Calculator',
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          _buildHeaderCard(accent, textTheme),
-          const SizedBox(height: 12),
-          TabBar(
-            controller: _tabController,
-            indicatorColor: accent,
-            labelColor: accent,
-            unselectedLabelColor: accent.withValues(alpha: 0.65),
-            tabs: const [
-              Tab(text: 'Quick Calc'),
-              Tab(text: 'Plate Builder'),
-            ],
-          ),
-          const SizedBox(height: 12),
-          Expanded(
-            child: TabBarView(
+      child: Padding(
+        padding: const EdgeInsets.all(12),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            _buildHeaderCard(accent, textTheme),
+            const SizedBox(height: 12),
+            TabBar(
               controller: _tabController,
-              children: [
-                _buildQuickCalcTab(accent),
-                _buildPlateBuilderTab(accent),
+              indicatorColor: accent,
+              labelColor: accent,
+              unselectedLabelColor: accent.withValues(alpha: 0.65),
+              tabs: const [
+                Tab(text: 'Quick Calc'),
+                Tab(text: 'Plate Builder'),
               ],
             ),
-          ),
-        ],
+            const SizedBox(height: 12),
+            Expanded(
+              child: TabBarView(
+                controller: _tabController,
+                children: [
+                  _buildQuickCalcTab(accent),
+                  _buildPlateBuilderTab(accent),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -213,13 +178,13 @@ class _ForkliftLoadCalculatorPageState
                 const SizedBox(height: 10),
                 _numberField(
                   controller: _quickAttachmentWeightController,
-                  label: 'Attachment Weight (lb)  [optional]',
+                  label: 'Attachment Weight (lb) [optional]',
                   accent: accent,
                 ),
                 const SizedBox(height: 10),
                 _numberField(
                   controller: _quickAttachmentShiftController,
-                  label: 'Forward CG Shift (in)  [optional]',
+                  label: 'Forward CG Shift (in) [optional]',
                   accent: accent,
                 ),
                 const SizedBox(height: 12),
@@ -314,13 +279,13 @@ class _ForkliftLoadCalculatorPageState
                 const SizedBox(height: 10),
                 _numberField(
                   controller: _chartAttachmentWeightController,
-                  label: 'Attachment Weight (lb)  [optional]',
+                  label: 'Attachment Weight (lb) [optional]',
                   accent: accent,
                 ),
                 const SizedBox(height: 10),
                 _numberField(
                   controller: _chartAttachmentShiftController,
-                  label: 'Forward CG Shift (in)  [optional]',
+                  label: 'Forward CG Shift (in) [optional]',
                   accent: accent,
                 ),
                 const SizedBox(height: 12),
@@ -346,19 +311,25 @@ class _ForkliftLoadCalculatorPageState
       accent: accent,
       title: 'Quick Calc Result',
       child: result == null
-          ? Text(
-              'No result yet.',
-              style: TextStyle(color: accent),
-            )
+          ? Text('No result yet.', style: TextStyle(color: accent))
           : Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                _resultLine(accent, 'Rated Moment',
-                    '${result.ratedMoment.toStringAsFixed(1)} lb-in'),
-                _resultLine(accent, 'Attachment Penalty Moment',
-                    '${result.attachmentPenaltyMoment.toStringAsFixed(1)} lb-in'),
-                _resultLine(accent, 'Remaining Moment',
-                    '${result.remainingMoment.toStringAsFixed(1)} lb-in'),
+                _resultLine(
+                  accent,
+                  'Rated Moment',
+                  '${result.ratedMoment.toStringAsFixed(1)} lb-in',
+                ),
+                _resultLine(
+                  accent,
+                  'Attachment Penalty Moment',
+                  '${result.attachmentPenaltyMoment.toStringAsFixed(1)} lb-in',
+                ),
+                _resultLine(
+                  accent,
+                  'Remaining Moment',
+                  '${result.remainingMoment.toStringAsFixed(1)} lb-in',
+                ),
                 const SizedBox(height: 8),
                 _resultLine(
                   accent,
@@ -434,10 +405,7 @@ class _ForkliftLoadCalculatorPageState
       accent: accent,
       title: 'Stored Plate Rows',
       child: _chartRows.isEmpty
-          ? Text(
-              'No rows added.',
-              style: TextStyle(color: accent),
-            )
+          ? Text('No rows added.', style: TextStyle(color: accent))
           : Column(
               children: List.generate(_chartRows.length, (index) {
                 final row = _chartRows[index];
@@ -482,10 +450,7 @@ class _ForkliftLoadCalculatorPageState
       accent: accent,
       title: 'Chart Calculation Result',
       child: result == null
-          ? Text(
-              'No result yet.',
-              style: TextStyle(color: accent),
-            )
+          ? Text('No result yet.', style: TextStyle(color: accent))
           : Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -608,7 +573,12 @@ class _ForkliftLoadCalculatorPageState
     );
   }
 
-  Widget _resultLine(Color accent, String label, String value, {bool big = false}) {
+  Widget _resultLine(
+    Color accent,
+    String label,
+    String value, {
+    bool big = false,
+  }) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 3),
       child: Row(
@@ -670,8 +640,10 @@ class _ForkliftLoadCalculatorPageState
         attachmentPenaltyMoment: result.attachmentPenaltyMoment,
         remainingMoment: result.remainingMoment,
         estimatedCapacityLb: result.estimatedCapacityLb,
-        capacityAt72In: result.remainingMoment <= 0 ? 0 : result.remainingMoment / 72.0,
-        capacityAt84In: result.remainingMoment <= 0 ? 0 : result.remainingMoment / 84.0,
+        capacityAt72In:
+            result.remainingMoment <= 0 ? 0 : result.remainingMoment / 72.0,
+        capacityAt84In:
+            result.remainingMoment <= 0 ? 0 : result.remainingMoment / 84.0,
       );
     });
   }
@@ -679,7 +651,7 @@ class _ForkliftLoadCalculatorPageState
   void _runChartCalc() {
     if (_chartRows.isEmpty) {
       setState(() {
-        _chartResult = ChartCalcResult(
+        _chartResult = const ChartCalcResult(
           selectedRow: null,
           ratedMoment: 0,
           attachmentPenaltyMoment: 0,
@@ -814,7 +786,8 @@ class _ForkliftLoadCalculatorPageState
   }
 
   ForkliftChartRow? _selectRowForHeight(double actualHeightIn) {
-    final rows = [..._chartRows]..sort((a, b) => a.maxHeightIn.compareTo(b.maxHeightIn));
+    final rows = [..._chartRows]
+      ..sort((a, b) => a.maxHeightIn.compareTo(b.maxHeightIn));
 
     for (final row in rows) {
       if (actualHeightIn <= row.maxHeightIn) {
@@ -844,9 +817,11 @@ class _ForkliftLoadCalculatorPageState
 
     final ratedMoment = ratedCapacityLb * ratedLoadCenterIn;
     final attachmentPenaltyMoment =
-        math.max(0.0, attachmentWeightLb) * math.max(0.0, attachmentForwardShiftIn);
+        math.max(0.0, attachmentWeightLb) *
+        math.max(0.0, attachmentForwardShiftIn);
     final remainingMoment = math.max(0.0, ratedMoment - attachmentPenaltyMoment);
-    final estimatedCapacityLb = math.max(0.0, remainingMoment / actualLoadCenterIn);
+    final estimatedCapacityLb =
+        math.max(0.0, remainingMoment / actualLoadCenterIn);
 
     return _MomentCalcResult(
       ratedMoment: ratedMoment,
@@ -873,10 +848,6 @@ class _ForkliftLoadCalculatorPageState
     );
   }
 }
-
-/// ============================================================
-/// DATA MODELS
-/// ============================================================
 
 class ForkliftChartRow {
   const ForkliftChartRow({
