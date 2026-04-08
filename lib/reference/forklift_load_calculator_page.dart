@@ -15,17 +15,25 @@ class _ForkliftLoadCalculatorPageState
     with SingleTickerProviderStateMixin {
   late final TabController _tabController;
 
+  // ---------------------------
+  // QUICK CALC CONTROLLERS
+  // ---------------------------
   final TextEditingController _quickRatedCapacityController =
       TextEditingController(text: '9400');
   final TextEditingController _quickRatedLoadCenterController =
       TextEditingController(text: '24');
   final TextEditingController _quickActualLoadCenterController =
       TextEditingController(text: '24');
+  final TextEditingController _quickVerticalCgOffsetController =
+      TextEditingController(text: '0');
   final TextEditingController _quickAttachmentWeightController =
       TextEditingController(text: '0');
   final TextEditingController _quickAttachmentShiftController =
       TextEditingController(text: '0');
 
+  // ---------------------------
+  // CHART INPUT CONTROLLERS
+  // ---------------------------
   final TextEditingController _rowMaxHeightController =
       TextEditingController(text: '189');
   final TextEditingController _rowRatedCapacityController =
@@ -37,6 +45,8 @@ class _ForkliftLoadCalculatorPageState
       TextEditingController(text: '120');
   final TextEditingController _chartActualLoadCenterController =
       TextEditingController(text: '24');
+  final TextEditingController _chartVerticalCgOffsetController =
+      TextEditingController(text: '0');
   final TextEditingController _chartAttachmentWeightController =
       TextEditingController(text: '0');
   final TextEditingController _chartAttachmentShiftController =
@@ -68,6 +78,7 @@ class _ForkliftLoadCalculatorPageState
     _quickRatedCapacityController.dispose();
     _quickRatedLoadCenterController.dispose();
     _quickActualLoadCenterController.dispose();
+    _quickVerticalCgOffsetController.dispose();
     _quickAttachmentWeightController.dispose();
     _quickAttachmentShiftController.dispose();
 
@@ -77,6 +88,7 @@ class _ForkliftLoadCalculatorPageState
 
     _chartActualHeightController.dispose();
     _chartActualLoadCenterController.dispose();
+    _chartVerticalCgOffsetController.dispose();
     _chartAttachmentWeightController.dispose();
     _chartAttachmentShiftController.dispose();
 
@@ -139,7 +151,8 @@ class _ForkliftLoadCalculatorPageState
           ),
           const SizedBox(height: 8),
           Text(
-            'Uses a simplified load-moment model.\n'
+            'Uses a simplified horizontal load-moment model.\n'
+            'Vertical CG offset (+above / -below forks) is tracked for reference only in this version.\n'
             'Verify all results against the OEM rating plate and load chart before use.',
             style: textTheme.bodyMedium?.copyWith(color: accent),
           ),
@@ -172,7 +185,13 @@ class _ForkliftLoadCalculatorPageState
                 const SizedBox(height: 10),
                 _numberField(
                   controller: _quickActualLoadCenterController,
-                  label: 'Actual Load Center (in)',
+                  label: 'Horizontal Load Center (in)',
+                  accent: accent,
+                ),
+                const SizedBox(height: 10),
+                _numberField(
+                  controller: _quickVerticalCgOffsetController,
+                  label: 'Vertical CG Offset (in) [+above / -below forks]',
                   accent: accent,
                 ),
                 const SizedBox(height: 10),
@@ -184,7 +203,7 @@ class _ForkliftLoadCalculatorPageState
                 const SizedBox(height: 10),
                 _numberField(
                   controller: _quickAttachmentShiftController,
-                  label: 'Forward CG Shift (in) [optional]',
+                  label: 'Attachment Forward Shift (in) [optional]',
                   accent: accent,
                 ),
                 const SizedBox(height: 12),
@@ -273,7 +292,13 @@ class _ForkliftLoadCalculatorPageState
                 const SizedBox(height: 10),
                 _numberField(
                   controller: _chartActualLoadCenterController,
-                  label: 'Actual Load Center (in)',
+                  label: 'Horizontal Load Center (in)',
+                  accent: accent,
+                ),
+                const SizedBox(height: 10),
+                _numberField(
+                  controller: _chartVerticalCgOffsetController,
+                  label: 'Vertical CG Offset (in) [+above / -below forks]',
                   accent: accent,
                 ),
                 const SizedBox(height: 10),
@@ -285,7 +310,7 @@ class _ForkliftLoadCalculatorPageState
                 const SizedBox(height: 10),
                 _numberField(
                   controller: _chartAttachmentShiftController,
-                  label: 'Forward CG Shift (in) [optional]',
+                  label: 'Attachment Forward Shift (in) [optional]',
                   accent: accent,
                 ),
                 const SizedBox(height: 12),
@@ -315,6 +340,17 @@ class _ForkliftLoadCalculatorPageState
           : Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                _resultLine(
+                  accent,
+                  'Horizontal Load Center',
+                  '${result.horizontalLoadCenterIn.toStringAsFixed(1)} in',
+                ),
+                _resultLine(
+                  accent,
+                  'Vertical CG Offset',
+                  '${result.verticalCgOffsetIn.toStringAsFixed(1)} in',
+                ),
+                const SizedBox(height: 8),
                 _resultLine(
                   accent,
                   'Rated Moment',
@@ -381,7 +417,7 @@ class _ForkliftLoadCalculatorPageState
               children: [
                 Expanded(
                   child: Text(
-                    '$center in load center',
+                    '$center in horizontal load center',
                     style: TextStyle(color: accent),
                   ),
                 ),
@@ -472,6 +508,17 @@ class _ForkliftLoadCalculatorPageState
                   ),
                   const SizedBox(height: 8),
                 ],
+                _resultLine(
+                  accent,
+                  'Horizontal Load Center',
+                  '${result.horizontalLoadCenterIn.toStringAsFixed(1)} in',
+                ),
+                _resultLine(
+                  accent,
+                  'Vertical CG Offset',
+                  '${result.verticalCgOffsetIn.toStringAsFixed(1)} in',
+                ),
+                const SizedBox(height: 8),
                 if (result.warningMessage != null) ...[
                   Text(
                     result.warningMessage!,
@@ -542,7 +589,10 @@ class _ForkliftLoadCalculatorPageState
   }) {
     return TextField(
       controller: controller,
-      keyboardType: const TextInputType.numberWithOptions(decimal: true),
+      keyboardType: const TextInputType.numberWithOptions(
+        decimal: true,
+        signed: true,
+      ),
       style: TextStyle(color: accent),
       decoration: InputDecoration(
         labelText: label,
@@ -621,10 +671,20 @@ class _ForkliftLoadCalculatorPageState
         _parseDouble(_quickRatedLoadCenterController.text) ?? 0.0;
     final actualLoadCenter =
         _parseDouble(_quickActualLoadCenterController.text) ?? 0.0;
+    final verticalCgOffset =
+        _parseDouble(_quickVerticalCgOffsetController.text) ?? 0.0;
     final attachmentWeight =
         _parseDouble(_quickAttachmentWeightController.text) ?? 0.0;
     final attachmentShift =
         _parseDouble(_quickAttachmentShiftController.text) ?? 0.0;
+
+    if (actualLoadCenter <= 0) {
+      _showSnack('Horizontal load center must be greater than zero.');
+      setState(() {
+        _quickResult = null;
+      });
+      return;
+    }
 
     final result = _calculateCapacity(
       ratedCapacityLb: ratedCapacity,
@@ -636,6 +696,8 @@ class _ForkliftLoadCalculatorPageState
 
     setState(() {
       _quickResult = QuickCalcResult(
+        horizontalLoadCenterIn: actualLoadCenter,
+        verticalCgOffsetIn: verticalCgOffset,
         ratedMoment: result.ratedMoment,
         attachmentPenaltyMoment: result.attachmentPenaltyMoment,
         remainingMoment: result.remainingMoment,
@@ -653,6 +715,8 @@ class _ForkliftLoadCalculatorPageState
       setState(() {
         _chartResult = const ChartCalcResult(
           selectedRow: null,
+          horizontalLoadCenterIn: 0,
+          verticalCgOffsetIn: 0,
           ratedMoment: 0,
           attachmentPenaltyMoment: 0,
           remainingMoment: 0,
@@ -667,10 +731,20 @@ class _ForkliftLoadCalculatorPageState
         _parseDouble(_chartActualHeightController.text) ?? 0.0;
     final actualLoadCenter =
         _parseDouble(_chartActualLoadCenterController.text) ?? 0.0;
+    final verticalCgOffset =
+        _parseDouble(_chartVerticalCgOffsetController.text) ?? 0.0;
     final attachmentWeight =
         _parseDouble(_chartAttachmentWeightController.text) ?? 0.0;
     final attachmentShift =
         _parseDouble(_chartAttachmentShiftController.text) ?? 0.0;
+
+    if (actualLoadCenter <= 0) {
+      _showSnack('Horizontal load center must be greater than zero.');
+      setState(() {
+        _chartResult = null;
+      });
+      return;
+    }
 
     final selected = _selectRowForHeight(actualHeight);
 
@@ -682,6 +756,8 @@ class _ForkliftLoadCalculatorPageState
       setState(() {
         _chartResult = ChartCalcResult(
           selectedRow: null,
+          horizontalLoadCenterIn: actualLoadCenter,
+          verticalCgOffsetIn: verticalCgOffset,
           ratedMoment: 0,
           attachmentPenaltyMoment: 0,
           remainingMoment: 0,
@@ -704,6 +780,8 @@ class _ForkliftLoadCalculatorPageState
     setState(() {
       _chartResult = ChartCalcResult(
         selectedRow: selected,
+        horizontalLoadCenterIn: actualLoadCenter,
+        verticalCgOffsetIn: verticalCgOffset,
         ratedMoment: calc.ratedMoment,
         attachmentPenaltyMoment: calc.attachmentPenaltyMoment,
         remainingMoment: calc.remainingMoment,
@@ -863,6 +941,8 @@ class ForkliftChartRow {
 
 class QuickCalcResult {
   const QuickCalcResult({
+    required this.horizontalLoadCenterIn,
+    required this.verticalCgOffsetIn,
     required this.ratedMoment,
     required this.attachmentPenaltyMoment,
     required this.remainingMoment,
@@ -871,6 +951,8 @@ class QuickCalcResult {
     required this.capacityAt84In,
   });
 
+  final double horizontalLoadCenterIn;
+  final double verticalCgOffsetIn;
   final double ratedMoment;
   final double attachmentPenaltyMoment;
   final double remainingMoment;
@@ -882,6 +964,8 @@ class QuickCalcResult {
 class ChartCalcResult {
   const ChartCalcResult({
     required this.selectedRow,
+    required this.horizontalLoadCenterIn,
+    required this.verticalCgOffsetIn,
     required this.ratedMoment,
     required this.attachmentPenaltyMoment,
     required this.remainingMoment,
@@ -890,6 +974,8 @@ class ChartCalcResult {
   });
 
   final ForkliftChartRow? selectedRow;
+  final double horizontalLoadCenterIn;
+  final double verticalCgOffsetIn;
   final double ratedMoment;
   final double attachmentPenaltyMoment;
   final double remainingMoment;
