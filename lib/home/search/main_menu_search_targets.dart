@@ -60,6 +60,7 @@ import '../../reference/shapes3d/pipe_page.dart';
 import '../../reference/shapes3d/sphere_page.dart';
 import '../../reference/rigging/rigging_home_page.dart';
 import '../../reference/rigging/rigging_load_calculator_page.dart';
+import '../../reference/rigging/wll_calculator_page.dart';
 
 import 'search_models.dart';
 
@@ -432,6 +433,20 @@ List<SearchTarget> buildMainMenuSearchTargets(
         'rigging calculator',
       ],
       builder: (_) => const RiggingHomePage(),
+    ),
+    SearchTarget(
+      label: 'Rigging WLL Calculator',
+      subtitle: 'Working load limit and pass/fail check',
+      keywords: [
+        'rigging wll',
+        'working load limit',
+        'sling capacity',
+        'chain sling',
+        'wire rope sling',
+        'web sling',
+        'rigging pass fail',
+      ],
+      builder: (_) => const RiggingWllCalculatorPage(),
     ),
     SearchTarget(
       label: 'MIG Setup Calculator',
