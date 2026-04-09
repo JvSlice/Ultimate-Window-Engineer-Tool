@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import '../../terminal_scaffold.dart';
 import 'ohms_law_page.dart';
 import 'power_law_page.dart';
-import 'electrical_reference_page.dart';
+import 'eletrical_reference_page.dart';
 import 'voltage_divider_page.dart';
 import 'battery_runtime_page.dart';
 import 'awg_reference_page.dart';
@@ -11,9 +11,7 @@ class ElectricalToolsPage extends StatelessWidget {
   const ElectricalToolsPage({super.key});
 
   void openPage(BuildContext context, Widget page) {
-    Navigator.of(context).push(
-      MaterialPageRoute(builder: (_) => page),
-    );
+    Navigator.of(context).push(MaterialPageRoute(builder: (_) => page));
   }
 
   @override
