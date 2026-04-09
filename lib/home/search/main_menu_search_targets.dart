@@ -18,6 +18,9 @@ import '../../fabrication/stick_rod_page.dart';
 import '../../fabrication/tig_amp_page.dart';
 import '../../fabrication/tig_tungsten_page.dart';
 import '../../fabrication/weld_it_page.dart';
+import '../../fabrication/weld_it/mig_setup_calc_page.dart';
+import '../../fabrication/weld_it/stick_setup_calc_page.dart';
+import '../../fabrication/weld_it/tig_setup_calc_page.dart';
 
 // Window testing
 import '../../window_testing_tools/astm_e1300_page.dart';
@@ -55,6 +58,8 @@ import '../../reference/shapes3d/cone_page.dart';
 import '../../reference/shapes3d/cylinder_page.dart';
 import '../../reference/shapes3d/pipe_page.dart';
 import '../../reference/shapes3d/sphere_page.dart';
+import '../../reference/rigging/rigging_home_page.dart';
+import '../../reference/rigging/rigging_load_calculator_page.dart';
 
 import 'search_models.dart';
 
@@ -412,6 +417,82 @@ List<SearchTarget> buildMainMenuSearchTargets(
       subtitle: 'App settings and theme',
       keywords: ['settings', 'theme', 'accent', 'color'],
       builder: (_) => SettingsPage(themeController: themeController),
+    ),
+    SearchTarget(
+      label: 'Rigging Tools',
+      subtitle: 'Rigging load and hitch calculator',
+      keywords: [
+        'rigging',
+        'sling',
+        'basket hitch',
+        'choker hitch',
+        'vertical hitch',
+        'lifting angle',
+        'load angle',
+        'rigging calculator',
+      ],
+      builder: (_) => const RiggingHomePage(),
+    ),
+    SearchTarget(
+      label: 'MIG Setup Calculator',
+      subtitle: 'Weld It • voltage, wire speed, wire size, gas, polarity',
+      keywords: [
+        'mig',
+        'mig calc',
+        'mig calculator',
+        'mig setup',
+        'mig settings',
+        'wire speed',
+        'voltage',
+        'welding',
+        'weld it',
+        'gmaw',
+      ],
+      builder: (_) => const MigSetupCalcPage(),
+    ),
+
+    SearchTarget(
+      label: 'Stick Setup Calculator',
+      subtitle: 'Weld It • polarity, rod choices, amperage',
+      keywords: [
+        'stick',
+        'stick calc',
+        'stick calculator',
+        'stick setup',
+        'stick settings',
+        'rod',
+        'rod choice',
+        'electrode',
+        'amp',
+        'amps',
+        'amperage',
+        'smaw',
+        'welding',
+        'weld it',
+      ],
+      builder: (_) => const StickSetupCalcPage(),
+    ),
+
+    SearchTarget(
+      label: 'TIG Setup Calculator',
+      subtitle: 'Weld It • polarity, amps, tungsten type and size',
+      keywords: [
+        'tig',
+        'tig calc',
+        'tig calculator',
+        'tig setup',
+        'tig settings',
+        'tungsten',
+        'tungsten size',
+        'tungsten type',
+        'gtaw',
+        'amp',
+        'amps',
+        'amperage',
+        'welding',
+        'weld it',
+      ],
+      builder: (_) => const TigSetupCalcPage(),
     ),
   ];
 }

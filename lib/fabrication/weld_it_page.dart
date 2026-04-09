@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:ultimate_window_engineer_tool/fabrication/weld_it/mig_setup_calc_page.dart';
+import 'package:ultimate_window_engineer_tool/fabrication/weld_it/stick_setup_calc_page.dart';
+import 'package:ultimate_window_engineer_tool/fabrication/weld_it/tig_setup_calc_page.dart';
 import '../../terminal_scaffold.dart';
 // for terminalResultCard if you want it
 import 'stick_rod_page.dart';
@@ -22,13 +25,18 @@ class WeldItPage extends StatelessWidget {
         height: 56,
         child: OutlinedButton(
           onPressed: onPressed,
-          style: OutlinedButton.styleFrom(
-            foregroundColor: accent,
-            side: BorderSide(color: accent, width: 2),
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-          ).copyWith(
-            overlayColor: WidgetStateProperty.all(accent.withValues(alpha: 0.08)),
-          ),
+          style:
+              OutlinedButton.styleFrom(
+                foregroundColor: accent,
+                side: BorderSide(color: accent, width: 2),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+              ).copyWith(
+                overlayColor: WidgetStateProperty.all(
+                  accent.withValues(alpha: 0.08),
+                ),
+              ),
           child: Text(
             label,
             textAlign: TextAlign.center,
@@ -66,6 +74,15 @@ class WeldItPage extends StatelessWidget {
 
             terminalNavButton("Shielding Gas: type • application", () {
               _open(context, const ShieldingGasPage());
+            }),
+            terminalNavButton("Mig Setup Helper", () {
+              _open(context, const MigSetupCalcPage());
+            }),
+            terminalNavButton("Stick Setup Helper", () {
+              _open(context, const StickSetupCalcPage());
+            }),
+            terminalNavButton("Tig Setup Helper", () {
+              _open(context, const TigSetupCalcPage());
             }),
           ],
         ),

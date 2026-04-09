@@ -2,6 +2,8 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import '../terminal_scaffold.dart';
 
+enum VerticalCgDirection { above, below }
+
 class ForkliftLoadCalculatorPage extends StatefulWidget {
   const ForkliftLoadCalculatorPage({super.key});
 
@@ -10,8 +12,7 @@ class ForkliftLoadCalculatorPage extends StatefulWidget {
       _ForkliftLoadCalculatorPageState();
 }
 
-class _ForkliftLoadCalculatorPageState
-    extends State<ForkliftLoadCalculatorPage>
+class _ForkliftLoadCalculatorPageState extends State<ForkliftLoadCalculatorPage>
     with SingleTickerProviderStateMixin {
   late final TabController _tabController;
 
@@ -31,11 +32,14 @@ class _ForkliftLoadCalculatorPageState
   final TextEditingController _quickAttachmentShiftController =
       TextEditingController(text: '0');
 
+  VerticalCgDirection _quickVerticalDirection = VerticalCgDirection.above;
+
   // ---------------------------
   // CHART INPUT CONTROLLERS
   // ---------------------------
-  final TextEditingController _rowMaxHeightController =
-      TextEditingController(text: '189');
+  final TextEditingController _rowMaxHeightController = TextEditingController(
+    text: '189',
+  );
   final TextEditingController _rowRatedCapacityController =
       TextEditingController(text: '9400');
   final TextEditingController _rowRatedLoadCenterController =
@@ -51,6 +55,8 @@ class _ForkliftLoadCalculatorPageState
       TextEditingController(text: '0');
   final TextEditingController _chartAttachmentShiftController =
       TextEditingController(text: '0');
+
+  VerticalCgDirection _chartVerticalDirection = VerticalCgDirection.above;
 
   final List<ForkliftChartRow> _chartRows = [
     const ForkliftChartRow(
@@ -152,7 +158,7 @@ class _ForkliftLoadCalculatorPageState
           const SizedBox(height: 8),
           Text(
             'Uses a simplified horizontal load-moment model.\n'
-            'Vertical CG offset (+above / -below forks) is tracked for reference only in this version.\n'
+            'Vertical CG offset is tracked for reference only in this version.\n'
             'Verify all results against the OEM rating plate and load chart before use.',
             style: textTheme.bodyMedium?.copyWith(color: accent),
           ),
@@ -191,8 +197,18 @@ class _ForkliftLoadCalculatorPageState
                 const SizedBox(height: 10),
                 _numberField(
                   controller: _quickVerticalCgOffsetController,
-                  label: 'Vertical CG Offset (in) [+above / -below forks]',
+                  label: 'Vertical CG Offset Magnitude (in)',
                   accent: accent,
+                ),
+                const SizedBox(height: 10),
+                _directionToggle(
+                  accent: accent,
+                  value: _quickVerticalDirection,
+                  onChanged: (value) {
+                    setState(() {
+                      _quickVerticalDirection = value;
+                    });
+                  },
                 ),
                 const SizedBox(height: 10),
                 _numberField(
@@ -298,8 +314,18 @@ class _ForkliftLoadCalculatorPageState
                 const SizedBox(height: 10),
                 _numberField(
                   controller: _chartVerticalCgOffsetController,
-                  label: 'Vertical CG Offset (in) [+above / -below forks]',
+                  label: 'Vertical CG Offset Magnitude (in)',
                   accent: accent,
+                ),
+                const SizedBox(height: 10),
+                _directionToggle(
+                  accent: accent,
+                  value: _chartVerticalDirection,
+                  onChanged: (value) {
+                    setState(() {
+                      _chartVerticalDirection = value;
+                    });
+                  },
                 ),
                 const SizedBox(height: 10),
                 _numberField(
@@ -409,8 +435,9 @@ class _ForkliftLoadCalculatorPageState
       title: 'Reference Capacity Table',
       child: Column(
         children: points.map((center) {
-          final capacity =
-              center <= 0 ? 0.0 : math.max(0.0, remainingMoment / center);
+          final capacity = center <= 0
+              ? 0.0
+              : math.max(0.0, remainingMoment / center);
           return Padding(
             padding: const EdgeInsets.symmetric(vertical: 3),
             child: Row(
@@ -423,10 +450,7 @@ class _ForkliftLoadCalculatorPageState
                 ),
                 Text(
                   '${capacity.toStringAsFixed(0)} lb',
-                  style: TextStyle(
-                    color: accent,
-                    fontWeight: FontWeight.bold,
-                  ),
+                  style: TextStyle(color: accent, fontWeight: FontWeight.bold),
                 ),
               ],
             ),
@@ -589,10 +613,7 @@ class _ForkliftLoadCalculatorPageState
   }) {
     return TextField(
       controller: controller,
-      keyboardType: const TextInputType.numberWithOptions(
-        decimal: true,
-        signed: true,
-      ),
+      keyboardType: const TextInputType.numberWithOptions(decimal: true),
       style: TextStyle(color: accent),
       decoration: InputDecoration(
         labelText: label,
@@ -603,6 +624,52 @@ class _ForkliftLoadCalculatorPageState
         focusedBorder: OutlineInputBorder(
           borderSide: BorderSide(color: accent, width: 2),
         ),
+      ),
+    );
+  }
+
+  Widget _directionToggle({
+    required Color accent,
+    required VerticalCgDirection value,
+    required ValueChanged<VerticalCgDirection> onChanged,
+  }) {
+    return Container(
+      width: double.infinity,
+      decoration: _terminalBox(accent),
+      padding: const EdgeInsets.all(8),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Vertical CG Position',
+            style: TextStyle(color: accent, fontWeight: FontWeight.bold),
+          ),
+          const SizedBox(height: 8),
+          Wrap(
+            spacing: 10,
+            runSpacing: 10,
+            children: [
+              ChoiceChip(
+                label: const Text('Above Forks'),
+                selected: value == VerticalCgDirection.above,
+                onSelected: (_) => onChanged(VerticalCgDirection.above),
+                labelStyle: TextStyle(color: accent),
+                selectedColor: accent.withValues(alpha: 0.18),
+                backgroundColor: Colors.black,
+                side: BorderSide(color: accent),
+              ),
+              ChoiceChip(
+                label: const Text('Below Forks'),
+                selected: value == VerticalCgDirection.below,
+                onSelected: (_) => onChanged(VerticalCgDirection.below),
+                labelStyle: TextStyle(color: accent),
+                selectedColor: accent.withValues(alpha: 0.18),
+                backgroundColor: Colors.black,
+                side: BorderSide(color: accent),
+              ),
+            ],
+          ),
+        ],
       ),
     );
   }
@@ -637,10 +704,7 @@ class _ForkliftLoadCalculatorPageState
           Expanded(
             child: Text(
               label,
-              style: TextStyle(
-                color: accent,
-                fontSize: big ? 16 : 14,
-              ),
+              style: TextStyle(color: accent, fontSize: big ? 16 : 14),
             ),
           ),
           const SizedBox(width: 12),
@@ -671,12 +735,17 @@ class _ForkliftLoadCalculatorPageState
         _parseDouble(_quickRatedLoadCenterController.text) ?? 0.0;
     final actualLoadCenter =
         _parseDouble(_quickActualLoadCenterController.text) ?? 0.0;
-    final verticalCgOffset =
+    final verticalCgMagnitude =
         _parseDouble(_quickVerticalCgOffsetController.text) ?? 0.0;
     final attachmentWeight =
         _parseDouble(_quickAttachmentWeightController.text) ?? 0.0;
     final attachmentShift =
         _parseDouble(_quickAttachmentShiftController.text) ?? 0.0;
+
+    final verticalCgOffset =
+        _quickVerticalDirection == VerticalCgDirection.below
+        ? -verticalCgMagnitude.abs()
+        : verticalCgMagnitude.abs();
 
     if (actualLoadCenter <= 0) {
       _showSnack('Horizontal load center must be greater than zero.');
@@ -702,10 +771,12 @@ class _ForkliftLoadCalculatorPageState
         attachmentPenaltyMoment: result.attachmentPenaltyMoment,
         remainingMoment: result.remainingMoment,
         estimatedCapacityLb: result.estimatedCapacityLb,
-        capacityAt72In:
-            result.remainingMoment <= 0 ? 0 : result.remainingMoment / 72.0,
-        capacityAt84In:
-            result.remainingMoment <= 0 ? 0 : result.remainingMoment / 84.0,
+        capacityAt72In: result.remainingMoment <= 0
+            ? 0
+            : result.remainingMoment / 72.0,
+        capacityAt84In: result.remainingMoment <= 0
+            ? 0
+            : result.remainingMoment / 84.0,
       );
     });
   }
@@ -727,16 +798,20 @@ class _ForkliftLoadCalculatorPageState
       return;
     }
 
-    final actualHeight =
-        _parseDouble(_chartActualHeightController.text) ?? 0.0;
+    final actualHeight = _parseDouble(_chartActualHeightController.text) ?? 0.0;
     final actualLoadCenter =
         _parseDouble(_chartActualLoadCenterController.text) ?? 0.0;
-    final verticalCgOffset =
+    final verticalCgMagnitude =
         _parseDouble(_chartVerticalCgOffsetController.text) ?? 0.0;
     final attachmentWeight =
         _parseDouble(_chartAttachmentWeightController.text) ?? 0.0;
     final attachmentShift =
         _parseDouble(_chartAttachmentShiftController.text) ?? 0.0;
+
+    final verticalCgOffset =
+        _chartVerticalDirection == VerticalCgDirection.below
+        ? -verticalCgMagnitude.abs()
+        : verticalCgMagnitude.abs();
 
     if (actualLoadCenter <= 0) {
       _showSnack('Horizontal load center must be greater than zero.');
@@ -834,10 +909,7 @@ class _ForkliftLoadCalculatorPageState
         final accent = Theme.of(context).colorScheme.primary;
         return AlertDialog(
           backgroundColor: Colors.black,
-          title: Text(
-            'Clear all rows?',
-            style: TextStyle(color: accent),
-          ),
+          title: Text('Clear all rows?', style: TextStyle(color: accent)),
           content: Text(
             'This will remove all stored chart rows.',
             style: TextStyle(color: accent),
@@ -897,9 +969,14 @@ class _ForkliftLoadCalculatorPageState
     final attachmentPenaltyMoment =
         math.max(0.0, attachmentWeightLb) *
         math.max(0.0, attachmentForwardShiftIn);
-    final remainingMoment = math.max(0.0, ratedMoment - attachmentPenaltyMoment);
-    final estimatedCapacityLb =
-        math.max(0.0, remainingMoment / actualLoadCenterIn);
+    final remainingMoment = math.max(
+      0.0,
+      ratedMoment - attachmentPenaltyMoment,
+    );
+    final estimatedCapacityLb = math.max(
+      0.0,
+      remainingMoment / actualLoadCenterIn,
+    );
 
     return _MomentCalcResult(
       ratedMoment: ratedMoment,
@@ -918,10 +995,7 @@ class _ForkliftLoadCalculatorPageState
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         backgroundColor: Colors.black,
-        content: Text(
-          message,
-          style: TextStyle(color: accent),
-        ),
+        content: Text(message, style: TextStyle(color: accent)),
       ),
     );
   }
