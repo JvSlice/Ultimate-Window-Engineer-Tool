@@ -99,9 +99,10 @@ class _TestBuckCalculatorPageState extends State<TestBuckCalculatorPage> {
     // These are the only lines you need to edit for a new simple
     // calculator page built from this template.
     // ==========================================================
-    final horizontalCut = unitWidth + caulkJoint + (2 * materialThickness);
+    final horizontalCut =
+        unitWidth + (caulkJoint * 2) + (2 * materialThickness);
 
-    final verticalCut = unitHeight + caulkJoint;
+    final verticalCut = unitHeight + (caulkJoint * 2);
 
     // Optional extra outputs. Keep, remove, or expand as needed.
     final outsideWidth = horizontalCut;
@@ -110,7 +111,7 @@ class _TestBuckCalculatorPageState extends State<TestBuckCalculatorPage> {
       (horizontalCut * horizontalCut) + (verticalCut * verticalCut),
     );
     final crossMeasurseIn = sqrt(
-      ((unitHeight + caulkJoint) * (unitHeight + caulkJoint)) +
+      ((unitHeight + (caulkJoint * 2)) * (unitHeight + (caulkJoint * 2))) +
           ((unitWidth + caulkJoint) * (unitWidth + caulkJoint)),
     );
     return TerminalScaffold(
