@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:ultimate_window_engineer_tool/fabrication/drill_tap_Selector_page.dart';
+import 'package:ultimate_window_engineer_tool/fabrication/test_buck_calculator.dart';
 import 'terminal_scaffold.dart';
 import 'fabrication/drill_index_page.dart';
 import 'fabrication/weld_it_page.dart';
 import 'fabrication/fraction_decimal_page.dart';
+import 'fabrication/test_buck_calculator.dart';
 
 // import 'drill_tap_selector_page';
 import 'fabrication/speed_feed_page.dart';
@@ -104,12 +106,26 @@ class _FabricateItBody extends StatelessWidget {
                 },
               ),
               const SizedBox(height: 12),
+              TerminalMenuButton(
+                accent: accent,
+                label: "Test Buck Calculator",
+                sublabel: "find buck cut sizes fast",
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => const TestBuckCalculatorPage(),
+                    ),
+                  );
+                },
+              ),
+              const SizedBox(height: 12),
 
               const Spacer(),
               Opacity(
                 opacity: 0.65,
                 child: Text(
-                  'Fabriaction Tools v0.1',
+                  'Fabriaction Tools v0.2',
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     color: accent,

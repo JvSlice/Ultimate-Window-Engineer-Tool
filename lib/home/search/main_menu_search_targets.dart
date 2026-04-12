@@ -21,6 +21,7 @@ import '../../fabrication/weld_it_page.dart';
 import '../../fabrication/weld_it/mig_setup_calc_page.dart';
 import '../../fabrication/weld_it/stick_setup_calc_page.dart';
 import '../../fabrication/weld_it/tig_setup_calc_page.dart';
+import '../../fabrication/test_buck_calculator.dart';
 
 // Window testing
 import '../../window_testing_tools/astm_e1300_page.dart';
@@ -508,6 +509,20 @@ List<SearchTarget> buildMainMenuSearchTargets(
         'weld it',
       ],
       builder: (_) => const TigSetupCalcPage(),
+    ),
+    SearchTarget(
+      label: 'Test Buck Calculator',
+      subtitle: 'Calculate lumber cut sizes for test bucks',
+      keywords: [
+        'test buck',
+        'buck calculator',
+        'lumber cuts',
+        'rough opening buck',
+        'caulk joint',
+        'fab',
+        'fabrication',
+      ],
+      builder: (_) => const TestBuckCalculatorPage(),
     ),
   ];
 }
