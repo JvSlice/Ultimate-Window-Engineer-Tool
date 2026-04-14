@@ -6,6 +6,8 @@ import '../../terminal_scaffold.dart';
 import 'rigging_load_calculator_page.dart';
 import 'wll_calculator_page.dart';
 import 'unequal_load_page.dart';
+import 'rigging_cog_estimator_page.dart';
+import 'rigging_angle_visualizer_page.dart';
 
 class RiggingHomePage extends StatelessWidget {
   const RiggingHomePage({super.key});
@@ -155,6 +157,20 @@ class RiggingHomePage extends StatelessWidget {
                 subtitle: 'load factor by angle',
                 onPressed: () => _open(context, const RiggingAngleChartPage()),
               ),
+              const SizedBox(height: 12),
+              terminalButton(
+                label: 'COG Estimator',
+                subtitle: 'Locate center of gravity',
+                onPressed: () => _open(context, const RiggingCOGEstimatorPage()),
+                ),
+              const SizedBox(height: 12),
+
+              terminalButton(    
+                label: 'Angle Visualizer',
+                subtitle: 'See angle effect on load',
+                onPressed: () => _open(context, const RiggingAngleVisualizerPage()),
+              ),
+              const SizedBox(height: 12),
             ],
           ),
         ),
