@@ -6,8 +6,8 @@ import '../../terminal_scaffold.dart';
 import 'rigging_load_calculator_page.dart';
 import 'wll_calculator_page.dart';
 import 'unequal_load_page.dart';
-import 'rigging_cog_estimator_page.dart';
-import 'rigging_angle_visualizer_page.dart';
+import 'cog_estimator_page.dart';
+import 'sling_angle_visualizer.dart';
 
 class RiggingHomePage extends StatelessWidget {
   const RiggingHomePage({super.key});
@@ -161,14 +161,16 @@ class RiggingHomePage extends StatelessWidget {
               terminalButton(
                 label: 'COG Estimator',
                 subtitle: 'Locate center of gravity',
-                onPressed: () => _open(context, const RiggingCOGEstimatorPage()),
-                ),
+                onPressed: () =>
+                    _open(context, const RiggingCOGEstimatorPage()),
+              ),
               const SizedBox(height: 12),
 
-              terminalButton(    
+              terminalButton(
                 label: 'Angle Visualizer',
                 subtitle: 'See angle effect on load',
-                onPressed: () => _open(context, const RiggingAngleVisualizerPage()),
+                onPressed: () =>
+                    _open(context, const RiggingAngleVisualizerPage()),
               ),
               const SizedBox(height: 12),
             ],
