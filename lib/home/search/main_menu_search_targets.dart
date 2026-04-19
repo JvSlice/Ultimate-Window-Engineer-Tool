@@ -29,6 +29,7 @@ import '../../window_testing_tools/glass_deflection_page.dart';
 import '../../window_testing_tools/rating_reference_page.dart';
 import '../../window_testing_tools/structural_test_math_page.dart';
 import '../../window_testing_tools/test_sequence_reference_page.dart';
+import '../../window_testing_tools/spray_rack_pump_sizing_page.dart';
 
 // Reference
 import '../../reference/geometry_page.dart';
@@ -524,5 +525,20 @@ List<SearchTarget> buildMainMenuSearchTargets(
       ],
       builder: (_) => const TestBuckCalculatorPage(),
     ),
+
+  SearchTarget(
+  label: 'Spray Rack Pump Sizing',
+  subtitle: 'Estimate spray rack flow, pressure, and pump size',
+  keywords: [
+    'spray rack',
+    'pump sizing',
+    'water spray',
+    'astm e331',
+    'astm e1105',
+    'spray nozzle',
+    'window testing',
+  ],
+  builder: (_) => const SprayRackPumpSizingPage(),
+),
   ];
 }
