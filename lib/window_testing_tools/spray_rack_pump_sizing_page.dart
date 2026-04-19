@@ -2,23 +2,6 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import '../terminal_scaffold.dart';
 
-/// Spray Rack Pump Sizing Page
-///
-/// PURPOSE:
-/// Helps estimate required flow, nozzle pressure, line velocity, and rough pump
-/// sizing for ASTM-style spray rack water application on window test specimens.
-///
-/// IMPORTANT:
-/// - This is an ENGINEERING ESTIMATE tool, not a substitute for calibration.
-/// - This page is intentionally HACKABLE.
-/// - Keep constants grouped below so you can tune assumptions later.
-///
-/// HACKABLE:
-/// - PVC IDs
-/// - velocity warning thresholds
-/// - pressure range spread
-/// - default nozzle data
-/// - safety factor defaults
 class SprayRackPumpSizingPage extends StatefulWidget {
   const SprayRackPumpSizingPage({super.key});
 
@@ -28,50 +11,38 @@ class SprayRackPumpSizingPage extends StatefulWidget {
 }
 
 class _SprayRackPumpSizingPageState extends State<SprayRackPumpSizingPage> {
-  // =========================
-  // HACKABLE DEFAULTS
-  // =========================
+  // =========================================================
+  // HACKABLE CONSTANTS
+  // =========================================================
 
-  /// ASTM-style target used in this tool.
+  // ASTM-style defaults / warning bands requested by user
   static const double defaultTargetFlowGphPerFt2 = 5.0;
+  static const double warningFlowLowGphPerFt2 = 4.0;
+  static const double warningFlowHighGphPerFt2 = 6.0;
+  static const double defaultSpacingIn = 12.0;
 
-  /// Yellow warning thresholds requested by user.
-  static const double lowAstmFlowWarning = 4.0;
-  static const double highAstmFlowWarning = 6.0;
-
-  /// Requested default spacing.
-  static const double defaultNozzleSpacingIn = 12.0;
-
-  /// Default nozzle data for WhirlJet 1/4BX-5.
-  /// Current tool models nozzle behavior as:
-  /// Q = K * sqrt(P)
-  /// where Q = gpm and P = psi.
-  static const double defaultNozzleRatedFlowGpm = 0.5;
+  // Default nozzle model:
+  // WhirlJet 1/4BX-5 using simple Q = K * sqrt(P) estimate
+  static const double defaultNozzleRatedFlowGpm = 0.50;
   static const double defaultNozzleRatedPressurePsi = 10.0;
-  static const double defaultNozzleMinPsi = 3.0;
-  static const double defaultNozzleMaxPsi = 100.0;
+  static const double defaultNozzleMinPressurePsi = 3.0;
+  static const double defaultNozzleMaxPressurePsi = 100.0;
 
-  /// Hazen-Williams roughness coefficient for smooth PVC.
-  static const double pvcHazenWilliamsC = 150.0;
+  // PVC Hazen-Williams roughness
+  static const double pvcC = 150.0;
 
-  /// Velocity warning thresholds.
-  static const double headerVelocityWarnFps = 8.0;
-  static const double dropVelocityWarnFps = 6.0;
+  // Velocity warning thresholds
+  static const double headerVelocityWarningFps = 8.0;
+  static const double dropVelocityWarningFps = 6.0;
 
-  /// Pressure range spread to present "rough estimate" range.
+  // Pressure display range factors
   static const double pressureLowFactor = 0.90;
   static const double pressureHighFactor = 1.15;
 
-  /// Pump recommendation default safety factor.
   static const double defaultSafetyFactorPercent = 15.0;
 
-  // =========================
-  // PIPE DATA
-  // =========================
-
-  /// Approximate Schedule 40 PVC internal diameters in inches.
-  /// HACKABLE: update if you want SDR pipe, Sch 80, hose IDs, etc.
-  static const Map<String, double> pvcInternalDiametersIn = {
+  // Approximate Sch 40 PVC IDs in inches
+  static const Map<String, double> pipeIdsIn = {
     '1/2"': 0.622,
     '3/4"': 0.824,
     '1"': 1.049,
@@ -82,9 +53,9 @@ class _SprayRackPumpSizingPageState extends State<SprayRackPumpSizingPage> {
     '3"': 3.068,
   };
 
-  // =========================
-  // CONTROLLERS
-  // =========================
+  // =========================================================
+  // INPUT CONTROLLERS
+  // =========================================================
 
   late final TextEditingController _widthFtController;
   late final TextEditingController _widthInController;
@@ -93,7 +64,6 @@ class _SprayRackPumpSizingPageState extends State<SprayRackPumpSizingPage> {
 
   late final TextEditingController _dropsController;
   late final TextEditingController _nozzlesPerDropController;
-
   late final TextEditingController _spacingInController;
 
   late final TextEditingController _supplyLengthFtController;
@@ -111,9 +81,8 @@ class _SprayRackPumpSizingPageState extends State<SprayRackPumpSizingPage> {
 
   String _supplyPipeSize = '1-1/2"';
   String _dropPipeSize = '3/4"';
-
   HeaderFeedLayout _headerFeedLayout = HeaderFeedLayout.oneEnd;
-  bool _useCustomNozzleData = false;
+  bool _overrideNozzleData = false;
 
   PumpCalcResult? _result;
 
@@ -128,9 +97,8 @@ class _SprayRackPumpSizingPageState extends State<SprayRackPumpSizingPage> {
 
     _dropsController = TextEditingController(text: '7');
     _nozzlesPerDropController = TextEditingController(text: '7');
-
     _spacingInController =
-        TextEditingController(text: defaultNozzleSpacingIn.toStringAsFixed(0));
+        TextEditingController(text: defaultSpacingIn.toStringAsFixed(0));
 
     _supplyLengthFtController = TextEditingController(text: '20');
     _supplyLengthInController = TextEditingController(text: '0');
@@ -151,10 +119,10 @@ class _SprayRackPumpSizingPageState extends State<SprayRackPumpSizingPage> {
       text: defaultNozzleRatedPressurePsi.toStringAsFixed(0),
     );
     _nozzleMinPressureController = TextEditingController(
-      text: defaultNozzleMinPsi.toStringAsFixed(0),
+      text: defaultNozzleMinPressurePsi.toStringAsFixed(0),
     );
     _nozzleMaxPressureController = TextEditingController(
-      text: defaultNozzleMaxPsi.toStringAsFixed(0),
+      text: defaultNozzleMaxPressurePsi.toStringAsFixed(0),
     );
 
     _runCalculation();
@@ -169,7 +137,6 @@ class _SprayRackPumpSizingPageState extends State<SprayRackPumpSizingPage> {
 
     _dropsController.dispose();
     _nozzlesPerDropController.dispose();
-
     _spacingInController.dispose();
 
     _supplyLengthFtController.dispose();
@@ -190,8 +157,8 @@ class _SprayRackPumpSizingPageState extends State<SprayRackPumpSizingPage> {
 
   @override
   Widget build(BuildContext context) {
-    final accent = Theme.of(context).colorScheme.primary;
-    final result = _result;
+    final Color accent = Theme.of(context).colorScheme.primary;
+    final PumpCalcResult? result = _result;
 
     return TerminalScaffold(
       title: 'Spray Rack Pump Sizing',
@@ -200,648 +167,525 @@ class _SprayRackPumpSizingPageState extends State<SprayRackPumpSizingPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _sectionTitle(
+            _sectionCard(
               context,
-              'ASTM-Style Spray Rack Pump Sizing',
-              accent,
+              title: 'Specimen Size',
+              child: Row(
+                children: [
+                  Expanded(
+                    child: _feetInchesInput(
+                      context,
+                      label: 'Width',
+                      feetController: _widthFtController,
+                      inchesController: _widthInController,
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: _feetInchesInput(
+                      context,
+                      label: 'Height',
+                      feetController: _heightFtController,
+                      inchesController: _heightInController,
+                    ),
+                  ),
+                ],
+              ),
             ),
-            const SizedBox(height: 8),
-            _terminalText(
+            const SizedBox(height: 14),
+            _sectionCard(
               context,
-              'Estimate required spray flow, per-nozzle demand, rough nozzle pressure, line velocity, friction loss, and suggested pump sizing for spray-rack water application.',
+              title: 'Rack Layout',
+              child: Column(
+                children: [
+                  Row(
+                    children: [
+                      Expanded(
+                        child: _numberField(
+                          context,
+                          label: 'Number of Drops',
+                          controller: _dropsController,
+                          integerOnly: true,
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: _numberField(
+                          context,
+                          label: 'Nozzles per Drop',
+                          controller: _nozzlesPerDropController,
+                          integerOnly: true,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 12),
+                  _numberField(
+                    context,
+                    label: 'Nozzle Spacing (in)',
+                    controller: _spacingInController,
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 14),
+            _sectionCard(
+              context,
+              title: 'Piping / Layout',
+              child: Column(
+                children: [
+                  Row(
+                    children: [
+                      Expanded(
+                        child: _dropdownField<String>(
+                          context,
+                          label: 'Supply Line Size',
+                          value: _supplyPipeSize,
+                          items: pipeIdsIn.keys.toList(),
+                          onChanged: (value) {
+                            if (value == null) return;
+                            setState(() {
+                              _supplyPipeSize = value;
+                            });
+                          },
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: _dropdownField<String>(
+                          context,
+                          label: 'Drop Line Size',
+                          value: _dropPipeSize,
+                          items: pipeIdsIn.keys.toList(),
+                          onChanged: (value) {
+                            if (value == null) return;
+                            setState(() {
+                              _dropPipeSize = value;
+                            });
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 12),
+                  _dropdownField<HeaderFeedLayout>(
+                    context,
+                    label: 'Header Feed Layout',
+                    value: _headerFeedLayout,
+                    items: HeaderFeedLayout.values,
+                    displayText: (item) => item.label,
+                    onChanged: (value) {
+                      if (value == null) return;
+                      setState(() {
+                        _headerFeedLayout = value;
+                      });
+                    },
+                  ),
+                  const SizedBox(height: 12),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: _feetInchesInput(
+                          context,
+                          label: 'Supply Header Length',
+                          feetController: _supplyLengthFtController,
+                          inchesController: _supplyLengthInController,
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: _feetInchesInput(
+                          context,
+                          label: 'Drop Length',
+                          feetController: _dropLengthFtController,
+                          inchesController: _dropLengthInController,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 14),
+            _sectionCard(
+              context,
+              title: 'Nozzle Data',
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    _overrideNozzleData
+                        ? 'Custom nozzle values active'
+                        : 'Default nozzle: WhirlJet 1/4BX-5',
+                    style: TextStyle(color: accent),
+                  ),
+                  SwitchListTile(
+                    contentPadding: EdgeInsets.zero,
+                    activeColor: accent,
+                    title: Text(
+                      'Override Default Nozzle Data',
+                      style: TextStyle(
+                        color: accent,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    subtitle: Text(
+                      'Use rated flow and pressure from known nozzle data.',
+                      style: TextStyle(color: accent.withOpacity(0.75)),
+                    ),
+                    value: _overrideNozzleData,
+                    onChanged: (value) {
+                      setState(() {
+                        _overrideNozzleData = value;
+                      });
+                    },
+                  ),
+                  if (_overrideNozzleData) ...[
+                    Row(
+                      children: [
+                        Expanded(
+                          child: _numberField(
+                            context,
+                            label: 'Rated Flow (gpm)',
+                            controller: _nozzleRatedFlowController,
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: _numberField(
+                            context,
+                            label: 'Rated Pressure (psi)',
+                            controller: _nozzleRatedPressureController,
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 12),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: _numberField(
+                            context,
+                            label: 'Nozzle Min Pressure (psi)',
+                            controller: _nozzleMinPressureController,
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: _numberField(
+                            context,
+                            label: 'Nozzle Max Pressure (psi)',
+                            controller: _nozzleMaxPressureController,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ],
+              ),
+            ),
+            const SizedBox(height: 14),
+            _sectionCard(
+              context,
+              title: 'Spray / Pump Assumptions',
+              child: Row(
+                children: [
+                  Expanded(
+                    child: _numberField(
+                      context,
+                      label: 'Target Flow (gal/ft²·hr)',
+                      controller: _targetFlowController,
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: _numberField(
+                      context,
+                      label: 'Pump Safety Factor (%)',
+                      controller: _safetyFactorController,
+                    ),
+                  ),
+                ],
+              ),
             ),
             const SizedBox(height: 16),
-
-            _buildSpecimenSection(context, accent),
-            const SizedBox(height: 16),
-
-            _buildRackSection(context, accent),
-            const SizedBox(height: 16),
-
-            _buildPipingSection(context, accent),
-            const SizedBox(height: 16),
-
-            _buildNozzleSection(context, accent),
-            const SizedBox(height: 16),
-
-            _buildAssumptionSection(context, accent),
-            const SizedBox(height: 16),
-
-            _buildRunButton(context, accent),
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                onPressed: _runCalculation,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.black,
+                  foregroundColor: accent,
+                  side: BorderSide(color: accent, width: 1.2),
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                ),
+                child: const Text(
+                  'Run Calc',
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+              ),
+            ),
             const SizedBox(height: 18),
-
             if (result != null) ...[
-              _buildWarningsSection(context, accent, result),
-              const SizedBox(height: 16),
-              _buildResultsSection(context, accent, result),
-              const SizedBox(height: 16),
-              _buildNotesSection(context, accent, result),
-            ],
-          ],
-        ),
-      ),
-    );
-  }
-
-  // =========================
-  // UI SECTIONS
-  // =========================
-
-  Widget _buildSpecimenSection(BuildContext context, Color accent) {
-    return _terminalCard(
-      context,
-      accent,
-      title: 'Specimen Size',
-      child: Column(
-        children: [
-          Row(
-            children: [
-              Expanded(
-                child: _feetInchesInput(
-                  context,
-                  label: 'Width',
-                  feetController: _widthFtController,
-                  inchesController: _widthInController,
+              if (result.warnings.isNotEmpty)
+                _warningCard(context, result.warnings),
+              if (result.warnings.isNotEmpty) const SizedBox(height: 14),
+              _sectionCard(
+                context,
+                title: 'Results',
+                child: Column(
+                  children: [
+                    _resultRow(
+                      'Specimen Area',
+                      '${result.areaFt2.toStringAsFixed(2)} ft²',
+                    ),
+                    _resultRow('Total Nozzles', '${result.totalNozzles}'),
+                    _resultRow(
+                      'Required Total Flow',
+                      '${result.requiredFlowGph.toStringAsFixed(1)} gph | ${result.requiredFlowGpm.toStringAsFixed(2)} gpm',
+                    ),
+                    _resultRow(
+                      'Required Flow per Nozzle',
+                      '${result.requiredFlowPerNozzleGpm.toStringAsFixed(3)} gpm',
+                    ),
+                    _resultRow(
+                      'Estimated Nozzle Pressure',
+                      '${result.nozzlePressurePsi.toStringAsFixed(1)} psi',
+                    ),
+                    _resultRow(
+                      'Header Velocity',
+                      '${result.headerVelocityFps.toStringAsFixed(2)} ft/s',
+                    ),
+                    _resultRow(
+                      'Drop Velocity',
+                      '${result.dropVelocityFps.toStringAsFixed(2)} ft/s',
+                    ),
+                    _resultRow(
+                      'Header Friction Loss',
+                      '${result.headerFrictionLossPsi.toStringAsFixed(2)} psi',
+                    ),
+                    _resultRow(
+                      'Drop Friction Loss',
+                      '${result.dropFrictionLossPsi.toStringAsFixed(2)} psi',
+                    ),
+                    _resultRow(
+                      'Estimated Pressure Range',
+                      '${result.systemPressureLowPsi.toStringAsFixed(1)} - ${result.systemPressureHighPsi.toStringAsFixed(1)} psi',
+                    ),
+                    _resultRow(
+                      'Minimum Pump Flow',
+                      '${result.minimumPumpFlowGpm.toStringAsFixed(2)} gpm',
+                    ),
+                    _resultRow(
+                      'Recommended Pump Flow',
+                      '${result.recommendedPumpFlowGpm.toStringAsFixed(2)} gpm',
+                    ),
+                  ],
                 ),
               ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: _feetInchesInput(
-                  context,
-                  label: 'Height',
-                  feetController: _heightFtController,
-                  inchesController: _heightInController,
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildRackSection(BuildContext context, Color accent) {
-    return _terminalCard(
-      context,
-      accent,
-      title: 'Rack Layout',
-      child: Column(
-        children: [
-          Row(
-            children: [
-              Expanded(
-                child: _numberField(
-                  context,
-                  label: 'Number of Drops',
-                  controller: _dropsController,
-                  hint: 'Vertical columns',
-                  isInteger: true,
-                ),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: _numberField(
-                  context,
-                  label: 'Nozzles per Drop',
-                  controller: _nozzlesPerDropController,
-                  hint: 'Vertical nozzle count',
-                  isInteger: true,
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 12),
-          _numberField(
-            context,
-            label: 'Nozzle Spacing (in)',
-            controller: _spacingInController,
-            hint: 'Applies horizontally and vertically',
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildPipingSection(BuildContext context, Color accent) {
-    return _terminalCard(
-      context,
-      accent,
-      title: 'Piping / Layout',
-      child: Column(
-        children: [
-          Row(
-            children: [
-              Expanded(
-                child: _dropdownField<String>(
-                  context,
-                  label: 'Supply Line Size',
-                  value: _supplyPipeSize,
-                  items: pvcInternalDiametersIn.keys.toList(),
-                  onChanged: (value) {
-                    if (value == null) return;
-                    setState(() => _supplyPipeSize = value);
-                  },
-                ),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: _dropdownField<String>(
-                  context,
-                  label: 'Drop Line Size',
-                  value: _dropPipeSize,
-                  items: pvcInternalDiametersIn.keys.toList(),
-                  onChanged: (value) {
-                    if (value == null) return;
-                    setState(() => _dropPipeSize = value);
-                  },
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 12),
-          _dropdownField<HeaderFeedLayout>(
-            context,
-            label: 'Header Feed Layout',
-            value: _headerFeedLayout,
-            items: HeaderFeedLayout.values,
-            displayText: (value) => value.label,
-            onChanged: (value) {
-              if (value == null) return;
-              setState(() => _headerFeedLayout = value);
-            },
-          ),
-          const SizedBox(height: 12),
-          Row(
-            children: [
-              Expanded(
-                child: _feetInchesInput(
-                  context,
-                  label: 'Supply Header Length',
-                  feetController: _supplyLengthFtController,
-                  inchesController: _supplyLengthInController,
-                ),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: _feetInchesInput(
-                  context,
-                  label: 'Drop Length',
-                  feetController: _dropLengthFtController,
-                  inchesController: _dropLengthInController,
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildNozzleSection(BuildContext context, Color accent) {
-    return _terminalCard(
-      context,
-      accent,
-      title: 'Nozzle Model',
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          _terminalText(
-            context,
-            _useCustomNozzleData
-                ? 'Custom nozzle curve using Rated Flow @ Rated Pressure.'
-                : 'Default nozzle: WhirlJet 1/4BX-5 modeled from 0.5 gpm @ 10 psi.',
-          ),
-          const SizedBox(height: 10),
-          SwitchListTile(
-            contentPadding: EdgeInsets.zero,
-            activeColor: accent,
-            title: Text(
-              'Override Default Nozzle Data',
-              style: TextStyle(color: accent, fontWeight: FontWeight.bold),
-            ),
-            subtitle: Text(
-              'Use rated flow and pressure from your actual nozzle data.',
-              style: TextStyle(color: accent.withValues(alpha: 0.8)),
-            ),
-            value: _useCustomNozzleData,
-            onChanged: (value) {
-              setState(() => _useCustomNozzleData = value);
-            },
-          ),
-          const SizedBox(height: 8),
-          if (_useCustomNozzleData) ...[
-            Row(
-              children: [
-                Expanded(
-                  child: _numberField(
-                    context,
-                    label: 'Rated Flow (gpm)',
-                    controller: _nozzleRatedFlowController,
-                  ),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: _numberField(
-                    context,
-                    label: 'Rated Pressure (psi)',
-                    controller: _nozzleRatedPressureController,
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 12),
-            Row(
-              children: [
-                Expanded(
-                  child: _numberField(
-                    context,
-                    label: 'Nozzle Min Pressure (psi)',
-                    controller: _nozzleMinPressureController,
-                  ),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: _numberField(
-                    context,
-                    label: 'Nozzle Max Pressure (psi)',
-                    controller: _nozzleMaxPressureController,
-                  ),
-                ),
-              ],
-            ),
-          ],
-        ],
-      ),
-    );
-  }
-
-  Widget _buildAssumptionSection(BuildContext context, Color accent) {
-    return _terminalCard(
-      context,
-      accent,
-      title: 'Spray / Pump Assumptions',
-      child: Column(
-        children: [
-          Row(
-            children: [
-              Expanded(
-                child: _numberField(
-                  context,
-                  label: 'Target Flow (gal/ft²·hr)',
-                  controller: _targetFlowController,
-                ),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: _numberField(
-                  context,
-                  label: 'Pump Safety Factor (%)',
-                  controller: _safetyFactorController,
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildRunButton(BuildContext context, Color accent) {
-    return SizedBox(
-      width: double.infinity,
-      child: ElevatedButton(
-        onPressed: _runCalculation,
-        style: ElevatedButton.styleFrom(
-          backgroundColor: Colors.black,
-          foregroundColor: accent,
-          side: BorderSide(color: accent, width: 1.2),
-          padding: const EdgeInsets.symmetric(vertical: 16),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
-          ),
-        ),
-        child: const Text(
-          'Run Calc',
-          style: TextStyle(fontWeight: FontWeight.bold),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildWarningsSection(
-    BuildContext context,
-    Color accent,
-    PumpCalcResult result,
-  ) {
-    if (result.warnings.isEmpty) {
-      return _terminalCard(
-        context,
-        accent,
-        title: 'Warnings',
-        child: _terminalText(context, 'No warning flags triggered.'),
-      );
-    }
-
-    return _terminalCard(
-      context,
-      Colors.amber,
-      title: 'Warnings',
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: result.warnings
-            .map(
-              (warning) => Padding(
-                padding: const EdgeInsets.only(bottom: 8),
+              const SizedBox(height: 14),
+              _sectionCard(
+                context,
+                title: 'Notes',
                 child: Text(
-                  '• $warning',
-                  style: const TextStyle(
-                    color: Colors.amber,
-                    fontWeight: FontWeight.w600,
-                  ),
+                  'This is a planning estimate for spray-rack sizing. It does not account for every hose loss, fitting, valve, elevation change, or calibration detail. Use it to decide whether your feed setup is probably adequate or if a pump is likely needed.',
+                  style: TextStyle(color: accent.withOpacity(0.9), height: 1.35),
                 ),
               ),
-            )
-            .toList(),
+            ],
+          ],
+        ),
       ),
     );
   }
-
-  Widget _buildResultsSection(
-    BuildContext context,
-    Color accent,
-    PumpCalcResult result,
-  ) {
-    return _terminalCard(
-      context,
-      accent,
-      title: 'Results',
-      child: Column(
-        children: [
-          _resultRow('Specimen Area', '${result.areaFt2.toStringAsFixed(2)} ft²'),
-          _resultRow(
-            'Total Nozzles',
-            result.totalNozzles.toString(),
-          ),
-          _resultRow(
-            'Required Total Flow',
-            '${result.requiredFlowGph.toStringAsFixed(1)} gph  |  ${result.requiredFlowGpm.toStringAsFixed(2)} gpm',
-          ),
-          _resultRow(
-            'Required Flow per Nozzle',
-            '${result.requiredFlowPerNozzleGpm.toStringAsFixed(3)} gpm',
-          ),
-          _resultRow(
-            'Estimated Nozzle Pressure',
-            '${result.nozzlePressurePsi.toStringAsFixed(1)} psi',
-          ),
-          _resultRow(
-            'Header Velocity',
-            '${result.headerVelocityFps.toStringAsFixed(2)} ft/s',
-          ),
-          _resultRow(
-            'Drop Velocity',
-            '${result.dropVelocityFps.toStringAsFixed(2)} ft/s',
-          ),
-          _resultRow(
-            'Header Friction Loss',
-            '${result.headerFrictionPsi.toStringAsFixed(2)} psi',
-          ),
-          _resultRow(
-            'Drop Friction Loss',
-            '${result.dropFrictionPsi.toStringAsFixed(2)} psi',
-          ),
-          _resultRow(
-            'Estimated System Pressure',
-            '${result.systemPressureLowPsi.toStringAsFixed(1)} – ${result.systemPressureHighPsi.toStringAsFixed(1)} psi',
-          ),
-          _resultRow(
-            'Minimum Pump Flow',
-            '${result.minimumPumpFlowGpm.toStringAsFixed(2)} gpm',
-          ),
-          _resultRow(
-            'Recommended Pump Flow',
-            '${result.recommendedPumpFlowGpm.toStringAsFixed(2)} gpm',
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildNotesSection(
-    BuildContext context,
-    Color accent,
-    PumpCalcResult result,
-  ) {
-    return _terminalCard(
-      context,
-      accent,
-      title: 'Engineering Notes',
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          _terminalText(
-            context,
-            'This tool estimates whether your available feed likely has enough pressure/flow or whether a dedicated pump is likely needed.',
-          ),
-          const SizedBox(height: 8),
-          _terminalText(
-            context,
-            'It does NOT model every hose loss, fitting loss, regulator, elevation change, or imperfect rack balance. Use it as a sizing and planning tool before final calibration.',
-          ),
-          const SizedBox(height: 8),
-          _terminalText(
-            context,
-            'Current header layout assumption: ${result.headerFeedLabel}. All drops are assumed identical.',
-          ),
-          const SizedBox(height: 8),
-          _terminalText(
-            context,
-            'If your actual nozzle pressure must stay within a tighter band, override the nozzle data or tighten the warning rules in the HACKABLE constants.',
-          ),
-        ],
-      ),
-    );
-  }
-
-  // =========================
-  // CALCULATION
-  // =========================
 
   void _runCalculation() {
-    final widthFt = _readFeetAndInches(
+    final double widthFt = _readFeetAndInches(
       _widthFtController,
       _widthInController,
     );
-    final heightFt = _readFeetAndInches(
+    final double heightFt = _readFeetAndInches(
       _heightFtController,
       _heightInController,
     );
 
-    final drops = _readInt(_dropsController, fallback: 1).clamp(1, 10000);
-    final nozzlesPerDrop =
+    final int drops = _readInt(_dropsController, fallback: 1).clamp(1, 10000);
+    final int nozzlesPerDrop =
         _readInt(_nozzlesPerDropController, fallback: 1).clamp(1, 10000);
-    final totalNozzles = drops * nozzlesPerDrop;
+    final int totalNozzles = drops * nozzlesPerDrop;
 
-    final spacingIn = _readDouble(
+    final double spacingIn = _readDouble(
       _spacingInController,
-      fallback: defaultNozzleSpacingIn,
-    ).clamp(0.1, 999.0);
+      fallback: defaultSpacingIn,
+    );
 
-    final supplyLengthFt = _readFeetAndInches(
+    final double supplyLengthFt = _readFeetAndInches(
       _supplyLengthFtController,
       _supplyLengthInController,
     );
-    final dropLengthFt = _readFeetAndInches(
+    final double dropLengthFt = _readFeetAndInches(
       _dropLengthFtController,
       _dropLengthInController,
     );
 
-    final targetFlowGphPerFt2 = _readDouble(
+    final double targetFlowGphPerFt2 = _readDouble(
       _targetFlowController,
       fallback: defaultTargetFlowGphPerFt2,
     );
 
-    final safetyFactorPercent = _readDouble(
+    final double safetyFactorPercent = _readDouble(
       _safetyFactorController,
       fallback: defaultSafetyFactorPercent,
-    ).clamp(0, 500);
+    );
 
-    final supplyIdIn = pvcInternalDiametersIn[_supplyPipeSize] ?? 1.610;
-    final dropIdIn = pvcInternalDiametersIn[_dropPipeSize] ?? 0.824;
+    final double supplyIdIn = pipeIdsIn[_supplyPipeSize] ?? 1.610;
+    final double dropIdIn = pipeIdsIn[_dropPipeSize] ?? 0.824;
 
-    final nozzleRatedFlow = _useCustomNozzleData
-        ? _readDouble(_nozzleRatedFlowController, fallback: defaultNozzleRatedFlowGpm)
+    final double nozzleRatedFlowGpm = _overrideNozzleData
+        ? _readDouble(
+            _nozzleRatedFlowController,
+            fallback: defaultNozzleRatedFlowGpm,
+          )
         : defaultNozzleRatedFlowGpm;
 
-    final nozzleRatedPressure = _useCustomNozzleData
-        ? _readDouble(_nozzleRatedPressureController, fallback: defaultNozzleRatedPressurePsi)
+    final double nozzleRatedPressurePsi = _overrideNozzleData
+        ? _readDouble(
+            _nozzleRatedPressureController,
+            fallback: defaultNozzleRatedPressurePsi,
+          )
         : defaultNozzleRatedPressurePsi;
 
-    final nozzleMinPressure = _useCustomNozzleData
-        ? _readDouble(_nozzleMinPressureController, fallback: defaultNozzleMinPsi)
-        : defaultNozzleMinPsi;
+    final double nozzleMinPressurePsi = _overrideNozzleData
+        ? _readDouble(
+            _nozzleMinPressureController,
+            fallback: defaultNozzleMinPressurePsi,
+          )
+        : defaultNozzleMinPressurePsi;
 
-    final nozzleMaxPressure = _useCustomNozzleData
-        ? _readDouble(_nozzleMaxPressureController, fallback: defaultNozzleMaxPsi)
-        : defaultNozzleMaxPsi;
+    final double nozzleMaxPressurePsi = _overrideNozzleData
+        ? _readDouble(
+            _nozzleMaxPressureController,
+            fallback: defaultNozzleMaxPressurePsi,
+          )
+        : defaultNozzleMaxPressurePsi;
 
-    final areaFt2 = math.max(widthFt, 0) * math.max(heightFt, 0);
-    final requiredFlowGph = areaFt2 * targetFlowGphPerFt2;
-    final requiredFlowGpm = requiredFlowGph / 60.0;
+    final double areaFt2 = math.max(0.0, widthFt) * math.max(0.0, heightFt);
+    final double requiredFlowGph = areaFt2 * targetFlowGphPerFt2;
+    final double requiredFlowGpm = requiredFlowGph / 60.0;
 
-    final requiredFlowPerNozzleGpm =
+    final double requiredFlowPerNozzleGpm =
         totalNozzles > 0 ? requiredFlowGpm / totalNozzles : 0.0;
 
-    // Nozzle K-value model: Q = K * sqrt(P)
-    final nozzleK = nozzleRatedPressure > 0
-        ? nozzleRatedFlow / math.sqrt(nozzleRatedPressure)
+    // Q = K * sqrt(P)
+    final double nozzleK = nozzleRatedPressurePsi > 0.0
+        ? nozzleRatedFlowGpm / math.sqrt(nozzleRatedPressurePsi)
         : 0.0;
 
-    final nozzlePressurePsi = (nozzleK > 0 && requiredFlowPerNozzleGpm > 0)
-        ? math.pow(requiredFlowPerNozzleGpm / nozzleK, 2).toDouble()
-        : 0.0;
+    final double nozzlePressurePsi =
+        (nozzleK > 0.0 && requiredFlowPerNozzleGpm > 0.0)
+            ? math.pow(requiredFlowPerNozzleGpm / nozzleK, 2).toDouble()
+            : 0.0;
 
-    // Header effective length depends on feed style.
-    final effectiveHeaderLengthFt = _headerFeedLayout == HeaderFeedLayout.centerFed
-        ? supplyLengthFt / 2.0
-        : supplyLengthFt;
+    final double effectiveHeaderLengthFt =
+        _headerFeedLayout == HeaderFeedLayout.centerFed
+            ? supplyLengthFt / 2.0
+            : supplyLengthFt;
 
-    // Flow in header carries full rack demand.
-    final headerVelocityFps =
+    final double headerVelocityFps =
         _velocityFps(requiredFlowGpm, supplyIdIn);
 
-    // Each drop only carries its own nozzle flow demand.
-    final dropFlowGpm = requiredFlowPerNozzleGpm * nozzlesPerDrop;
-    final dropVelocityFps = _velocityFps(dropFlowGpm, dropIdIn);
+    final double dropFlowGpm = requiredFlowPerNozzleGpm * nozzlesPerDrop;
+    final double dropVelocityFps = _velocityFps(dropFlowGpm, dropIdIn);
 
-    final headerFrictionPsi = _hazenWilliamsPressureLossPsi(
+    final double headerFrictionLossPsi = _hazenWilliamsPressureLossPsi(
       flowGpm: requiredFlowGpm,
       lengthFt: effectiveHeaderLengthFt,
       insideDiameterIn: supplyIdIn,
-      c: pvcHazenWilliamsC,
+      c: pvcC,
     );
 
-    final dropFrictionPsi = _hazenWilliamsPressureLossPsi(
+    final double dropFrictionLossPsi = _hazenWilliamsPressureLossPsi(
       flowGpm: dropFlowGpm,
       lengthFt: dropLengthFt,
       insideDiameterIn: dropIdIn,
-      c: pvcHazenWilliamsC,
+      c: pvcC,
     );
 
-    final estimatedSystemPressurePsi =
-        nozzlePressurePsi + headerFrictionPsi + dropFrictionPsi;
+    final double estimatedSystemPressurePsi =
+        nozzlePressurePsi + headerFrictionLossPsi + dropFrictionLossPsi;
 
-    final systemPressureLowPsi =
-        math.max(0, estimatedSystemPressurePsi * pressureLowFactor);
-    final systemPressureHighPsi =
-        math.max(0, estimatedSystemPressurePsi * pressureHighFactor);
+    final double systemPressureLowPsi =
+        math.max(0.0, estimatedSystemPressurePsi * pressureLowFactor);
+    final double systemPressureHighPsi =
+        math.max(0.0, estimatedSystemPressurePsi * pressureHighFactor);
 
-    final minimumPumpFlowGpm = requiredFlowGpm;
-    final recommendedPumpFlowGpm =
-        minimumPumpFlowGpm * (1 + (safetyFactorPercent / 100.0));
+    final double minimumPumpFlowGpm = requiredFlowGpm;
+    final double recommendedPumpFlowGpm =
+        minimumPumpFlowGpm * (1.0 + (safetyFactorPercent / 100.0));
 
-    final rackCoverageWidthFt =
+    final double rackCoverageWidthFt =
         drops <= 1 ? (spacingIn / 12.0) : ((drops - 1) * spacingIn / 12.0);
-    final rackCoverageHeightFt = nozzlesPerDrop <= 1
+    final double rackCoverageHeightFt = nozzlesPerDrop <= 1
         ? (spacingIn / 12.0)
         : ((nozzlesPerDrop - 1) * spacingIn / 12.0);
 
-    final warnings = <String>[];
+    final List<String> warnings = <String>[];
 
-    if (targetFlowGphPerFt2 < lowAstmFlowWarning ||
-        targetFlowGphPerFt2 > highAstmFlowWarning) {
+    if (targetFlowGphPerFt2 < warningFlowLowGphPerFt2 ||
+        targetFlowGphPerFt2 > warningFlowHighGphPerFt2) {
       warnings.add(
-        'Target flow is outside your warning band of $lowAstmFlowWarning to $highAstmFlowWarning gal/ft²·hr.',
+        'Target flow is outside your warning band of '
+        '$warningFlowLowGphPerFt2 to $warningFlowHighGphPerFt2 gal/ft²·hr.',
       );
     }
 
     if ((spacingIn - 12.0).abs() > 0.01) {
       warnings.add(
-        'Nozzle spacing is not 12 in. ASTM-style rack spacing warning triggered.',
+        'Nozzle spacing is not 12 in. ASTM spacing warning triggered.',
       );
     }
 
     if (rackCoverageWidthFt < widthFt) {
       warnings.add(
-        'Rack coverage width appears smaller than specimen width. Check drop count or spacing.',
+        'Rack coverage width appears smaller than specimen width.',
       );
     }
 
     if (rackCoverageHeightFt < heightFt) {
       warnings.add(
-        'Rack coverage height appears smaller than specimen height. Check nozzle count or spacing.',
+        'Rack coverage height appears smaller than specimen height.',
       );
     }
 
-    if (headerVelocityFps > headerVelocityWarnFps) {
+    if (headerVelocityFps > headerVelocityWarningFps) {
       warnings.add(
-        'Header line velocity is high (${headerVelocityFps.toStringAsFixed(2)} ft/s). Consider increasing supply line size.',
+        'Header velocity is high at ${headerVelocityFps.toStringAsFixed(2)} ft/s.',
       );
     }
 
-    if (dropVelocityFps > dropVelocityWarnFps) {
+    if (dropVelocityFps > dropVelocityWarningFps) {
       warnings.add(
-        'Drop line velocity is high (${dropVelocityFps.toStringAsFixed(2)} ft/s). Consider increasing drop line size.',
+        'Drop velocity is high at ${dropVelocityFps.toStringAsFixed(2)} ft/s.',
       );
     }
 
-    if (nozzlePressurePsi < nozzleMinPressure) {
+    if (nozzlePressurePsi < nozzleMinPressurePsi) {
       warnings.add(
-        'Estimated nozzle pressure is below the entered nozzle minimum (${nozzleMinPressure.toStringAsFixed(1)} psi).',
+        'Estimated nozzle pressure is below entered nozzle minimum.',
       );
     }
 
-    if (nozzlePressurePsi > nozzleMaxPressure) {
+    if (nozzlePressurePsi > nozzleMaxPressurePsi) {
       warnings.add(
-        'Estimated nozzle pressure is above the entered nozzle maximum (${nozzleMaxPressure.toStringAsFixed(1)} psi).',
+        'Estimated nozzle pressure is above entered nozzle maximum.',
       );
     }
 
-    if (areaFt2 <= 0) {
+    if (areaFt2 <= 0.0) {
       warnings.add('Specimen area is zero or invalid.');
     }
 
-    if (requiredFlowGpm <= 0) {
+    if (requiredFlowGpm <= 0.0) {
       warnings.add('Required total flow is zero or invalid.');
     }
 
@@ -855,67 +699,29 @@ class _SprayRackPumpSizingPageState extends State<SprayRackPumpSizingPage> {
         nozzlePressurePsi: nozzlePressurePsi,
         headerVelocityFps: headerVelocityFps,
         dropVelocityFps: dropVelocityFps,
-        headerFrictionPsi: headerFrictionPsi,
-        dropFrictionPsi: dropFrictionPsi,
+        headerFrictionLossPsi: headerFrictionLossPsi,
+        dropFrictionLossPsi: dropFrictionLossPsi,
         systemPressureLowPsi: systemPressureLowPsi,
         systemPressureHighPsi: systemPressureHighPsi,
         minimumPumpFlowGpm: minimumPumpFlowGpm,
         recommendedPumpFlowGpm: recommendedPumpFlowGpm,
-        headerFeedLabel: _headerFeedLayout.label,
         warnings: warnings,
       );
     });
   }
 
-  // =========================
-  // MATH HELPERS
-  // =========================
-
-  double _velocityFps(double flowGpm, double insideDiameterIn) {
-    if (flowGpm <= 0 || insideDiameterIn <= 0) return 0;
-    // Standard conversion for gpm + inches to ft/s.
-    return 0.4085 * flowGpm / (insideDiameterIn * insideDiameterIn);
-  }
-
-  double _hazenWilliamsPressureLossPsi({
-    required double flowGpm,
-    required double lengthFt,
-    required double insideDiameterIn,
-    required double c,
-  }) {
-    if (flowGpm <= 0 || lengthFt <= 0 || insideDiameterIn <= 0 || c <= 0) {
-      return 0;
-    }
-
-    // Hazen-Williams head loss in feet per 100 ft:
-    // hf = 0.2083 * (100/C)^1.852 * Q^1.852 / d^4.8655
-    final headLossPer100Ft = 0.2083 *
-        math.pow(100.0 / c, 1.852) *
-        math.pow(flowGpm, 1.852) /
-        math.pow(insideDiameterIn, 4.8655);
-
-    final totalHeadLossFt = headLossPer100Ft * (lengthFt / 100.0);
-
-    // Convert ft of water to psi.
-    return totalHeadLossFt / 2.31;
-  }
-
-  // =========================
-  // INPUT HELPERS
-  // =========================
-
   double _readFeetAndInches(
     TextEditingController feetController,
     TextEditingController inchesController,
   ) {
-    final feet = _readDouble(feetController, fallback: 0);
-    final inches = _readDouble(inchesController, fallback: 0);
+    final double feet = _readDouble(feetController, fallback: 0.0);
+    final double inches = _readDouble(inchesController, fallback: 0.0);
     return feet + (inches / 12.0);
   }
 
   double _readDouble(
     TextEditingController controller, {
-    double fallback = 0,
+    double fallback = 0.0,
   }) {
     return double.tryParse(controller.text.trim()) ?? fallback;
   }
@@ -927,52 +733,47 @@ class _SprayRackPumpSizingPageState extends State<SprayRackPumpSizingPage> {
     return int.tryParse(controller.text.trim()) ?? fallback;
   }
 
-  // =========================
-  // WIDGET HELPERS
-  // =========================
-
-  Widget _sectionTitle(BuildContext context, String text, Color accent) {
-    return Text(
-      text,
-      style: TextStyle(
-        color: accent,
-        fontSize: 20,
-        fontWeight: FontWeight.bold,
-      ),
-    );
+  double _velocityFps(double flowGpm, double insideDiameterIn) {
+    if (flowGpm <= 0.0 || insideDiameterIn <= 0.0) return 0.0;
+    return 0.4085 * flowGpm / (insideDiameterIn * insideDiameterIn);
   }
 
-  Widget _terminalText(BuildContext context, String text) {
-    final color = Theme.of(context).colorScheme.primary;
-    return Text(
-      text,
-      style: TextStyle(
-        color: color.withValues(alpha: 0.92),
-        height: 1.35,
-      ),
-    );
+  double _hazenWilliamsPressureLossPsi({
+    required double flowGpm,
+    required double lengthFt,
+    required double insideDiameterIn,
+    required double c,
+  }) {
+    if (flowGpm <= 0.0 ||
+        lengthFt <= 0.0 ||
+        insideDiameterIn <= 0.0 ||
+        c <= 0.0) {
+      return 0.0;
+    }
+
+    final double headLossPer100Ft = 0.2083 *
+        math.pow(100.0 / c, 1.852).toDouble() *
+        math.pow(flowGpm, 1.852).toDouble() /
+        math.pow(insideDiameterIn, 4.8655).toDouble();
+
+    final double totalHeadLossFt = headLossPer100Ft * (lengthFt / 100.0);
+    return totalHeadLossFt / 2.31;
   }
 
-  Widget _terminalCard(
-    BuildContext context,
-    Color borderColor, {
+  Widget _sectionCard(
+    BuildContext context, {
     required String title,
     required Widget child,
   }) {
+    final Color accent = Theme.of(context).colorScheme.primary;
+
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
         color: Colors.black,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: borderColor, width: 1.2),
-        boxShadow: [
-          BoxShadow(
-            color: borderColor.withValues(alpha: 0.12),
-            blurRadius: 12,
-            spreadRadius: 1,
-          ),
-        ],
+        border: Border.all(color: accent, width: 1.2),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -980,13 +781,47 @@ class _SprayRackPumpSizingPageState extends State<SprayRackPumpSizingPage> {
           Text(
             title,
             style: TextStyle(
-              color: borderColor,
-              fontWeight: FontWeight.bold,
+              color: accent,
               fontSize: 16,
+              fontWeight: FontWeight.bold,
             ),
           ),
           const SizedBox(height: 12),
           child,
+        ],
+      ),
+    );
+  }
+
+  Widget _warningCard(BuildContext context, List<String> warnings) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        color: Colors.black,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: Colors.amber, width: 1.2),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text(
+            'Warnings',
+            style: TextStyle(
+              color: Colors.amber,
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          const SizedBox(height: 10),
+          for (final String warning in warnings)
+            Padding(
+              padding: const EdgeInsets.only(bottom: 8),
+              child: Text(
+                '• $warning',
+                style: const TextStyle(color: Colors.amber),
+              ),
+            ),
         ],
       ),
     );
@@ -1030,8 +865,7 @@ class _SprayRackPumpSizingPageState extends State<SprayRackPumpSizingPage> {
     BuildContext context, {
     required String label,
     required TextEditingController controller,
-    String? hint,
-    bool isInteger = false,
+    bool integerOnly = false,
   }) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -1041,8 +875,7 @@ class _SprayRackPumpSizingPageState extends State<SprayRackPumpSizingPage> {
         _terminalTextField(
           context,
           controller: controller,
-          hintText: hint,
-          keyboardType: isInteger
+          keyboardType: integerOnly
               ? const TextInputType.numberWithOptions(decimal: false)
               : const TextInputType.numberWithOptions(decimal: true),
         ),
@@ -1058,7 +891,7 @@ class _SprayRackPumpSizingPageState extends State<SprayRackPumpSizingPage> {
     required ValueChanged<T?> onChanged,
     String Function(T)? displayText,
   }) {
-    final accent = Theme.of(context).colorScheme.primary;
+    final Color accent = Theme.of(context).colorScheme.primary;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -1070,24 +903,22 @@ class _SprayRackPumpSizingPageState extends State<SprayRackPumpSizingPage> {
           decoration: BoxDecoration(
             color: Colors.black,
             borderRadius: BorderRadius.circular(10),
-            border: Border.all(color: accent.withValues(alpha: 0.7)),
+            border: Border.all(color: accent),
           ),
           child: DropdownButtonHideUnderline(
             child: DropdownButton<T>(
               value: value,
+              isExpanded: true,
               dropdownColor: Colors.black,
               iconEnabledColor: accent,
               style: TextStyle(color: accent),
-              isExpanded: true,
               onChanged: onChanged,
-              items: items
-                  .map(
-                    (item) => DropdownMenuItem<T>(
-                      value: item,
-                      child: Text(displayText?.call(item) ?? item.toString()),
-                    ),
-                  )
-                  .toList(),
+              items: items.map((T item) {
+                return DropdownMenuItem<T>(
+                  value: item,
+                  child: Text(displayText?.call(item) ?? item.toString()),
+                );
+              }).toList(),
             ),
           ),
         ),
@@ -1102,7 +933,7 @@ class _SprayRackPumpSizingPageState extends State<SprayRackPumpSizingPage> {
     TextInputType keyboardType =
         const TextInputType.numberWithOptions(decimal: true),
   }) {
-    final accent = Theme.of(context).colorScheme.primary;
+    final Color accent = Theme.of(context).colorScheme.primary;
 
     return TextField(
       controller: controller,
@@ -1110,13 +941,14 @@ class _SprayRackPumpSizingPageState extends State<SprayRackPumpSizingPage> {
       style: TextStyle(color: accent),
       decoration: InputDecoration(
         hintText: hintText,
-        hintStyle: TextStyle(color: accent.withValues(alpha: 0.45)),
+        hintStyle: TextStyle(color: accent.withOpacity(0.45)),
         filled: true,
         fillColor: Colors.black,
         isDense: true,
-        contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+        contentPadding:
+            const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
         enabledBorder: OutlineInputBorder(
-          borderSide: BorderSide(color: accent.withValues(alpha: 0.7)),
+          borderSide: BorderSide(color: accent),
           borderRadius: BorderRadius.circular(10),
         ),
         focusedBorder: OutlineInputBorder(
@@ -1128,7 +960,7 @@ class _SprayRackPumpSizingPageState extends State<SprayRackPumpSizingPage> {
   }
 
   Widget _fieldLabel(BuildContext context, String text) {
-    final accent = Theme.of(context).colorScheme.primary;
+    final Color accent = Theme.of(context).colorScheme.primary;
     return Text(
       text,
       style: TextStyle(
@@ -1160,9 +992,7 @@ class _SprayRackPumpSizingPageState extends State<SprayRackPumpSizingPage> {
             child: Text(
               value,
               textAlign: TextAlign.right,
-              style: const TextStyle(
-                color: Colors.white,
-              ),
+              style: const TextStyle(color: Colors.white),
             ),
           ),
         ],
@@ -1188,13 +1018,12 @@ class PumpCalcResult {
   final double nozzlePressurePsi;
   final double headerVelocityFps;
   final double dropVelocityFps;
-  final double headerFrictionPsi;
-  final double dropFrictionPsi;
+  final double headerFrictionLossPsi;
+  final double dropFrictionLossPsi;
   final double systemPressureLowPsi;
   final double systemPressureHighPsi;
   final double minimumPumpFlowGpm;
   final double recommendedPumpFlowGpm;
-  final String headerFeedLabel;
   final List<String> warnings;
 
   const PumpCalcResult({
@@ -1206,13 +1035,12 @@ class PumpCalcResult {
     required this.nozzlePressurePsi,
     required this.headerVelocityFps,
     required this.dropVelocityFps,
-    required this.headerFrictionPsi,
-    required this.dropFrictionPsi,
+    required this.headerFrictionLossPsi,
+    required this.dropFrictionLossPsi,
     required this.systemPressureLowPsi,
     required this.systemPressureHighPsi,
     required this.minimumPumpFlowGpm,
     required this.recommendedPumpFlowGpm,
-    required this.headerFeedLabel,
     required this.warnings,
   });
 }
