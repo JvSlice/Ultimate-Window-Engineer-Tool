@@ -75,12 +75,15 @@ class WeldItPage extends StatelessWidget {
             terminalNavButton("Shielding Gas: type • application", () {
               _open(context, const ShieldingGasPage());
             }),
+            const SizedBox(height: 12),
             terminalNavButton("Mig Setup Helper", () {
               _open(context, const MigSetupCalcPage());
             }),
+            const SizedBox(height: 12),
             terminalNavButton("Stick Setup Helper", () {
               _open(context, const StickSetupCalcPage());
             }),
+            const SizedBox(height: 12),
             terminalNavButton("Tig Setup Helper", () {
               _open(context, const TigSetupCalcPage());
             }),
