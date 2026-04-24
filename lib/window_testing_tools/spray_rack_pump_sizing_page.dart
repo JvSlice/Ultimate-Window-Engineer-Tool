@@ -19,7 +19,7 @@ class _SprayRackPumpSizingPageState extends State<SprayRackPumpSizingPage> {
   static const double defaultTargetFlowGphPerFt2 = 5.0;
   static const double warningFlowLowGphPerFt2 = 4.0;
   static const double warningFlowHighGphPerFt2 = 6.0;
-  static const double defaultSpacingIn = 12.0;
+  static const double defaultSpacingIn = 24.0;
 
   // Default nozzle model:
   // WhirlJet 1/4BX-5 using simple Q = K * sqrt(P) estimate
@@ -639,9 +639,9 @@ class _SprayRackPumpSizingPageState extends State<SprayRackPumpSizingPage> {
       );
     }
 
-    if ((spacingIn - 12.0).abs() > 0.01) {
+    if ((spacingIn - 24.0).abs() > 0.01) {
       warnings.add(
-        'Nozzle spacing is not 12 in. ASTM spacing warning triggered.',
+        'Nozzle spacing is not 24 in. ASTM spacing warning triggered.',
       );
     }
 
