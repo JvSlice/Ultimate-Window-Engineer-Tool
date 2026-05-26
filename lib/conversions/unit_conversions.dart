@@ -1,4 +1,4 @@
-import 'dart:math';
+mport 'dart:math';
 
 enum ConversionCategory {
   pressureAir,
@@ -12,6 +12,7 @@ enum ConversionCategory {
   speed,
   powerEnergy,
   torque,
+  thermal,
 }
 
 enum Direction { to, from }
@@ -40,6 +41,8 @@ String categoryLabel(ConversionCategory c) {
       return "Power / Energy";
     case ConversionCategory.torque:
       return "Torque";
+    case ConversionCategory.thermal:
+      return "Thermal";
   }
 }
 
@@ -536,6 +539,43 @@ final List<ConversionTool> conversionTools = [
     fromFn: (input) => input / 3600000.0,
   ),
 
+  // ---------------- Thermal / Fenestration ----------------
+  // HACKABLE: Thermal conversion constants used for fenestration U/R values.
+  // 1 W/(m²·K) = 0.1761101838 BTU/(h·ft²·°F)
+  // 1 m²·K/W = 5.678263337 h·ft²·°F/BTU
+  ConversionTool(
+    label: "U-Value: W/m²·K ↔ BTU/h·ft²·°F",
+    category: ConversionCategory.thermal,
+    toUnit: "BTU/h·ft²·°F",
+    fromUnit: "W/m²·K",
+    toFn: (input) => input * 0.1761101838,
+    fromFn: (input) => input / 0.1761101838,
+  ),
+  ConversionTool(
+    label: "R-Value: m²·K/W ↔ h·ft²·°F/BTU",
+    category: ConversionCategory.thermal,
+    toUnit: "h·ft²·°F/BTU",
+    fromUnit: "m²·K/W",
+    toFn: (input) => input * 5.678263337,
+    fromFn: (input) => input / 5.678263337,
+  ),
+  ConversionTool(
+    label: "SI U-Value ↔ US R-Value",
+    category: ConversionCategory.thermal,
+    toUnit: "h·ft²·°F/BTU",
+    fromUnit: "W/m²·K",
+    toFn: (input) => 5.678263337 / input,
+    fromFn: (input) => 5.678263337 / input,
+  ),
+  ConversionTool(
+    label: "US U-Value ↔ US R-Value",
+    category: ConversionCategory.thermal,
+    toUnit: "h·ft²·°F/BTU",
+    fromUnit: "BTU/h·ft²·°F",
+    toFn: (input) => 1.0 / input,
+    fromFn: (input) => 1.0 / input,
+  ),
+
   // ---------------- Torque ----------------
   ConversionTool(
     label: "Foot-Pounds ↔ Newton-Meters",
@@ -562,3 +602,4 @@ final List<ConversionTool> conversionTools = [
     fromFn: (input) => input / 0.112985,
   ),
 ];
+
