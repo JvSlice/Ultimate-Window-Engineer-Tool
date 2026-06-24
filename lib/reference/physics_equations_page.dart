@@ -5,6 +5,7 @@ import 'physics/cantilever_beam_page.dart';
 import 'physics/pulleys_page.dart';
 import 'physics/velocity_page.dart';
 import 'physics/section_i_page.dart';
+import 'physics/thermal_expansion_page.dart';
 
 class PhysicsEquationsPage extends StatelessWidget {
   const PhysicsEquationsPage({super.key});
@@ -76,6 +77,11 @@ class PhysicsEquationsPage extends StatelessWidget {
             terminalButton(
               "Section Properties (I)",
               () => _open(context, const SectionIPage()),
+            ),
+            const SizedBox(height: 14),
+            terminalButton(
+              "Thermal Expansion",
+              () => _open(context, const ThermalExpansionPage()),
             ),
             const SizedBox(height: 14),
           ],
