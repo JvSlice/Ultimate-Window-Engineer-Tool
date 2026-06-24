@@ -101,6 +101,7 @@ class _MaterialReferencePageState extends State<MaterialReferencePage> {
                 _filterChip(accent, "ALUMINUM", MaterialCategory.aluminum),
                 _filterChip(accent, "PLASTIC", MaterialCategory.plastic),
                 _filterChip(accent, "WOOD", MaterialCategory.wood),
+                _filterChip(accent, "MASONRY", MaterialCategory.masonry),
               ],
             ),
 
