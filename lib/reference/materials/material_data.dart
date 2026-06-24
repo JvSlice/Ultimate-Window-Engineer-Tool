@@ -7,6 +7,7 @@ const materials = <MaterialSpec>[
     name: "A36 (Structural)",
     category: MaterialCategory.steel,
     densityKgM3: 7850,
+    thermalExpansionMicroInInF: 6.5,
     commonUse: "Plate, structural shapes, general fabrication",
     melting: TempRange(minF: 2590, maxF: 2660, minC: 1420, maxC: 1460),
     strength: StrengthProps(
@@ -28,6 +29,7 @@ const materials = <MaterialSpec>[
     name: "1018 (Cold Drawn)",
     category: MaterialCategory.steel,
     densityKgM3: 7870,
+    thermalExpansionMicroInInF: 6.5,
     commonUse: "General machining, shafts, brackets, mild structural parts",
     melting: TempRange(minF: 2590, maxF: 2660, minC: 1420, maxC: 1460),
     strength: StrengthProps(
@@ -49,6 +51,7 @@ const materials = <MaterialSpec>[
     name: "4140 (Normalized)",
     category: MaterialCategory.steel,
     densityKgM3: 7850,
+    thermalExpansionMicroInInF: 6.5,
     commonUse: "Shafts, tooling, stronger machine parts, impact-loaded components",
     melting: TempRange(minF: 2590, maxF: 2660, minC: 1420, maxC: 1460),
     strength: StrengthProps(
@@ -76,6 +79,7 @@ const materials = <MaterialSpec>[
     name: "5160 (Spring Steel)",
     category: MaterialCategory.steel,
     densityKgM3: 7850,
+    thermalExpansionMicroInInF: 6.5,
     commonUse: "Springs, blades, impact tools, leaf-spring repurpose stock",
     melting: TempRange(minF: 2550, maxF: 2650, minC: 1400, maxC: 1455),
     hardness: HardnessRange(scale: "HRC", min: 52, max: 60),
@@ -102,6 +106,7 @@ const materials = <MaterialSpec>[
     name: "1095 (High Carbon)",
     category: MaterialCategory.steel,
     densityKgM3: 7850,
+    thermalExpansionMicroInInF: 6.5,
     commonUse: "Blades, springs, wear parts, simple high-carbon heat-treat steel",
     melting: TempRange(minF: 2760, maxF: 2760, minC: 1515, maxC: 1515),
     hardness: HardnessRange(scale: "HRC", min: 58, max: 66),
@@ -127,6 +132,7 @@ const materials = <MaterialSpec>[
     name: "A500 Grade B",
     category: MaterialCategory.steel,
     densityKgM3: 7800,
+    thermalExpansionMicroInInF: 6.5,
     commonUse: "Structural tubing, frames, welded assemblies",
     melting: TempRange(minF: 2590, maxF: 2660, minC: 1420, maxC: 1460),
     strength: StrengthProps(
@@ -148,6 +154,7 @@ const materials = <MaterialSpec>[
     name: "A572 Grade 50",
     category: MaterialCategory.steel,
     densityKgM3: 7850,
+    thermalExpansionMicroInInF: 6.5,
     commonUse: "Higher-strength structural plate and shapes",
     melting: TempRange(minF: 2590, maxF: 2660, minC: 1420, maxC: 1460),
     strength: StrengthProps(
@@ -169,6 +176,7 @@ const materials = <MaterialSpec>[
     name: "304 Stainless (Annealed)",
     category: MaterialCategory.steel,
     densityKgM3: 8000,
+    thermalExpansionMicroInInF: 9.6,
     commonUse: "General corrosion-resistant parts, sheet, food/contact hardware",
     melting: TempRange(minF: 2550, maxF: 2650, minC: 1400, maxC: 1450),
     strength: StrengthProps(
@@ -190,6 +198,7 @@ const materials = <MaterialSpec>[
     name: "316 Stainless (Annealed)",
     category: MaterialCategory.steel,
     densityKgM3: 8000,
+    thermalExpansionMicroInInF: 9.6,
     commonUse: "Corrosion-resistant parts, marine/chemical service, food equipment",
     melting: TempRange(minF: 2500, maxF: 2550, minC: 1370, maxC: 1400),
     strength: StrengthProps(
@@ -211,6 +220,7 @@ const materials = <MaterialSpec>[
     name: "12L14 (Cold Drawn)",
     category: MaterialCategory.steel,
     densityKgM3: 7850,
+    thermalExpansionMicroInInF: 6.5,
     commonUse: "Screw machine parts, bushings, fittings, high-speed machining",
     melting: TempRange(minF: 2590, maxF: 2660, minC: 1420, maxC: 1460),
     strength: StrengthProps(
@@ -232,6 +242,7 @@ const materials = <MaterialSpec>[
     name: "O1 Tool Steel",
     category: MaterialCategory.steel,
     densityKgM3: 7820,
+    thermalExpansionMicroInInF: 6.5,
     commonUse: "Knives, punches, dies, gauges, tooling",
     melting: TempRange(minF: 2590, maxF: 2660, minC: 1420, maxC: 1460),
     hardness: HardnessRange(scale: "HRC", min: 57, max: 64),
@@ -254,6 +265,7 @@ const materials = <MaterialSpec>[
     name: "D2 Tool Steel",
     category: MaterialCategory.steel,
     densityKgM3: 7700,
+    thermalExpansionMicroInInF: 6.5,
     commonUse: "Wear parts, dies, punches, blades, abrasion-resistant tooling",
     melting: TempRange(minF: 2550, maxF: 2600, minC: 1400, maxC: 1430),
     hardness: HardnessRange(scale: "HRC", min: 60, max: 64),
@@ -278,6 +290,7 @@ const materials = <MaterialSpec>[
     name: "6063-T5",
     category: MaterialCategory.aluminum,
     densityKgM3: 2700,
+    thermalExpansionMicroInInF: 13.1,
     commonUse: "Architectural extrusions, window/door framing, railings, trim",
     melting: TempRange(minF: 1140, maxF: 1210, minC: 616, maxC: 654),
     strength: StrengthProps(
@@ -299,6 +312,7 @@ const materials = <MaterialSpec>[
     name: "6063-T6",
     category: MaterialCategory.aluminum,
     densityKgM3: 2700,
+    thermalExpansionMicroInInF: 13.1,
     commonUse: "Stronger architectural extrusions, rails, tubing, light structural shapes",
     melting: TempRange(minF: 1140, maxF: 1210, minC: 616, maxC: 654),
     strength: StrengthProps(
@@ -320,6 +334,7 @@ const materials = <MaterialSpec>[
     name: "6005A-T6",
     category: MaterialCategory.aluminum,
     densityKgM3: 2710,
+    thermalExpansionMicroInInF: 13.1,
     commonUse: "Structural extrusions, transport, ladders, framing, stronger profiles",
     melting: TempRange(minF: 1085, maxF: 1202, minC: 585, maxC: 650),
     strength: StrengthProps(
@@ -341,6 +356,7 @@ const materials = <MaterialSpec>[
     name: "6061-T6",
     category: MaterialCategory.aluminum,
     densityKgM3: 2700,
+    thermalExpansionMicroInInF: 13.1,
     commonUse: "General structural aluminum, brackets, machine parts, frames",
     melting: TempRange(minF: 1080, maxF: 1205, minC: 582, maxC: 652),
     strength: StrengthProps(
@@ -361,6 +377,7 @@ const materials = <MaterialSpec>[
     name: "5052-H32",
     category: MaterialCategory.aluminum,
     densityKgM3: 2680,
+    thermalExpansionMicroInInF: 13.1,
     commonUse: "Sheet metal, bent parts, enclosures, marine/light corrosion service",
     melting: TempRange(minF: 1125, maxF: 1200, minC: 607, maxC: 649),
     strength: StrengthProps(
@@ -381,6 +398,7 @@ const materials = <MaterialSpec>[
     name: "7075-T6",
     category: MaterialCategory.aluminum,
     densityKgM3: 2810,
+    thermalExpansionMicroInInF: 13.1,
     commonUse: "High-strength parts, fixtures, aerospace-style hardware",
     melting: TempRange(minF: 890, maxF: 1175, minC: 477, maxC: 635),
     strength: StrengthProps(
@@ -402,6 +420,7 @@ const materials = <MaterialSpec>[
     name: "Delrin (Acetal / POM)",
     category: MaterialCategory.plastic,
     densityKgM3: 1420,
+    thermalExpansionMicroInInF: 48.0,
     commonUse: "Bushings, gears, low-friction parts, fixtures, wear strips",
     melting: TempRange(minF: 352, maxF: 352, minC: 178, maxC: 178),
     strength: StrengthProps(
@@ -423,6 +442,7 @@ const materials = <MaterialSpec>[
     name: "Nylon 6/6",
     category: MaterialCategory.plastic,
     densityKgM3: 1140,
+    thermalExpansionMicroInInF: 45.0,
     commonUse: "Bushings, wear pads, spacers, rollers, impact-resistant parts",
     melting: TempRange(minF: 365, maxF: 504, minC: 185, maxC: 262),
     strength: StrengthProps(
@@ -444,6 +464,7 @@ const materials = <MaterialSpec>[
     name: "ABS",
     category: MaterialCategory.plastic,
     densityKgM3: 1040,
+    thermalExpansionMicroInInF: 52.0,
     commonUse: "Housings, covers, printed parts, light fixtures, prototyping",
     strength: StrengthProps(
       yieldPsi: 8600,
@@ -464,6 +485,7 @@ const materials = <MaterialSpec>[
     name: "PLA",
     category: MaterialCategory.plastic,
     densityKgM3: 1240,
+    thermalExpansionMicroInInF: 50.0,
     commonUse: "3D printed prototypes, jigs, fixtures, low-temp parts",
     melting: TempRange(minF: 147, maxF: 428, minC: 64, maxC: 220),
     strength: StrengthProps(
@@ -485,6 +507,7 @@ const materials = <MaterialSpec>[
     name: "Polycarbonate (PC)",
     category: MaterialCategory.plastic,
     densityKgM3: 1200,
+    thermalExpansionMicroInInF: 37.5,
     commonUse: "Guards, impact-resistant covers, clear machine shields",
     strength: StrengthProps(
       yieldPsi: 9060,
@@ -505,6 +528,7 @@ const materials = <MaterialSpec>[
     name: "PETG",
     category: MaterialCategory.plastic,
     densityKgM3: 1270,
+    thermalExpansionMicroInInF: 50.0,
     commonUse: "Printed parts, clear guards, thermoformed parts, general prototypes",
     strength: StrengthProps(
       yieldPsi: 6960,
@@ -525,6 +549,7 @@ const materials = <MaterialSpec>[
     name: "HDPE",
     category: MaterialCategory.plastic,
     densityKgM3: 950,
+    thermalExpansionMicroInInF: 70.0,
     commonUse: "Cutting boards, tanks, wear surfaces, chemical-resistant parts",
     melting: TempRange(minF: 244, maxF: 279, minC: 118, maxC: 137),
     strength: StrengthProps(
@@ -546,6 +571,7 @@ const materials = <MaterialSpec>[
     name: "UHMW-PE",
     category: MaterialCategory.plastic,
     densityKgM3: 930,
+    thermalExpansionMicroInInF: 100.0,
     commonUse: "Wear strips, sliders, low-friction liners, impact/abrasion parts",
     melting: TempRange(minF: 271, maxF: 271, minC: 133, maxC: 133),
     strength: StrengthProps(
@@ -567,6 +593,7 @@ const materials = <MaterialSpec>[
     name: "PVC (Rigid)",
     category: MaterialCategory.plastic,
     densityKgM3: 1400,
+    thermalExpansionMicroInInF: 28.0,
     commonUse: "Piping, guards, utility panels, chemical-resistant sheet",
     strength: StrengthProps(
       yieldPsi: 6150,
@@ -589,6 +616,7 @@ const materials = <MaterialSpec>[
     name: "Pine (Eastern White Pine)",
     category: MaterialCategory.wood,
     densityKgM3: 400,
+    thermalExpansionMicroInInF: 1.9,
     commonUse: "Construction, jigs, general woodworking, light-duty fixtures",
     strength: StrengthProps(),
     hardness: HardnessRange(scale: "Janka lbf", min: 380, max: 380),
@@ -605,6 +633,7 @@ const materials = <MaterialSpec>[
     name: "Cedar (Western Red Cedar)",
     category: MaterialCategory.wood,
     densityKgM3: 380,
+    thermalExpansionMicroInInF: 1.7,
     commonUse: "Outdoor projects, trim, weather-resistant parts, light structures",
     strength: StrengthProps(),
     hardness: HardnessRange(scale: "Janka lbf", min: 350, max: 350),
@@ -621,6 +650,7 @@ const materials = <MaterialSpec>[
     name: "Poplar (Yellow Poplar / Tulipwood)",
     category: MaterialCategory.wood,
     densityKgM3: 450,
+    thermalExpansionMicroInInF: 2.0,
     commonUse: "Paint-grade parts, drawer parts, templates, general shop builds",
     strength: StrengthProps(),
     hardness: HardnessRange(scale: "Janka lbf", min: 540, max: 540),
@@ -637,6 +667,7 @@ const materials = <MaterialSpec>[
     name: "Birch (Yellow Birch)",
     category: MaterialCategory.wood,
     densityKgM3: 670,
+    thermalExpansionMicroInInF: 2.1,
     commonUse: "Cabinet parts, jigs, fixtures, handles, shop furniture",
     strength: StrengthProps(),
     hardness: HardnessRange(scale: "Janka lbf", min: 1260, max: 1260),
@@ -653,6 +684,7 @@ const materials = <MaterialSpec>[
     name: "Maple (Hard Maple)",
     category: MaterialCategory.wood,
     densityKgM3: 705,
+    thermalExpansionMicroInInF: 2.3,
     commonUse: "Benchtops, fixtures, wear surfaces, blocks, tooling bases",
     strength: StrengthProps(),
     hardness: HardnessRange(scale: "Janka lbf", min: 1450, max: 1450),
@@ -669,6 +701,7 @@ const materials = <MaterialSpec>[
     name: "Cherry (Black Cherry)",
     category: MaterialCategory.wood,
     densityKgM3: 560,
+    thermalExpansionMicroInInF: 2.0,
     commonUse: "Furniture, handles, trim, shop projects where clean finish matters",
     strength: StrengthProps(),
     hardness: HardnessRange(scale: "Janka lbf", min: 950, max: 950),
@@ -685,6 +718,7 @@ const materials = <MaterialSpec>[
     name: "Walnut (Black Walnut)",
     category: MaterialCategory.wood,
     densityKgM3: 610,
+    thermalExpansionMicroInInF: 1.8,
     commonUse: "Furniture, tool handles, trim, medium-duty fixtures",
     strength: StrengthProps(),
     hardness: HardnessRange(scale: "Janka lbf", min: 1010, max: 1010),
@@ -701,6 +735,7 @@ const materials = <MaterialSpec>[
     name: "Ash (White Ash)",
     category: MaterialCategory.wood,
     densityKgM3: 690,
+    thermalExpansionMicroInInF: 2.2,
     commonUse: "Tool handles, impact-resistant parts, shop handles, bats, shafts",
     strength: StrengthProps(),
     hardness: HardnessRange(scale: "Janka lbf", min: 1320, max: 1320),
@@ -717,6 +752,7 @@ const materials = <MaterialSpec>[
     name: "Oak (Red Oak)",
     category: MaterialCategory.wood,
     densityKgM3: 700,
+    thermalExpansionMicroInInF: 2.7,
     commonUse: "Benches, fixtures, furniture, tough general shop parts",
     strength: StrengthProps(),
     hardness: HardnessRange(scale: "Janka lbf", min: 1220, max: 1220),
@@ -733,6 +769,7 @@ const materials = <MaterialSpec>[
     name: "Oak (White Oak)",
     category: MaterialCategory.wood,
     densityKgM3: 770,
+    thermalExpansionMicroInInF: 2.7,
     commonUse: "Heavy-duty fixtures, outdoor projects, durable furniture, wear parts",
     strength: StrengthProps(),
     hardness: HardnessRange(scale: "Janka lbf", min: 1360, max: 1360),
@@ -749,6 +786,7 @@ const materials = <MaterialSpec>[
     name: "Hickory",
     category: MaterialCategory.wood,
     densityKgM3: 830,
+    thermalExpansionMicroInInF: 2.1,
     commonUse: "Hammer handles, axe handles, impact tools, very tough wear parts",
     strength: StrengthProps(),
     hardness: HardnessRange(scale: "Janka lbf", min: 1820, max: 1820),
@@ -760,5 +798,25 @@ const materials = <MaterialSpec>[
     weldability: WeldabilityRating.notRecommended,
     notes: "Top-tier handle wood when you want shock resistance and toughness.",
   ),
+
+  // ---- Masonry ----
+  MaterialSpec(
+    name: "Concrete (Normal Weight)",
+    category: MaterialCategory.masonry,
+    densityKgM3: 2400,
+    thermalExpansionMicroInInF: 5.5,
+    commonUse: "Slabs, foundations, walls, pads, general construction",
+    strength: StrengthProps(
+      yieldPsi: null,
+      tensilePsi: null,
+    ),
+    hardness: HardnessRange(scale: "Compressive psi", min: 3000, max: 5000),
+    machining: MachineProps(
+      notes: "Cut or drill with masonry/diamond tooling; aggregate and reinforcement affect workability.",
+    ),
+    weldability: WeldabilityRating.notRecommended,
+    notes: "Thermal expansion varies with aggregate, moisture, mix, and reinforcement. 5.5 µin/in/°F is a practical normal-weight concrete estimate.",
+  ),
+
 ];
 
