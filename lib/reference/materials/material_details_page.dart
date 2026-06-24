@@ -41,6 +41,15 @@ class MaterialDetailPage extends StatelessWidget {
       "• ${fmt3(kgm3)} kg/m³",
     ];
 
+    if (material.thermalExpansionMicroInInF != null) {
+      final alphaF = material.thermalExpansionMicroInInF!;
+      final alphaC = alphaF * 1.8;
+      lines.add("");
+      lines.add("Thermal Expansion:");
+      lines.add("• ${alphaF.toStringAsFixed(2)} µin/in/°F");
+      lines.add("• ${alphaC.toStringAsFixed(2)} µm/m/°C");
+    }
+
     // Strength
     if (material.strength != null) {
       final s = material.strength!;
