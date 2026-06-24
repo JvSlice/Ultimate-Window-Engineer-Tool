@@ -101,8 +101,12 @@ class _TestBuckCalculatorPageState extends State<TestBuckCalculatorPage> {
     // ==========================================================
     final horizontalCut =
         unitWidth + (caulkJoint * 2) + (2 * materialThickness);
+    final doubleHorizontalCut =
+      horizontalCut + (2 * materialThickness);
 
     final verticalCut = unitHeight + (caulkJoint * 2);
+    final doubleVerticalCut = verticalCut; 
+       
 
     // Optional extra outputs. Keep, remove, or expand as needed.
     final outsideWidth = horizontalCut;
@@ -138,7 +142,7 @@ class _TestBuckCalculatorPageState extends State<TestBuckCalculatorPage> {
                   ),
                   const SizedBox(height: 12),
                   _numberField(
-                    label: 'Caulk Joint',
+                    label: 'Caulk Joint inches per side',
                     controller: _caulkJointController,
                   ),
                   const SizedBox(height: 12),
@@ -184,6 +188,11 @@ class _TestBuckCalculatorPageState extends State<TestBuckCalculatorPage> {
                   _outputRow('Bottom Piece', _formatNumber(horizontalCut)),
                   _outputRow('Left Side', _formatNumber(verticalCut)),
                   _outputRow('Right Side', _formatNumber(verticalCut)),
+                  
+                   _outputRow('Double Buck Top Piece', _formatNumber(doubleHorizontalCut)),
+                  _outputRow('Double Buck Bottom Piece', _formatNumber(doubleHorizontalCut)),
+                  _outputRow('Double Buck Left Side', _formatNumber(doubleVerticalCut)),
+                  _outputRow('Double Buck Right Side', _formatNumber(doubleVerticalCut)),
                 ],
               ),
               const SizedBox(height: 16),
