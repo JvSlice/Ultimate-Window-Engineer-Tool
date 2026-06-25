@@ -189,13 +189,23 @@ class _TestBuckCalculatorPageState extends State<TestBuckCalculatorPage> {
                   _outputRow('Left Side', _formatNumber(verticalCut)),
                   _outputRow('Right Side', _formatNumber(verticalCut)),
                   
-                   _outputRow('Double Buck Top Piece', _formatNumber(doubleHorizontalCut)),
+                          ],
+              ),
+              const SizedBox(height: 16),
+
+                        const SizedBox(height: 16),
+              _outputCard(
+                context,
+                title: 'Double Buck Lumber Cut Sizes',
+                rows: [
+                  _outputRow('Double Buck Top Piece', _formatNumber(doubleHorizontalCut)),
                   _outputRow('Double Buck Bottom Piece', _formatNumber(doubleHorizontalCut)),
                   _outputRow('Double Buck Left Side', _formatNumber(doubleVerticalCut)),
                   _outputRow('Double Buck Right Side', _formatNumber(doubleVerticalCut)),
                 ],
               ),
               const SizedBox(height: 16),
+              
               _outputCard(
                 context,
                 title: 'Quick Summary',
