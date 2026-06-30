@@ -105,7 +105,7 @@ class _TestBuckCalculatorPageState extends State<TestBuckCalculatorPage> {
       horizontalCut + (2 * materialThickness);
 
     final verticalCut = unitHeight + (caulkJoint * 2);
-    final doubleVerticalCut = verticalCut; 
+    final doubleVerticalCut = verticalCut + (2* materialThickness) ; 
        
 
     // Optional extra outputs. Keep, remove, or expand as needed.
