@@ -118,6 +118,9 @@ class _TestBuckCalculatorPageState extends State<TestBuckCalculatorPage> {
       ((unitHeight + (caulkJoint * 2)) * (unitHeight + (caulkJoint * 2))) +
           ((unitWidth + caulkJoint) * (unitWidth + caulkJoint)),
     );
+          final doubleCrossMeasurseOut = sqrt(
+      (doubleHorizontalCut * doubleHorizontalCut) + (doubleVerticalCut * doubleVerticalCut+(2* materialThickness),
+    );
     return TerminalScaffold(
       title: 'Test Buck Calculator',
       child: SafeArea(
@@ -225,6 +228,10 @@ class _TestBuckCalculatorPageState extends State<TestBuckCalculatorPage> {
                     "Cross Measure Reference Inside",
                     _formatNumber(crossMeasurseIn),
                   ),
+                   _outputRow(
+                    "Double Buck Cross Measure Reference Outside",
+                    _formatNumber(doubleCrossMeasurseout),
+                  ),
                 ],
               ),
               const SizedBox(height: 16),
@@ -234,7 +241,7 @@ class _TestBuckCalculatorPageState extends State<TestBuckCalculatorPage> {
                 child: Text(
                   'Important:\n'
                   'Widths Always Run Full\n'
-                  'Version 1.3',
+                  'Version 1.4',
                   style: TextStyle(color: accent, height: 1.4),
                 ),
               ),
