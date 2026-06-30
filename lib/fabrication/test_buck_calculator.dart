@@ -112,7 +112,7 @@ class _TestBuckCalculatorPageState extends State<TestBuckCalculatorPage> {
     final outsideWidth = horizontalCut;
     final outsideHeight = verticalCut + (2 * materialThickness);
     final crossMeasurseOut = sqrt(
-      (horizontalCut * horizontalCut) + (verticalCut * verticalCut),
+      (horizontalCut * horizontalCut) + (verticalCut * verticalCut+(2* materialThickness),
     );
     final crossMeasurseIn = sqrt(
       ((unitHeight + (caulkJoint * 2)) * (unitHeight + (caulkJoint * 2))) +
@@ -182,7 +182,7 @@ class _TestBuckCalculatorPageState extends State<TestBuckCalculatorPage> {
               const SizedBox(height: 16),
               _outputCard(
                 context,
-                title: 'Lumber Cut Sizes',
+                title: 'Single Buck Lumber Cut Sizes',
                 rows: [
                   _outputRow('Top Piece', _formatNumber(horizontalCut)),
                   _outputRow('Bottom Piece', _formatNumber(horizontalCut)),
@@ -212,6 +212,9 @@ class _TestBuckCalculatorPageState extends State<TestBuckCalculatorPage> {
                 rows: [
                   _outputRow('2x Horizontal', _formatNumber(horizontalCut)),
                   _outputRow('2x Vertical', _formatNumber(verticalCut)),
+                  _outputRow('2x  Double Buck Horizontal', _formatNumber(doubleHorizontalCut)),
+                  _outputRow('2x Double Buck Vertical', _formatNumber(doubleVerticalCut)),
+                  
                   _outputRow('Outside Width', _formatNumber(outsideWidth)),
                   _outputRow('Outside Height', _formatNumber(outsideHeight)),
                   _outputRow(
@@ -230,7 +233,8 @@ class _TestBuckCalculatorPageState extends State<TestBuckCalculatorPage> {
                 title: 'Notes',
                 child: Text(
                   'Important:\n'
-                  'Widths Always Run Full',
+                  'Widths Always Run Full\n'
+                  'Version 1.3',
                   style: TextStyle(color: accent, height: 1.4),
                 ),
               ),
