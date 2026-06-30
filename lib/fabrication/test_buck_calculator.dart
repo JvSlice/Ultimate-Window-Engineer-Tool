@@ -112,14 +112,14 @@ class _TestBuckCalculatorPageState extends State<TestBuckCalculatorPage> {
     final outsideWidth = horizontalCut;
     final outsideHeight = verticalCut + (2 * materialThickness);
     final crossMeasurseOut = sqrt(
-      (horizontalCut * horizontalCut) + (verticalCut * verticalCut+(2* materialThickness),
+      (horizontalCut * horizontalCut) + (verticalCut * verticalCut+(2* materialThickness)),
     );
     final crossMeasurseIn = sqrt(
       ((unitHeight + (caulkJoint * 2)) * (unitHeight + (caulkJoint * 2))) +
           ((unitWidth + caulkJoint) * (unitWidth + caulkJoint)),
     );
-          final doubleCrossMeasurseOut = sqrt(
-      (doubleHorizontalCut * doubleHorizontalCut) + (doubleVerticalCut * doubleVerticalCut+(2* materialThickness),
+    final doubleCrossMeasurseOut = sqrt(
+      (doubleHorizontalCut * doubleHorizontalCut) + (doubleVerticalCut * doubleVerticalCut+(2* materialThickness)),
     );
     return TerminalScaffold(
       title: 'Test Buck Calculator',
