@@ -230,7 +230,7 @@ class _TestBuckCalculatorPageState extends State<TestBuckCalculatorPage> {
                   ),
                    _outputRow(
                     "Double Buck Cross Measure Reference Outside",
-                    _formatNumber(doubleCrossMeasurseout),
+                    _formatNumber(doubleCrossMeasurseOut),
                   ),
                 ],
               ),
