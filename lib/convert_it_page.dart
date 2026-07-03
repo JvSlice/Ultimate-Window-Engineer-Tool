@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:ultimate_window_engineer_tool/conversions/unit_conversions.dart';
 import 'terminal_scaffold.dart';
 
@@ -36,6 +37,7 @@ class _ConvertItBodyState extends State<ConvertItBody>
 
   Direction direction = Direction.to;
   String result = "";
+  String copyValue = "";
 
   final List<ConversionCategory> categories = ConversionCategory.values;
 
@@ -49,13 +51,16 @@ class _ConvertItBodyState extends State<ConvertItBody>
 
     selectedByCategory = {
       for (final category in categories)
-        category: conversionTools.firstWhere((tool) => tool.category == category),
+        category: conversionTools.firstWhere(
+          (tool) => tool.category == category,
+        ),
     };
 
     _tabController.addListener(() {
       if (_tabController.indexIsChanging) return;
       setState(() {
         result = "";
+        copyValue = "";
         searchController.clear();
       });
     });
@@ -91,6 +96,7 @@ class _ConvertItBodyState extends State<ConvertItBody>
     if (input == null) {
       setState(() {
         result = "Enter a valid number";
+        copyValue = "";
       });
       return;
     }
@@ -98,19 +104,47 @@ class _ConvertItBodyState extends State<ConvertItBody>
     if (selectedTool == null) {
       setState(() {
         result = "Select a conversion";
+        copyValue = "";
       });
       return;
     }
 
+    final converted = selectedTool.convert(direction, input);
+
     setState(() {
-      result = selectedTool.convert(direction, input);
+      result = converted;
+      copyValue = converted.split(" ").first;
     });
   }
 
-  Widget _directionButton({
-    required String label,
-    required Direction value,
-  }) {
+  Future<void> copyResult() async {
+    if (copyValue.isEmpty) return;
+
+    valueController.text = copyValue;
+    valueController.selection = TextSelection.fromPosition(
+      TextPosition(offset: valueController.text.length),
+    );
+
+    var copiedToClipboard = true;
+    try {
+      await Clipboard.setData(ClipboardData(text: copyValue));
+    } catch (_) {
+      copiedToClipboard = false;
+    }
+
+    if (!mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          copiedToClipboard
+              ? "Numeric result copied to input"
+              : "Numeric result moved to input",
+        ),
+      ),
+    );
+  }
+
+  Widget _directionButton({required String label, required Direction value}) {
     final selected = direction == value;
 
     return Expanded(
@@ -128,10 +162,7 @@ class _ConvertItBodyState extends State<ConvertItBody>
         ),
         child: Text(
           label,
-          style: TextStyle(
-            color: widget.accent,
-            fontWeight: FontWeight.bold,
-          ),
+          style: TextStyle(color: widget.accent, fontWeight: FontWeight.bold),
         ),
       ),
     );
@@ -173,6 +204,7 @@ class _ConvertItBodyState extends State<ConvertItBody>
                     onChanged: (_) {
                       setState(() {
                         result = "";
+                        copyValue = "";
                       });
                     },
                     style: TextStyle(color: accent),
@@ -219,9 +251,14 @@ class _ConvertItBodyState extends State<ConvertItBody>
                       color: Colors.black,
                     ),
                     child: DropdownButton<ConversionTool>(
-                      value: filteredTools.contains(selectedByCategory[currentCategory])
+                      value:
+                          filteredTools.contains(
+                            selectedByCategory[currentCategory],
+                          )
                           ? selectedByCategory[currentCategory]
-                          : (filteredTools.isNotEmpty ? filteredTools.first : null),
+                          : (filteredTools.isNotEmpty
+                                ? filteredTools.first
+                                : null),
                       isExpanded: true,
                       underline: const SizedBox(),
                       dropdownColor: Colors.black,
@@ -233,6 +270,7 @@ class _ConvertItBodyState extends State<ConvertItBody>
                               setState(() {
                                 selectedByCategory[currentCategory] = value;
                                 result = "";
+                                copyValue = "";
                               });
                             },
                       items: filteredTools.map((tool) {
@@ -292,13 +330,26 @@ class _ConvertItBodyState extends State<ConvertItBody>
                       borderRadius: BorderRadius.circular(10),
                       color: Colors.black,
                     ),
-                    child: Text(
-                      result.isEmpty ? "Result will appear here" : result,
-                      style: TextStyle(
-                        color: accent,
-                        fontSize: 22,
-                        fontWeight: FontWeight.bold,
-                      ),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: Text(
+                            result.isEmpty ? "Result will appear here" : result,
+                            style: TextStyle(
+                              color: accent,
+                              fontSize: 22,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                        IconButton(
+                          tooltip: "Copy numeric result",
+                          onPressed: copyValue.isEmpty ? null : copyResult,
+                          icon: const Icon(Icons.copy),
+                          color: accent,
+                          disabledColor: accent.withValues(alpha: 0.35),
+                        ),
+                      ],
                     ),
                   ),
 
