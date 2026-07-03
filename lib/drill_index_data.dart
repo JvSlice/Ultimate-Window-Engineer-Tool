@@ -16,7 +16,7 @@ class DrillSize {
   });
 }
 
-const List<DrillSize> drillIndex = [
+final List<DrillSize> drillIndex = [
   //Fraction
   DrillSize(
     name: "1/64",
@@ -1417,7 +1417,55 @@ const List<DrillSize> drillIndex = [
     metric: 20.0,
     kind: DrillKind.metric,
   ),
+  ..._largeFractionDrills(),
+  ..._largeMetricDrills(),
 ];
+
+List<DrillSize> _largeFractionDrills() {
+  return [
+    for (var numerator = 49; numerator <= 192; numerator++)
+      DrillSize(
+        name: _fractionName(numerator, 64),
+        decimal: numerator / 64,
+        metric: (numerator / 64) * 25.4,
+        kind: DrillKind.fraction,
+      ),
+  ];
+}
+
+List<DrillSize> _largeMetricDrills() {
+  return [
+    for (var halfMillimeter = 41; halfMillimeter <= 152; halfMillimeter++)
+      DrillSize(
+        name: "${(halfMillimeter / 2).toStringAsFixed(1)}mm",
+        decimal: (halfMillimeter / 2) / 25.4,
+        metric: halfMillimeter / 2,
+        kind: DrillKind.metric,
+      ),
+  ];
+}
+
+String _fractionName(int numerator, int denominator) {
+  final whole = numerator ~/ denominator;
+  final remainder = numerator % denominator;
+  if (remainder == 0) return "$whole";
+
+  final divisor = _gcd(remainder, denominator);
+  final reducedNumerator = remainder ~/ divisor;
+  final reducedDenominator = denominator ~/ divisor;
+  final fraction = "$reducedNumerator/$reducedDenominator";
+
+  return whole == 0 ? fraction : "$whole-$fraction";
+}
+
+int _gcd(int a, int b) {
+  while (b != 0) {
+    final next = a % b;
+    a = b;
+    b = next;
+  }
+  return a;
+}
 
 enum DrillFilter { all, fraction, number, letter, metric }
 

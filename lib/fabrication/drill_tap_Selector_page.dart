@@ -298,8 +298,8 @@ Set<DrillKind> allowedKindsForThread(ThreadSpec t) {
 }
 
 double clearanceDecimalInches(ThreadSpec t, ClearanceFit fit) {
-  final d = t.major;
-  
+  final d = t.system == ThreadSystem.metric ? t.major / 25.4 : t.major;
+
   final add = switch (fit) {
     ClearanceFit.close => 0.010,
     ClearanceFit.normal => 0.020,
