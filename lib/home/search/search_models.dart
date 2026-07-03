@@ -1,29 +1,37 @@
 import 'package:flutter/material.dart';
 import 'package:ultimate_window_engineer_tool/conversions/unit_conversions.dart';
 
-class SearchTarget {
-  final String label;
-  final String subtitle;
-  final List<String> keywords;
+class SearchEntry {
+  final String title;
+  final String category;
+  final String description;
+  final List<String> tags;
+  final List<String> aliases;
+  final String routeId;
   final Widget Function(BuildContext context) builder;
 
-  const SearchTarget({
-    required this.label,
-    required this.subtitle,
-    required this.keywords,
+  const SearchEntry({
+    required this.title,
+    required this.category,
+    required this.description,
+    required this.tags,
+    required this.aliases,
+    required this.routeId,
     required this.builder,
   });
 }
 
 class SearchHit {
   final String title;
-  final String subtitle;
+  final String category;
+  final String description;
   final String kindLabel;
   final VoidCallback onTap;
 
   const SearchHit({
     required this.title,
-    required this.subtitle,
+    required this.category,
+    required this.description,
     required this.kindLabel,
     required this.onTap,
   });

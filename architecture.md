@@ -102,6 +102,12 @@ Search should index this metadata automatically.
 
 Adding a new page should require only adding one search entry.
 
+Current implementation note:
+
+* Search entries are centralized in `lib/home/search/search_registry.dart`.
+* Each entry uses title, category, description, tags, aliases, and a stable internal `routeId`.
+* Search navigation currently preserves the existing `WidgetBuilder` / `MaterialPageRoute` pattern rather than introducing named Flutter routes.
+
 ⸻
 
 Navigation

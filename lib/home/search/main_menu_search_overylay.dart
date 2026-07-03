@@ -128,7 +128,16 @@ class MainMenuSearchOverlay extends StatelessWidget {
                                     ),
                                     const SizedBox(height: 3),
                                     Text(
-                                      hit.subtitle,
+                                      hit.category,
+                                      style: TextStyle(
+                                        color: accent.withValues(alpha: 0.78),
+                                        fontSize: 11,
+                                        fontWeight: FontWeight.w700,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 3),
+                                    Text(
+                                      hit.description,
                                       style: TextStyle(
                                         color: accent.withValues(alpha: 0.60),
                                         fontSize: 12,

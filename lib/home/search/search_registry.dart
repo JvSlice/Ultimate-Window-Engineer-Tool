@@ -1,0 +1,782 @@
+import '../../app_theme.dart';
+import '../../convert_it_page.dart';
+import '../../fabricate_it_page.dart';
+import '../../fun_links_page.dart';
+import '../../settings_page.dart';
+import '../../window_testing_tools_page.dart';
+import '../../reference/reference_home_page.dart';
+
+// Fabrication
+import '../../fabrication/drill_index_page.dart';
+import '../../fabrication/drill_tap_Selector_page.dart';
+import '../../fabrication/fraction_decimal_page.dart';
+import '../../fabrication/shielding_gas_page.dart';
+import '../../fabrication/speed_feed_page.dart';
+import '../../fabrication/stick_rod_page.dart';
+import '../../fabrication/tig_tungsten_page.dart';
+import '../../fabrication/weld_it_page.dart';
+import '../../fabrication/weld_it/mig_setup_calc_page.dart';
+import '../../fabrication/weld_it/stick_setup_calc_page.dart';
+import '../../fabrication/weld_it/tig_setup_calc_page.dart';
+import '../../fabrication/test_buck_calculator.dart';
+
+// Window testing
+import '../../window_testing_tools/astm_e1300_page.dart';
+import '../../window_testing_tools/glass_deflection_page.dart';
+import '../../window_testing_tools/rating_reference_page.dart';
+import '../../window_testing_tools/structural_test_math_page.dart';
+import '../../window_testing_tools/test_sequence_reference_page.dart';
+import '../../window_testing_tools/spray_rack_pump_sizing_page.dart';
+
+// Reference
+import '../../reference/forklift_load_calculator_page.dart';
+import '../../reference/forklift_suspended_boom_calculator_page.dart';
+import '../../reference/geometry_page.dart';
+import '../../reference/geometry_2d_page.dart';
+import '../../reference/geometry_3d_page.dart';
+import '../../reference/geometry_shop_page.dart';
+import '../../reference/materials/material_reference_page.dart';
+import '../../reference/physics_equations_page.dart';
+import '../../reference/eletrical_tools/eletrical_reference_page.dart';
+import '../../reference/eletrical_tools/ohms_law_page.dart';
+import '../../reference/eletrical_tools/power_law_page.dart';
+import '../../reference/eletrical_tools/voltage_divider_page.dart';
+import '../../reference/eletrical_tools/awg_reference_page.dart';
+import '../../reference/eletrical_tools/battery_runtime_page.dart';
+import '../../reference/physics/cantilever_beam_page.dart';
+import '../../reference/physics/pulleys_page.dart';
+import '../../reference/physics/section_i_page.dart';
+import '../../reference/physics/thermal_expansion_page.dart';
+import '../../reference/physics/torque_power_page.dart';
+import '../../reference/physics/velocity_page.dart';
+import '../../reference/rigging/cog_estimator_page.dart';
+import '../../reference/rigging/hardware_reference_page.dart';
+import '../../reference/rigging/hitch_type_reference.dart';
+import '../../reference/rigging/rigging_home_page.dart';
+import '../../reference/rigging/rigging_load_calculator_page.dart';
+import '../../reference/rigging/sling_angle_reference.dart';
+import '../../reference/rigging/sling_angle_visualizer.dart';
+import '../../reference/rigging/unequal_load_page.dart';
+import '../../reference/rigging/wll_calculator_page.dart';
+import '../../reference/shapes/annulus_page.dart';
+import '../../reference/shapes/circle_page.dart';
+import '../../reference/shapes/rect_page.dart';
+import '../../reference/shapes/right_triangle_page.dart';
+import '../../reference/shapes/trapezoid_page.dart';
+import '../../reference/shapes/triangle_solver_page.dart';
+import '../../reference/shapes3d/box_page.dart';
+import '../../reference/shapes3d/cone_page.dart';
+import '../../reference/shapes3d/cylinder_page.dart';
+import '../../reference/shapes3d/pipe_page.dart';
+import '../../reference/shapes3d/sphere_page.dart';
+
+import 'search_models.dart';
+
+List<SearchEntry> buildSearchRegistry(AppThemeController themeController) {
+  return [
+    SearchEntry(
+      title: 'Convert It',
+      category: 'Conversions',
+      description: 'Unit conversion hub for engineering measurements.',
+      tags: [
+        'convert',
+        'conversion',
+        'units',
+        'psi',
+        'psf',
+        'kpa',
+        'pa',
+        'length',
+        'area',
+        'volume',
+        'temperature',
+        'speed',
+        'torque',
+        'electrical',
+      ],
+      aliases: ['unit converter', 'conversion calculator'],
+      routeId: 'convert-it',
+      builder: (_) => const ConverItPage(),
+    ),
+    SearchEntry(
+      title: 'Fabricate It',
+      category: 'Fabrication',
+      description: 'Fabrication tools hub for shop calculations and references.',
+      tags: ['fabricate', 'fabrication', 'shop', 'machining', 'metal'],
+      aliases: ['fabrication tools', 'shop tools'],
+      routeId: 'fabricate-it',
+      builder: (_) => const FabricateItPage(),
+    ),
+    SearchEntry(
+      title: 'Reference It',
+      category: 'Reference',
+      description: 'Reference hub for equations, materials, geometry, and tools.',
+      tags: [
+        'reference',
+        'library',
+        'lookup',
+        'equations',
+        'geometry',
+        'materials',
+        'electrical',
+      ],
+      aliases: ['reference library', 'engineering reference'],
+      routeId: 'reference-it',
+      builder: (_) => const ReferenceHomePage(),
+    ),
+    SearchEntry(
+      title: 'Window Testing Tools',
+      category: 'Window Testing',
+      description: 'Testing tools hub for glass, ratings, sequences, and pressure math.',
+      tags: [
+        'window testing',
+        'test',
+        'testing',
+        'glass',
+        'deflection',
+        'rating',
+        'sequence',
+        'structural',
+        'e1300',
+      ],
+      aliases: ['testing tools', 'window tests'],
+      routeId: 'window-testing-tools',
+      builder: (_) => const WindowTestingToolsPage(),
+    ),
+    SearchEntry(
+      title: 'Drill Index',
+      category: 'Fabrication',
+      description: 'Letter, number, and fractional drill size reference.',
+      tags: ['drill', 'index', 'bit', 'fractional drill', 'letter drill'],
+      aliases: ['drill chart', 'drill sizes'],
+      routeId: 'fabrication.drill-index',
+      builder: (_) => const DrillIndexPage(),
+    ),
+    SearchEntry(
+      title: 'Drill & Tap Selector',
+      category: 'Fabrication',
+      description: 'Tap drill, clearance, and thread engagement selector.',
+      tags: [
+        'tap',
+        'tap drill',
+        'drill tap',
+        'clearance',
+        'engagement',
+        'thread',
+        'threads',
+        'hole',
+      ],
+      aliases: ['tap drill calculator', 'thread selector'],
+      routeId: 'fabrication.drill-tap-selector',
+      builder: (_) => const DrillTapSelectorPage(),
+    ),
+    SearchEntry(
+      title: 'Speed & Feeds',
+      category: 'Fabrication',
+      description: 'RPM and IPM calculator for machining setup.',
+      tags: ['speed', 'feed', 'feeds', 'rpm', 'ipm', 'sfm'],
+      aliases: ['speeds and feeds', 'machining calculator'],
+      routeId: 'fabrication.speed-feeds',
+      builder: (_) => const SpeedFeedPage(),
+    ),
+    SearchEntry(
+      title: 'Weld It',
+      category: 'Fabrication',
+      description: 'Welding settings and reference hub.',
+      tags: ['weld', 'welding', 'mig', 'tig', 'stick'],
+      aliases: ['welding tools', 'weld settings'],
+      routeId: 'fabrication.weld-it',
+      builder: (_) => const WeldItPage(),
+    ),
+    SearchEntry(
+      title: 'TIG Tungsten',
+      category: 'Fabrication',
+      description: 'TIG tungsten electrode reference.',
+      tags: ['tig tungsten', 'tungsten', 'electrode'],
+      aliases: ['tungsten reference'],
+      routeId: 'fabrication.tig-tungsten',
+      builder: (_) => const TigTungstenPage(),
+    ),
+    SearchEntry(
+      title: 'Shielding Gas',
+      category: 'Fabrication',
+      description: 'Shielding gas reference for welding setup.',
+      tags: ['shielding gas', 'argon', 'co2', 'helium', 'gas mix'],
+      aliases: ['welding gas', 'gas mix'],
+      routeId: 'fabrication.shielding-gas',
+      builder: (_) => const ShieldingGasPage(),
+    ),
+    SearchEntry(
+      title: 'Stick Rods',
+      category: 'Fabrication',
+      description: 'Stick welding rod reference.',
+      tags: ['stick rod', '7018', '6011', '6010', 'rod chart'],
+      aliases: ['stick electrodes', 'welding rods'],
+      routeId: 'fabrication.stick-rods',
+      builder: (_) => const StickRodsPage(),
+    ),
+    SearchEntry(
+      title: 'Fraction Calculator',
+      category: 'Fabrication',
+      description: 'Convert to and from fractions and decimals.',
+      tags: [
+        'fraction',
+        'fractions',
+        'decimal',
+        'fraction calculator',
+        'decimal to fraction',
+        'fraction to decimal',
+      ],
+      aliases: ['decimal calculator', 'fraction decimal'],
+      routeId: 'fabrication.fraction-calculator',
+      builder: (_) => const FractionDecimalPage(),
+    ),
+    SearchEntry(
+      title: 'Test Buck Calculator',
+      category: 'Fabrication',
+      description: 'Calculate lumber cut sizes for test bucks.',
+      tags: [
+        'test buck',
+        'buck calculator',
+        'lumber cuts',
+        'rough opening buck',
+        'caulk joint',
+        'fab',
+        'fabrication',
+      ],
+      aliases: ['buck cut calculator'],
+      routeId: 'fabrication.test-buck-calculator',
+      builder: (_) => const TestBuckCalculatorPage(),
+    ),
+    SearchEntry(
+      title: 'MIG Setup Calculator',
+      category: 'Fabrication',
+      description: 'MIG voltage, wire speed, wire size, gas, and polarity setup.',
+      tags: [
+        'mig',
+        'mig calc',
+        'mig calculator',
+        'mig setup',
+        'mig settings',
+        'wire speed',
+        'voltage',
+        'welding',
+        'weld it',
+        'gmaw',
+      ],
+      aliases: ['mig settings', 'gmaw calculator'],
+      routeId: 'fabrication.mig-setup-calculator',
+      builder: (_) => const MigSetupCalcPage(),
+    ),
+    SearchEntry(
+      title: 'Stick Setup Calculator',
+      category: 'Fabrication',
+      description: 'Stick polarity, rod choices, and amperage setup.',
+      tags: [
+        'stick',
+        'stick calc',
+        'stick calculator',
+        'stick setup',
+        'stick settings',
+        'rod',
+        'rod choice',
+        'electrode',
+        'amp',
+        'amps',
+        'amperage',
+        'smaw',
+        'welding',
+        'weld it',
+      ],
+      aliases: ['smaw calculator', 'stick settings'],
+      routeId: 'fabrication.stick-setup-calculator',
+      builder: (_) => const StickSetupCalcPage(),
+    ),
+    SearchEntry(
+      title: 'TIG Setup Calculator',
+      category: 'Fabrication',
+      description: 'TIG polarity, amps, tungsten type, and tungsten size setup.',
+      tags: [
+        'tig',
+        'tig calc',
+        'tig calculator',
+        'tig setup',
+        'tig settings',
+        'tungsten',
+        'tungsten size',
+        'tungsten type',
+        'gtaw',
+        'amp',
+        'amps',
+        'amperage',
+        'welding',
+        'weld it',
+      ],
+      aliases: ['gtaw calculator', 'tig settings'],
+      routeId: 'fabrication.tig-setup-calculator',
+      builder: (_) => const TigSetupCalcPage(),
+    ),
+    SearchEntry(
+      title: 'Glass & Deflection',
+      category: 'Window Testing',
+      description: 'Glass and deflection checks for window testing work.',
+      tags: ['glass', 'deflection', 'glass deflection'],
+      aliases: ['glass deflection'],
+      routeId: 'window-testing.glass-deflection',
+      builder: (_) => const GlassDeflectionPage(),
+    ),
+    SearchEntry(
+      title: 'ASTM E1300',
+      category: 'Window Testing',
+      description: 'ASTM E1300 glass reference.',
+      tags: ['e1300', 'astm e1300', 'glass standard'],
+      aliases: ['glass standard', 'e1300 reference'],
+      routeId: 'window-testing.astm-e1300',
+      builder: (_) => const AstmE1300Page(),
+    ),
+    SearchEntry(
+      title: 'Structural Test Math',
+      category: 'Window Testing',
+      description: 'Structural testing calculations for load and pressure math.',
+      tags: ['structural', 'test math', 'load', 'pressure math'],
+      aliases: ['structural pressure', 'test calculations'],
+      routeId: 'window-testing.structural-test-math',
+      builder: (_) => const StructuralTestMathPage(),
+    ),
+    SearchEntry(
+      title: 'Rating Reference',
+      category: 'Window Testing',
+      description: 'DP, PG, design pressure, and performance grade reference.',
+      tags: ['rating', 'dp', 'pg', 'design pressure', 'performance grade'],
+      aliases: ['dp reference', 'performance grade'],
+      routeId: 'window-testing.rating-reference',
+      builder: (_) => const RatingReferencePage(),
+    ),
+    SearchEntry(
+      title: 'Test Sequence Reference',
+      category: 'Window Testing',
+      description: 'Testing order, sequence, and procedure reference.',
+      tags: ['sequence', 'test sequence', 'procedure', 'order'],
+      aliases: ['test procedure', 'testing sequence'],
+      routeId: 'window-testing.test-sequence-reference',
+      builder: (_) => const TestSequenceReferencePage(),
+    ),
+    SearchEntry(
+      title: 'Spray Rack Pump Sizing',
+      category: 'Window Testing',
+      description: 'Estimate spray rack flow, pressure, and pump size.',
+      tags: [
+        'spray rack',
+        'pump sizing',
+        'water spray',
+        'astm e331',
+        'astm e1105',
+        'spray nozzle',
+        'window testing',
+      ],
+      aliases: ['water spray pump', 'spray rack calculator'],
+      routeId: 'window-testing.spray-rack-pump-sizing',
+      builder: (_) => const SprayRackPumpSizingPage(),
+    ),
+    SearchEntry(
+      title: 'Physics Equations',
+      category: 'Reference',
+      description: 'Physics and engineering equations hub.',
+      tags: ['physics', 'equations', 'beam', 'torque', 'velocity'],
+      aliases: ['engineering equations'],
+      routeId: 'reference.physics-equations',
+      builder: (_) => const PhysicsEquationsPage(),
+    ),
+    SearchEntry(
+      title: 'Torque & Power',
+      category: 'Reference',
+      description: 'Torque, horsepower, RPM, and power relationships.',
+      tags: ['torque', 'horsepower', 'rpm torque', 'power torque'],
+      aliases: ['torque calculator', 'horsepower calculator'],
+      routeId: 'reference.physics.torque-power',
+      builder: (_) => const TorquePowerPage(),
+    ),
+    SearchEntry(
+      title: 'Cantilever Beam',
+      category: 'Reference',
+      description: 'Cantilever beam calculations.',
+      tags: ['cantilever', 'beam', 'deflection beam'],
+      aliases: ['beam deflection'],
+      routeId: 'reference.physics.cantilever-beam',
+      builder: (_) => const CantileverBeamPage(),
+    ),
+    SearchEntry(
+      title: 'Pulleys',
+      category: 'Reference',
+      description: 'Pulley and mechanical advantage reference.',
+      tags: ['pulley', 'pulleys', 'mechanical advantage'],
+      aliases: ['pulley calculator'],
+      routeId: 'reference.physics.pulleys',
+      builder: (_) => const PulleyPage(),
+    ),
+    SearchEntry(
+      title: 'Velocity & Accel',
+      category: 'Reference',
+      description: 'Motion formulas for velocity and acceleration.',
+      tags: ['velocity', 'accel', 'acceleration', 'motion'],
+      aliases: ['velocity acceleration', 'motion formulas'],
+      routeId: 'reference.physics.velocity-accel',
+      builder: (_) => const VelocityAccelPage(),
+    ),
+    SearchEntry(
+      title: 'Section Properties (I)',
+      category: 'Reference',
+      description: 'Section property and moment of inertia formulas.',
+      tags: [
+        'section',
+        'moment of inertia',
+        'inertia',
+        'section properties',
+      ],
+      aliases: ['section inertia', 'i properties'],
+      routeId: 'reference.physics.section-properties',
+      builder: (_) => const SectionIPage(),
+    ),
+    SearchEntry(
+      title: 'Thermal Expansion',
+      category: 'Reference',
+      description: 'Thermal expansion calculator using material coefficients.',
+      tags: ['thermal', 'temperature', 'heat', 'expansion', 'cte'],
+      aliases: ['thermal expansion calculator', 'coefficient of expansion'],
+      routeId: 'reference.physics.thermal-expansion',
+      builder: (_) => const ThermalExpansionPage(),
+    ),
+    SearchEntry(
+      title: 'Geometry',
+      category: 'Reference',
+      description: '2D, 3D, and shop geometry hub.',
+      tags: ['geometry', 'shape', 'shapes', 'area', 'volume'],
+      aliases: ['geometry tools'],
+      routeId: 'reference.geometry',
+      builder: (_) => const GeometryPage(),
+    ),
+    SearchEntry(
+      title: '2D Shapes',
+      category: 'Reference',
+      description: '2D geometry tools for area and perimeter.',
+      tags: ['2d', '2d geometry', 'area', 'perimeter'],
+      aliases: ['area formulas'],
+      routeId: 'reference.geometry.2d-shapes',
+      builder: (_) => const Geometry2DPage(),
+    ),
+    SearchEntry(
+      title: '3D Shapes',
+      category: 'Reference',
+      description: '3D geometry tools for volume and surface area.',
+      tags: ['3d', '3d geometry', 'volume', 'surface area'],
+      aliases: ['volume formulas'],
+      routeId: 'reference.geometry.3d-shapes',
+      builder: (_) => const Geometry3DPage(),
+    ),
+    SearchEntry(
+      title: 'Shop Geometry',
+      category: 'Reference',
+      description: 'Shop geometry helper for layout math.',
+      tags: ['shop geometry', 'layout geometry', 'shop math'],
+      aliases: ['layout geometry'],
+      routeId: 'reference.geometry.shop',
+      builder: (_) => const GeometryShopPage(),
+    ),
+    SearchEntry(
+      title: 'Circle',
+      category: 'Reference',
+      description: 'Circle formulas for diameter, radius, and circumference.',
+      tags: ['circle', 'diameter', 'radius', 'circumference'],
+      aliases: ['circle calculator'],
+      routeId: 'reference.geometry.circle',
+      builder: (_) => const CirclePage(),
+    ),
+    SearchEntry(
+      title: 'Rectangle',
+      category: 'Reference',
+      description: 'Rectangle and square formulas.',
+      tags: ['rectangle', 'rect', 'square'],
+      aliases: ['rectangle calculator'],
+      routeId: 'reference.geometry.rectangle',
+      builder: (_) => const RectPage(),
+    ),
+    SearchEntry(
+      title: 'Right Triangle',
+      category: 'Reference',
+      description: 'Right triangle formulas and Pythagorean helper.',
+      tags: ['right triangle', 'triangle', 'pythagorean'],
+      aliases: ['pythagorean calculator'],
+      routeId: 'reference.geometry.right-triangle',
+      builder: (_) => const RightTrianglePage(),
+    ),
+    SearchEntry(
+      title: 'Trapezoid',
+      category: 'Reference',
+      description: 'Trapezoid formulas.',
+      tags: ['trapezoid'],
+      aliases: ['trapezoid calculator'],
+      routeId: 'reference.geometry.trapezoid',
+      builder: (_) => const TrapezoidPage(),
+    ),
+    SearchEntry(
+      title: 'Annulus',
+      category: 'Reference',
+      description: 'Annulus and ring area formulas.',
+      tags: ['annulus', 'ring area'],
+      aliases: ['ring area'],
+      routeId: 'reference.geometry.annulus',
+      builder: (_) => const AnnulusPage(),
+    ),
+    SearchEntry(
+      title: 'Triangle Solver',
+      category: 'Reference',
+      description: 'General triangle solver for angles and sides.',
+      tags: ['triangle solver', 'angles', 'sides'],
+      aliases: ['triangle calculator'],
+      routeId: 'reference.geometry.triangle-solver',
+      builder: (_) => const TriangleSolverPage(),
+    ),
+    SearchEntry(
+      title: 'Box',
+      category: 'Reference',
+      description: 'Box volume and surface area formulas.',
+      tags: ['box', 'cube', 'rectangular prism'],
+      aliases: ['cube calculator', 'rectangular prism'],
+      routeId: 'reference.geometry.box',
+      builder: (_) => const BoxPage(),
+    ),
+    SearchEntry(
+      title: 'Cone',
+      category: 'Reference',
+      description: 'Cone volume and surface area formulas.',
+      tags: ['cone'],
+      aliases: ['cone calculator'],
+      routeId: 'reference.geometry.cone',
+      builder: (_) => const ConePage(),
+    ),
+    SearchEntry(
+      title: 'Cylinder',
+      category: 'Reference',
+      description: 'Cylinder volume and surface area formulas.',
+      tags: ['cylinder'],
+      aliases: ['cylinder calculator'],
+      routeId: 'reference.geometry.cylinder',
+      builder: (_) => const CylinderPage(),
+    ),
+    SearchEntry(
+      title: 'Pipe',
+      category: 'Reference',
+      description: 'Pipe and tube formulas.',
+      tags: ['pipe', 'tube'],
+      aliases: ['tube calculator'],
+      routeId: 'reference.geometry.pipe',
+      builder: (_) => const PipePage(),
+    ),
+    SearchEntry(
+      title: 'Sphere',
+      category: 'Reference',
+      description: 'Sphere volume and surface area formulas.',
+      tags: ['sphere', 'ball'],
+      aliases: ['sphere calculator'],
+      routeId: 'reference.geometry.sphere',
+      builder: (_) => const SpherePage(),
+    ),
+    SearchEntry(
+      title: 'Material Reference',
+      category: 'Reference',
+      description: 'Material property reference.',
+      tags: ['material', 'materials', 'steel', 'aluminum', 'plastic'],
+      aliases: ['material properties', 'material data'],
+      routeId: 'reference.material-reference',
+      builder: (_) => const MaterialReferencePage(),
+    ),
+    SearchEntry(
+      title: 'Electrical Reference',
+      category: 'Reference',
+      description: 'Electrical formulas and reference hub.',
+      tags: ['electrical', 'electric', 'wire', 'awg', 'voltage'],
+      aliases: ['electrical tools', 'electric reference'],
+      routeId: 'reference.electrical-reference',
+      builder: (_) => const ElectricalReferencePage(),
+    ),
+    SearchEntry(
+      title: 'Ohms Law',
+      category: 'Reference',
+      description: 'Voltage, current, and resistance calculations.',
+      tags: ['ohms', 'ohm', 'resistance', 'current', 'voltage'],
+      aliases: ["ohm's law", 'ohms law calculator'],
+      routeId: 'reference.electrical.ohms-law',
+      builder: (_) => const OhmsLawPage(),
+    ),
+    SearchEntry(
+      title: 'Power Law',
+      category: 'Reference',
+      description: 'Power, volts, amps, and watts relationships.',
+      tags: ['power law', 'watts', 'amps', 'volts', 'power'],
+      aliases: ['watts calculator'],
+      routeId: 'reference.electrical.power-law',
+      builder: (_) => const PowerLawPage(),
+    ),
+    SearchEntry(
+      title: 'Voltage Divider',
+      category: 'Reference',
+      description: 'Two resistor voltage divider tool.',
+      tags: ['divider', 'voltage divider', 'resistor divider'],
+      aliases: ['resistor divider'],
+      routeId: 'reference.electrical.voltage-divider',
+      builder: (_) => const VoltageDividerPage(),
+    ),
+    SearchEntry(
+      title: 'AWG Quick Reference',
+      category: 'Reference',
+      description: 'Wire gauge quick reference.',
+      tags: ['awg', 'wire gauge', 'wire size', 'gauge'],
+      aliases: ['awg chart', 'wire size chart'],
+      routeId: 'reference.electrical.awg-reference',
+      builder: (_) => const AwgReferencePage(),
+    ),
+    SearchEntry(
+      title: 'Battery Runtime',
+      category: 'Reference',
+      description: 'Battery runtime calculator.',
+      tags: ['battery', 'runtime', 'amp hour', 'ah'],
+      aliases: ['battery calculator', 'amp hour calculator'],
+      routeId: 'reference.electrical.battery-runtime',
+      builder: (_) => const BatteryRuntimePage(),
+    ),
+    SearchEntry(
+      title: 'Fork Lift Load Calculator',
+      category: 'Reference',
+      description: 'Fork lift load calculator for lift capacity checks.',
+      tags: ['fork lift', 'forklift', 'load', 'capacity', 'calculator'],
+      aliases: ['forklift load calculator'],
+      routeId: 'reference.forklift-load-calculator',
+      builder: (_) => const ForkliftLoadCalculatorPage(),
+    ),
+    SearchEntry(
+      title: 'Fork Lift Suspended Boom Calculator',
+      category: 'Reference',
+      description: 'Fork lift suspended boom calculator.',
+      tags: ['fork lift', 'forklift', 'suspended boom', 'load', 'capacity'],
+      aliases: ['forklift boom calculator', 'suspended boom calculator'],
+      routeId: 'reference.forklift-suspended-boom-calculator',
+      builder: (_) => const ForkliftSuspendedBoomCalculatorPage(),
+    ),
+    SearchEntry(
+      title: 'Rigging Tools',
+      category: 'Reference',
+      description: 'Rigging calculators and reference tools hub.',
+      tags: [
+        'rigging',
+        'sling',
+        'basket hitch',
+        'choker hitch',
+        'vertical hitch',
+        'lifting angle',
+        'load angle',
+        'rigging calculator',
+      ],
+      aliases: ['lifting tools', 'rigging reference'],
+      routeId: 'reference.rigging',
+      builder: (_) => const RiggingHomePage(),
+    ),
+    SearchEntry(
+      title: 'Rigging Load Calculator',
+      category: 'Reference',
+      description: 'Rigging load calculator for legs, angle, and hitch effects.',
+      tags: ['rigging', 'sling', 'load', 'angle', 'hitch', 'lifting'],
+      aliases: ['sling load calculator'],
+      routeId: 'reference.rigging.load-calculator',
+      builder: (_) => const RiggingLoadCalculatorPage(),
+    ),
+    SearchEntry(
+      title: 'Rigging WLL Calculator',
+      category: 'Reference',
+      description: 'Working load limit and pass/fail check.',
+      tags: [
+        'rigging wll',
+        'working load limit',
+        'sling capacity',
+        'chain sling',
+        'wire rope sling',
+        'web sling',
+        'rigging pass fail',
+      ],
+      aliases: ['wll calculator', 'working load limit calculator'],
+      routeId: 'reference.rigging.wll-calculator',
+      builder: (_) => const RiggingWllCalculatorPage(),
+    ),
+    SearchEntry(
+      title: 'Unequal Loading Calculator',
+      category: 'Reference',
+      description: 'Off-center rigging load and imbalance calculator.',
+      tags: ['rigging', 'unequal loading', 'off center load', 'imbalance'],
+      aliases: ['unequal leg loading', 'off center load calculator'],
+      routeId: 'reference.rigging.unequal-loading',
+      builder: (_) => const RiggingUnequalLoadingPage(),
+    ),
+    SearchEntry(
+      title: 'Rigging Hitch Reference',
+      category: 'Reference',
+      description: 'Rigging hitch type reference.',
+      tags: ['rigging', 'hitch', 'basket hitch', 'choker hitch', 'vertical hitch'],
+      aliases: ['hitch types', 'rigging hitch'],
+      routeId: 'reference.rigging.hitch-reference',
+      builder: (_) => const RiggingHitchReferencePage(),
+    ),
+    SearchEntry(
+      title: 'Rigging Hardware Reference',
+      category: 'Reference',
+      description: 'Common hardware used for rigging.',
+      tags: ['rigging', 'hardware', 'shackle', 'hook', 'lifting'],
+      aliases: ['rigging hardware'],
+      routeId: 'reference.rigging.hardware-reference',
+      builder: (_) => const RiggingHardwareReferencePage(),
+    ),
+    SearchEntry(
+      title: 'Rigging Angle Reference',
+      category: 'Reference',
+      description: 'Load factor by rigging angle quick reference chart.',
+      tags: ['rigging', 'angle', 'load factor', 'sling angle'],
+      aliases: ['rigging angle chart', 'sling angle chart'],
+      routeId: 'reference.rigging.angle-reference',
+      builder: (_) => const RiggingAngleChartPage(),
+    ),
+    SearchEntry(
+      title: 'COG Estimator',
+      category: 'Reference',
+      description: 'Center of gravity estimator.',
+      tags: ['rigging', 'cog', 'center of gravity', 'load balance'],
+      aliases: ['center of gravity estimator'],
+      routeId: 'reference.rigging.cog-estimator',
+      builder: (_) => const RiggingCOGEstimatorPage(),
+    ),
+    SearchEntry(
+      title: 'Angle Visualizer',
+      category: 'Reference',
+      description: 'Visualize rigging angle effects on load.',
+      tags: ['rigging', 'angle', 'visualizer', 'sling angle', 'load'],
+      aliases: ['sling angle visualizer'],
+      routeId: 'reference.rigging.angle-visualizer',
+      builder: (_) => const RiggingAngleVisualizerPage(),
+    ),
+    SearchEntry(
+      title: 'FUN?',
+      category: 'Tools',
+      description: 'Fun links.',
+      tags: ['fun', 'games', 'links'],
+      aliases: ['fun links'],
+      routeId: 'fun-links',
+      builder: (_) => const FunLinksPage(),
+    ),
+    SearchEntry(
+      title: 'Settings',
+      category: 'Tools',
+      description: 'App settings and theme controls.',
+      tags: ['settings', 'theme', 'accent', 'color'],
+      aliases: ['theme settings'],
+      routeId: 'settings',
+      builder: (_) => SettingsPage(themeController: themeController),
+    ),
+  ];
+}

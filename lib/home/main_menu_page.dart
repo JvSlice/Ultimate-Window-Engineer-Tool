@@ -11,7 +11,7 @@ import '../reference/reference_home_page.dart';
 
 import 'search/main_menu_search_engine.dart';
 import 'search/main_menu_search_overylay.dart';
-import 'search/main_menu_search_targets.dart';
+import 'search/search_registry.dart';
 import 'search/search_models.dart';
 
 class MainMenuPage extends StatefulWidget {
@@ -30,7 +30,7 @@ class _MainMenuPageState extends State<MainMenuPage> {
   bool _showSearch = false;
 
   late final MainMenuSearchEngine _searchEngine;
-  late final List<SearchTarget> _targets;
+  late final List<SearchEntry> _searchEntries;
 
   @override
   void initState() {
@@ -39,7 +39,7 @@ class _MainMenuPageState extends State<MainMenuPage> {
     _searchController = TextEditingController();
     _searchFocusNode = FocusNode();
 
-    _targets = buildMainMenuSearchTargets(widget.themeController);
+    _searchEntries = buildSearchRegistry(widget.themeController);
     _searchEngine = MainMenuSearchEngine();
 
     _searchController.addListener(() {
@@ -83,16 +83,16 @@ class _MainMenuPageState extends State<MainMenuPage> {
     _searchFocusNode.unfocus();
   }
 
-  void _openTarget(SearchTarget target) {
+  void _openSearchEntry(SearchEntry entry) {
     _closeSearch();
-    _openPage(target.builder(context));
+    _openPage(entry.builder(context));
   }
 
   List<SearchHit> _buildSearchHits() {
     return _searchEngine.buildHits(
       query: _searchController.text,
-      targets: _targets,
-      onOpenTarget: _openTarget,
+      entries: _searchEntries,
+      onOpenEntry: _openSearchEntry,
       onOpenConvertIt: () {
         _closeSearch();
         _openPage(const ConverItPage());

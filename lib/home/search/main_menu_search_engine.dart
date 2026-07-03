@@ -1,4 +1,4 @@
-mport 'dart:math' as math;
+import 'dart:math' as math;
 
 import 'package:ultimate_window_engineer_tool/conversions/unit_conversions.dart';
 
@@ -9,8 +9,8 @@ class MainMenuSearchEngine {
 
   List<SearchHit> buildHits({
     required String query,
-    required List<SearchTarget> targets,
-    required void Function(SearchTarget target) onOpenTarget,
+    required List<SearchEntry> entries,
+    required void Function(SearchEntry entry) onOpenEntry,
     required void Function() onOpenConvertIt,
   }) {
     final trimmed = query.trim();
@@ -24,7 +24,8 @@ class MainMenuSearchEngine {
       hits.add(
         SearchHit(
           title: conversionMatch.title,
-          subtitle: conversionMatch.subtitle,
+          category: 'Instant',
+          description: conversionMatch.subtitle,
           kindLabel: 'instant',
           onTap: onOpenConvertIt,
         ),
@@ -33,10 +34,10 @@ class MainMenuSearchEngine {
 
     if (normalizedQuery.isEmpty) return hits;
 
-    final scored = <_ScoredTarget>[];
+    final scored = <_ScoredEntry>[];
 
-    for (final target in targets) {
-      final index = _SearchIndex.fromTarget(target);
+    for (final entry in entries) {
+      final index = _SearchIndex.fromEntry(entry);
       final score = _scoreTarget(
         normalizedQuery: normalizedQuery,
         queryTokens: queryTokens,
@@ -44,25 +45,26 @@ class MainMenuSearchEngine {
       );
 
       if (score > 0) {
-        scored.add(_ScoredTarget(target: target, score: score));
+        scored.add(_ScoredEntry(entry: entry, score: score));
       }
     }
 
     scored.sort((a, b) {
       final scoreCompare = b.score.compareTo(a.score);
       if (scoreCompare != 0) return scoreCompare;
-      return a.target.label.compareTo(b.target.label);
+      return a.entry.title.compareTo(b.entry.title);
     });
 
     final seen = <String>{};
     for (final entry in scored) {
-      if (seen.add(entry.target.label)) {
+      if (seen.add(entry.entry.routeId)) {
         hits.add(
           SearchHit(
-            title: entry.target.label,
-            subtitle: entry.target.subtitle,
+            title: entry.entry.title,
+            category: entry.entry.category,
+            description: entry.entry.description,
             kindLabel: 'page',
-            onTap: () => onOpenTarget(entry.target),
+            onTap: () => onOpenEntry(entry.entry),
           ),
         );
       }
@@ -79,21 +81,31 @@ class MainMenuSearchEngine {
   }) {
     int score = 0;
 
-    if (index.label == normalizedQuery) score += 260;
-    if (index.label.startsWith(normalizedQuery)) score += 190;
-    if (index.label.contains(normalizedQuery)) score += 120;
+    if (index.title == normalizedQuery) score += 260;
+    if (index.title.startsWith(normalizedQuery)) score += 190;
+    if (index.title.contains(normalizedQuery)) score += 120;
 
-    if (index.subtitle == normalizedQuery) score += 130;
-    if (index.subtitle.startsWith(normalizedQuery)) score += 80;
-    if (index.subtitle.contains(normalizedQuery)) score += 45;
+    if (index.description == normalizedQuery) score += 130;
+    if (index.description.startsWith(normalizedQuery)) score += 80;
+    if (index.description.contains(normalizedQuery)) score += 45;
+
+    if (index.category == normalizedQuery) score += 120;
+    if (index.category.startsWith(normalizedQuery)) score += 75;
+    if (index.category.contains(normalizedQuery)) score += 40;
 
     if (index.acronym == normalizedQuery) score += 150;
     if (index.acronym.startsWith(normalizedQuery)) score += 70;
 
-    for (final keyword in index.keywords) {
-      if (keyword == normalizedQuery) score += 170;
-      if (keyword.startsWith(normalizedQuery)) score += 95;
-      if (keyword.contains(normalizedQuery)) score += 50;
+    for (final tag in index.tags) {
+      if (tag == normalizedQuery) score += 170;
+      if (tag.startsWith(normalizedQuery)) score += 95;
+      if (tag.contains(normalizedQuery)) score += 50;
+    }
+
+    for (final alias in index.aliases) {
+      if (alias == normalizedQuery) score += 185;
+      if (alias.startsWith(normalizedQuery)) score += 105;
+      if (alias.contains(normalizedQuery)) score += 55;
     }
 
     for (final token in queryTokens) {
@@ -102,11 +114,13 @@ class MainMenuSearchEngine {
       final normalizedToken = _normalize(token);
       if (normalizedToken.isEmpty) continue;
 
-      score += _bestTokenScore(normalizedToken, index.labelTokens, labelWeight: 34);
-      score += _bestTokenScore(normalizedToken, index.subtitleTokens, labelWeight: 18);
-      score += _bestTokenScore(normalizedToken, index.keywordTokens, labelWeight: 16);
+      score += _bestTokenScore(normalizedToken, index.titleTokens, labelWeight: 34);
+      score += _bestTokenScore(normalizedToken, index.categoryTokens, labelWeight: 20);
+      score += _bestTokenScore(normalizedToken, index.descriptionTokens, labelWeight: 18);
+      score += _bestTokenScore(normalizedToken, index.tagTokens, labelWeight: 16);
+      score += _bestTokenScore(normalizedToken, index.aliasTokens, labelWeight: 22);
 
-      if (_isSubsequence(normalizedToken, index.labelCompact)) score += 10;
+      if (_isSubsequence(normalizedToken, index.titleCompact)) score += 10;
       if (_isSubsequence(normalizedToken, index.allTextCompact)) score += 5;
     }
 
@@ -426,65 +440,84 @@ class MainMenuSearchEngine {
 }
 
 class _SearchIndex {
-  final String label;
-  final String subtitle;
-  final List<String> keywords;
-  final List<String> labelTokens;
-  final List<String> subtitleTokens;
-  final List<String> keywordTokens;
+  final String title;
+  final String category;
+  final String description;
+  final List<String> tags;
+  final List<String> aliases;
+  final List<String> titleTokens;
+  final List<String> categoryTokens;
+  final List<String> descriptionTokens;
+  final List<String> tagTokens;
+  final List<String> aliasTokens;
   final List<String> allTokens;
-  final String labelCompact;
+  final String titleCompact;
   final String allTextCompact;
   final String acronym;
 
   _SearchIndex({
-    required this.label,
-    required this.subtitle,
-    required this.keywords,
-    required this.labelTokens,
-    required this.subtitleTokens,
-    required this.keywordTokens,
+    required this.title,
+    required this.category,
+    required this.description,
+    required this.tags,
+    required this.aliases,
+    required this.titleTokens,
+    required this.categoryTokens,
+    required this.descriptionTokens,
+    required this.tagTokens,
+    required this.aliasTokens,
     required this.allTokens,
-    required this.labelCompact,
+    required this.titleCompact,
     required this.allTextCompact,
     required this.acronym,
   });
 
-  factory _SearchIndex.fromTarget(SearchTarget target) {
+  factory _SearchIndex.fromEntry(SearchEntry entry) {
     final engine = MainMenuSearchEngine();
-    final labelTokens = engine._tokens(target.label);
-    final subtitleTokens = engine._tokens(target.subtitle);
-    final keywordTokens = target.keywords.expand(engine._tokens).toList(growable: false);
+    final titleTokens = engine._tokens(entry.title);
+    final categoryTokens = engine._tokens(entry.category);
+    final descriptionTokens = engine._tokens(entry.description);
+    final tagTokens = entry.tags.expand(engine._tokens).toList(growable: false);
+    final aliasTokens = entry.aliases.expand(engine._tokens).toList(growable: false);
+    final routeTokens = engine._tokens(entry.routeId);
 
     final allTokens = <String>{
-      ...labelTokens,
-      ...subtitleTokens,
-      ...keywordTokens,
+      ...titleTokens,
+      ...categoryTokens,
+      ...descriptionTokens,
+      ...tagTokens,
+      ...aliasTokens,
+      ...routeTokens,
     }.toList(growable: false);
 
-    final allText = '${target.label} ${target.subtitle} ${target.keywords.join(' ')}';
+    final allText =
+        '${entry.title} ${entry.category} ${entry.description} ${entry.tags.join(' ')} ${entry.aliases.join(' ')} ${entry.routeId}';
 
     return _SearchIndex(
-      label: engine._normalize(target.label),
-      subtitle: engine._normalize(target.subtitle),
-      keywords: target.keywords.map(engine._normalize).toList(growable: false),
-      labelTokens: labelTokens,
-      subtitleTokens: subtitleTokens,
-      keywordTokens: keywordTokens,
+      title: engine._normalize(entry.title),
+      category: engine._normalize(entry.category),
+      description: engine._normalize(entry.description),
+      tags: entry.tags.map(engine._normalize).toList(growable: false),
+      aliases: entry.aliases.map(engine._normalize).toList(growable: false),
+      titleTokens: titleTokens,
+      categoryTokens: categoryTokens,
+      descriptionTokens: descriptionTokens,
+      tagTokens: tagTokens,
+      aliasTokens: aliasTokens,
       allTokens: allTokens,
-      labelCompact: engine._compact(target.label),
+      titleCompact: engine._compact(entry.title),
       allTextCompact: engine._compact(allText),
-      acronym: engine._acronym(target.label),
+      acronym: engine._acronym(entry.title),
     );
   }
 }
 
-class _ScoredTarget {
-  final SearchTarget target;
+class _ScoredEntry {
+  final SearchEntry entry;
   final int score;
 
-  const _ScoredTarget({
-    required this.target,
+  const _ScoredEntry({
+    required this.entry,
     required this.score,
   });
 }
