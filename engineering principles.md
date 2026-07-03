@@ -290,4 +290,17 @@ Every pull request should leave the project:
 
 Never lose sight of the mission.
 
-> **Let engineers engineer faster—from one tool.**
+> **Let engineers engineer faster—from one tool.**. 
+
+The goal is not simply to make UWE function.
+
+The goal is to make UWE easy to engineer for the next ten years.
+
+Favor:
+
+• Small focused changes
+• Backwards compatibility
+• Single sources of truth
+• Metadata over duplicated logic
+• Extensible architecture
+• Incremental refactoring
