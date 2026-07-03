@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:ultimate_window_engineer_tool/app_theme.dart';
+import 'release_notes/about_uwe_page.dart';
 import 'terminal_scaffold.dart';
 
 class SettingsPage extends StatelessWidget {
@@ -15,7 +16,7 @@ class SettingsPage extends StatelessWidget {
 
         return TerminalScaffold(
           title: 'Settings',
-          
+
           child: Padding(
             padding: const EdgeInsets.all(16),
             child: Column(
@@ -82,7 +83,38 @@ class SettingsPage extends StatelessWidget {
                   ],
                 ),
 
-               
+                const SizedBox(height: 28),
+
+                Text(
+                  "About",
+                  style: TextStyle(
+                    color: accent,
+                    fontSize: 20,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+                const SizedBox(height: 12),
+
+                OutlinedButton.icon(
+                  onPressed: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(builder: (_) => const AboutUwePage()),
+                    );
+                  },
+                  icon: const Icon(Icons.info_outline),
+                  label: const Text("About UWE"),
+                  style: OutlinedButton.styleFrom(
+                    foregroundColor: accent,
+                    side: BorderSide(color: accent, width: 2),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 18,
+                      vertical: 14,
+                    ),
+                  ),
+                ),
               ],
             ),
           ),

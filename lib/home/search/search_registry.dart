@@ -5,6 +5,8 @@ import '../../fun_links_page.dart';
 import '../../settings_page.dart';
 import '../../window_testing_tools_page.dart';
 import '../../reference/reference_home_page.dart';
+import '../../release_notes/about_uwe_page.dart';
+import '../../release_notes/version_history_page.dart';
 
 // Fabrication
 import '../../fabrication/drill_index_page.dart';
@@ -784,6 +786,24 @@ List<SearchEntry> buildSearchRegistry(AppThemeController themeController) {
       aliases: ['theme settings'],
       routeId: 'settings',
       builder: (_) => SettingsPage(themeController: themeController),
+    ),
+    SearchEntry(
+      title: 'About UWE',
+      category: 'Settings',
+      description: 'Application version, build, and release information.',
+      tags: ['about', 'version', 'build', 'release', 'settings'],
+      aliases: ['about app', 'app info'],
+      routeId: 'settings.about-uwe',
+      builder: (_) => const AboutUwePage(),
+    ),
+    SearchEntry(
+      title: 'Version History',
+      category: 'Settings',
+      description: 'Release notes and version history for UWE.',
+      tags: ['version', 'history', 'release notes', 'changelog', 'updates'],
+      aliases: ['release history', 'what is new', 'whats new'],
+      routeId: 'settings.version-history',
+      builder: (_) => const VersionHistoryPage(),
     ),
   ];
 }
