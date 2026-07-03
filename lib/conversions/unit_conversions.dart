@@ -504,6 +504,30 @@ final List<ConversionTool> conversionTools = [
     toFn: (input) => input * 1.609344,
     fromFn: (input) => input / 1.609344,
   ),
+  ConversionTool(
+    label: "MPH ↔ Feet/Second",
+    category: ConversionCategory.speed,
+    toUnit: "ft/s",
+    fromUnit: "mph",
+    toFn: (input) => input * 1.4666666667,
+    fromFn: (input) => input / 1.4666666667,
+  ),
+  ConversionTool(
+    label: "Knots ↔ MPH",
+    category: ConversionCategory.speed,
+    toUnit: "mph",
+    fromUnit: "kt",
+    toFn: (input) => input * 1.150779448,
+    fromFn: (input) => input / 1.150779448,
+  ),
+  ConversionTool(
+    label: "Knots ↔ KM/H",
+    category: ConversionCategory.speed,
+    toUnit: "km/h",
+    fromUnit: "kt",
+    toFn: (input) => input * 1.852,
+    fromFn: (input) => input / 1.852,
+  ),
 
   // ---------------- Power / Energy ----------------
   ConversionTool(
@@ -602,4 +626,3 @@ final List<ConversionTool> conversionTools = [
     fromFn: (input) => input / 0.112985,
   ),
 ];
-

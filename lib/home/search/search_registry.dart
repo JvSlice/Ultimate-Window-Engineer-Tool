@@ -91,6 +91,8 @@ List<SearchEntry> buildSearchRegistry(AppThemeController themeController) {
         'volume',
         'temperature',
         'speed',
+        'fps',
+        'knots',
         'torque',
         'electrical',
       ],
