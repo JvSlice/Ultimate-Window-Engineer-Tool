@@ -25,6 +25,7 @@ Always read:
 5. Preserve existing functionality.
 6. Avoid broad rewrites unless explicitly approved.
 7. Provide a release review after implementation.
+8. Update `assets/release_notes.md` for user-facing changes.
 
 ## UWE Rules
 - Keep the black/green terminal-style UI.
@@ -48,4 +49,5 @@ If Flutter/Dart commands fail because of sandbox or snap permissions, state that
 - Existing behavior preserved
 - Search/navigation updated if needed
 - Documentation updated if architecture changed
+- Release notes updated for user-facing changes
 - Manual test checklist provided

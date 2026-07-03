@@ -110,6 +110,16 @@ Current implementation note:
 
 ⸻
 
+Release Notes
+
+Release notes are maintained in `assets/release_notes.md`.
+
+User-facing changes should update this file as part of the same issue so About UWE, Version History, and version-change splash summaries stay current.
+
+The app should treat the markdown file as the release-note source of truth and generate UI from parsed release note data rather than hardcoded release-note widgets.
+
+⸻
+
 Navigation
 
 Navigation should remain simple and predictable.

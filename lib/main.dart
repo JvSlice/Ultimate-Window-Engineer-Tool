@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'app_theme.dart';
-import 'home/main_menu_page.dart';
+import 'splash_page.dart';
 //commet to get code to rerun
 
 Future<void> main() async {
@@ -28,7 +28,7 @@ class MyApp extends StatelessWidget {
           theme: themeController.buildTerminalTheme(
             themeController.accentColor,
           ),
-          home: MainMenuPage(themeController: themeController),
+          home: SplashPage(themeController: themeController),
         );
       },
     );

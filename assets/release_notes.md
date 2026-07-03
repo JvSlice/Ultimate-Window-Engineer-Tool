@@ -11,14 +11,17 @@ Build: 1
 * Version History page under Settings > About UWE.
 * Markdown-based release notes loaded from a single asset file.
 * Current app version and build display.
+* Version change splash page with a first-open change summary.
 
 ### Changed
 
 * Added a standard release note workflow for future updates.
+* App startup now checks whether the current version has already been shown.
 
 ### Improved
 
 * Settings now has a place for application information.
+* Users can tap the splash page to skip directly to the main menu.
 
 ### Fixed
 
