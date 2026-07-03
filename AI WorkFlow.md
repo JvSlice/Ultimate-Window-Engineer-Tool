@@ -307,7 +307,23 @@ A task is complete when:
 - Manual testing recommendations are provided.
 - The Product Owner approves the implementation.
 
----
+---# Expected AI Behavior
+
+Always:
+
+- Read README.md
+
+- Read ARCHITECTURE.md
+
+- Read ENGINEERING_PRINCIPLES.md
+
+- Read ROADMAP.md
+
+- Read DECISIONS.md
+
+- Read the GitHub Issue
+
+before proposing changes.
 
 # Mission
 
