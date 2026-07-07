@@ -233,21 +233,15 @@ class _RiggingLoadCalculatorPageState extends State<RiggingLoadCalculatorPage> {
                     style: Theme.of(context).textTheme.titleMedium,
                   ),
                   const SizedBox(height: 8),
-                  SegmentedButton<AngleReference>(
-                    segments: const [
-                      ButtonSegment(
-                        value: AngleReference.fromHorizontal,
-                        label: Text('From Horizontal'),
-                      ),
-                      ButtonSegment(
-                        value: AngleReference.fromVertical,
-                        label: Text('From Vertical'),
-                      ),
-                    ],
-                    selected: {_angleReference},
-                    onSelectionChanged: (values) {
+                  _optionWrap<AngleReference>(
+                    selected: _angleReference,
+                    options: const {
+                      AngleReference.fromHorizontal: 'From Horizontal',
+                      AngleReference.fromVertical: 'From Vertical',
+                    },
+                    onSelected: (value) {
                       setState(() {
-                        _angleReference = values.first;
+                        _angleReference = value;
                       });
                     },
                   ),
@@ -268,25 +262,16 @@ class _RiggingLoadCalculatorPageState extends State<RiggingLoadCalculatorPage> {
                     style: Theme.of(context).textTheme.titleMedium,
                   ),
                   const SizedBox(height: 8),
-                  SegmentedButton<HitchType>(
-                    segments: const [
-                      ButtonSegment(
-                        value: HitchType.vertical,
-                        label: Text('Vertical'),
-                      ),
-                      ButtonSegment(
-                        value: HitchType.choker,
-                        label: Text('Choker'),
-                      ),
-                      ButtonSegment(
-                        value: HitchType.basket,
-                        label: Text('Basket'),
-                      ),
-                    ],
-                    selected: {_hitchType},
-                    onSelectionChanged: (values) {
+                  _optionWrap<HitchType>(
+                    selected: _hitchType,
+                    options: const {
+                      HitchType.vertical: 'Vertical',
+                      HitchType.choker: 'Choker',
+                      HitchType.basket: 'Basket',
+                    },
+                    onSelected: (value) {
                       setState(() {
-                        _hitchType = values.first;
+                        _hitchType = value;
                       });
                     },
                   ),
@@ -413,7 +398,7 @@ class _RiggingLoadCalculatorPageState extends State<RiggingLoadCalculatorPage> {
             );
 
             if (isWide) {
-              return Padding(
+              return SingleChildScrollView(
                 padding: const EdgeInsets.all(16),
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -480,6 +465,30 @@ class _RiggingLoadCalculatorPageState extends State<RiggingLoadCalculatorPage> {
     );
   }
 
+  Widget _optionWrap<T>({
+    required T selected,
+    required Map<T, String> options,
+    required ValueChanged<T> onSelected,
+  }) {
+    return Wrap(
+      spacing: 8,
+      runSpacing: 8,
+      children: options.entries.map((entry) {
+        final isSelected = entry.key == selected;
+        final accent = Theme.of(context).colorScheme.primary;
+        return ChoiceChip(
+          label: Text(entry.value),
+          selected: isSelected,
+          onSelected: (_) => onSelected(entry.key),
+          backgroundColor: Colors.transparent,
+          selectedColor: accent.withValues(alpha: 0.18),
+          side: BorderSide(color: accent.withValues(alpha: 0.85)),
+          labelStyle: TextStyle(color: accent),
+        );
+      }).toList(),
+    );
+  }
+
   Widget _resultRow(
     BuildContext context,
     String label,
@@ -499,7 +508,9 @@ class _RiggingLoadCalculatorPageState extends State<RiggingLoadCalculatorPage> {
         children: [
           Expanded(child: Text(label)),
           const SizedBox(width: 12),
-          Text(value, style: valueStyle),
+          Flexible(
+            child: Text(value, style: valueStyle, textAlign: TextAlign.end),
+          ),
         ],
       ),
     );
@@ -514,14 +525,25 @@ class _Panel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      clipBehavior: Clip.antiAlias,
+    final accent = Theme.of(context).colorScheme.primary;
+
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        color: accent.withValues(alpha: 0.06),
+        border: Border.all(color: accent, width: 1.5),
+        borderRadius: BorderRadius.circular(8),
+      ),
       child: Padding(
         padding: const EdgeInsets.all(14),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(title, style: Theme.of(context).textTheme.titleLarge),
+            Text(
+              title,
+              style: Theme.of(
+                context,
+              ).textTheme.titleLarge?.copyWith(color: accent),
+            ),
             const SizedBox(height: 12),
             child,
           ],

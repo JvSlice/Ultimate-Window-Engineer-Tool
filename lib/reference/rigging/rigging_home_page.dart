@@ -19,6 +19,7 @@ class RiggingHomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
+    final accent = Theme.of(context).colorScheme.primary;
 
     Widget terminalButton({
       required String label,
@@ -30,6 +31,19 @@ class RiggingHomePage extends StatelessWidget {
         height: size.height * 0.11,
         child: OutlinedButton(
           onPressed: onPressed,
+          style:
+              OutlinedButton.styleFrom(
+                backgroundColor: accent.withValues(alpha: 0.10),
+                foregroundColor: accent,
+                side: BorderSide(color: accent, width: 2),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+              ).copyWith(
+                overlayColor: WidgetStateProperty.all(
+                  accent.withValues(alpha: 0.18),
+                ),
+              ),
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
             child: Column(
@@ -38,7 +52,8 @@ class RiggingHomePage extends StatelessWidget {
                 Text(
                   label,
                   textAlign: TextAlign.center,
-                  style: const TextStyle(
+                  style: TextStyle(
+                    color: accent,
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
                     letterSpacing: 0.8,
@@ -49,7 +64,10 @@ class RiggingHomePage extends StatelessWidget {
                   Text(
                     subtitle,
                     textAlign: TextAlign.center,
-                    style: const TextStyle(fontSize: 12),
+                    style: TextStyle(
+                      color: accent.withValues(alpha: 0.76),
+                      fontSize: 12,
+                    ),
                   ),
                 ],
               ],
@@ -62,119 +80,78 @@ class RiggingHomePage extends StatelessWidget {
     return TerminalScaffold(
       title: 'Rigging Tools',
       child: SafeArea(
-        child: Padding(
+        child: ListView(
           padding: const EdgeInsets.all(16),
-          child: Column(
-            children: [
-              Text(
-                'Rigging calculators and reference tools.',
-                style: Theme.of(context).textTheme.bodyMedium,
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 18),
+          children: [
+            Text(
+              'Rigging calculators and reference tools.',
+              style: Theme.of(
+                context,
+              ).textTheme.bodyMedium?.copyWith(color: accent),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 18),
 
-              terminalButton(
-                label: 'Rigging Load Calculator',
-                subtitle: 'Load / legs / angle / hitch effects',
-                onPressed: () =>
-                    _open(context, const RiggingLoadCalculatorPage()),
-              ),
-              const SizedBox(height: 12),
+            terminalButton(
+              label: 'Rigging Load Calculator',
+              subtitle: 'Load / legs / angle / hitch effects',
+              onPressed: () =>
+                  _open(context, const RiggingLoadCalculatorPage()),
+            ),
+            const SizedBox(height: 12),
 
-              terminalButton(
-                label: 'Working Load Limit',
-                subtitle: 'Coming soon',
-                onPressed: () {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('WLL calculator coming soon.'),
-                    ),
-                  );
-                },
-              ),
-              const SizedBox(height: 12),
+            terminalButton(
+              label: 'Working Load Limit',
+              subtitle: 'Base WLL, adjusted WLL, and pass/fail',
+              onPressed: () => _open(context, const RiggingWllCalculatorPage()),
+            ),
+            const SizedBox(height: 12),
 
-              terminalButton(
-                label: 'Hardware Reference',
-                subtitle: 'Coming soon',
-                onPressed: () {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('Hardware reference coming soon.'),
-                    ),
-                  );
-                },
-              ),
-              const SizedBox(height: 12),
+            terminalButton(
+              label: 'Unequal Loading Calculator',
+              subtitle: 'Off-center load and imbalance calculator',
+              onPressed: () =>
+                  _open(context, const RiggingUnequalLoadingPage()),
+            ),
+            const SizedBox(height: 12),
 
-              terminalButton(
-                label: 'Unequal Leg Loading',
-                subtitle: 'Coming soon',
-                onPressed: () {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('Unequal leg loading tool coming soon.'),
-                    ),
-                  );
-                },
-              ),
-              const SizedBox(height: 12),
+            terminalButton(
+              label: 'Rigging Hitch Reference',
+              subtitle: 'Vertical, choker, and basket hitch types',
+              onPressed: () =>
+                  _open(context, const RiggingHitchReferencePage()),
+            ),
+            const SizedBox(height: 12),
 
-              terminalButton(
-                label: 'Working Load Limit',
-                subtitle: 'Base WLL, adjusted WLL, and pass/fail',
-                onPressed: () =>
-                    _open(context, const RiggingWllCalculatorPage()),
-              ),
-              const SizedBox(height: 12),
+            terminalButton(
+              label: 'Rigging Hardware Reference',
+              subtitle: 'common hardware used for rigging',
+              onPressed: () =>
+                  _open(context, const RiggingHardwareReferencePage()),
+            ),
+            const SizedBox(height: 12),
 
-              terminalButton(
-                label: 'Unequal Loading Calculator',
-                subtitle: 'Off-center load and imbalance calculator',
-                onPressed: () =>
-                    _open(context, const RiggingUnequalLoadingPage()),
-              ),
-              const SizedBox(height: 12),
+            terminalButton(
+              label: 'Rigging Angle Quick Reference',
+              subtitle: 'Load factor by angle',
+              onPressed: () => _open(context, const RiggingAngleChartPage()),
+            ),
+            const SizedBox(height: 12),
+            terminalButton(
+              label: 'COG Estimator',
+              subtitle: 'Locate center of gravity',
+              onPressed: () => _open(context, const RiggingCOGEstimatorPage()),
+            ),
+            const SizedBox(height: 12),
 
-              terminalButton(
-                label: 'Unequal Loading Calculator',
-                subtitle: 'Off-center load and imbalance calculator',
-                onPressed: () =>
-                    _open(context, const RiggingHitchReferencePage()),
-              ),
-              const SizedBox(height: 12),
-
-              terminalButton(
-                label: 'Rigging Hardware Reference',
-                subtitle: 'common hardware used for rigging',
-                onPressed: () =>
-                    _open(context, const RiggingHardwareReferencePage()),
-              ),
-              const SizedBox(height: 12),
-
-              terminalButton(
-                label: 'Riging Angle Quick reference chart',
-                subtitle: 'load factor by angle',
-                onPressed: () => _open(context, const RiggingAngleChartPage()),
-              ),
-              const SizedBox(height: 12),
-              terminalButton(
-                label: 'COG Estimator',
-                subtitle: 'Locate center of gravity',
-                onPressed: () =>
-                    _open(context, const RiggingCOGEstimatorPage()),
-              ),
-              const SizedBox(height: 12),
-
-              terminalButton(
-                label: 'Angle Visualizer',
-                subtitle: 'See angle effect on load',
-                onPressed: () =>
-                    _open(context, const RiggingAngleVisualizerPage()),
-              ),
-              const SizedBox(height: 12),
-            ],
-          ),
+            terminalButton(
+              label: 'Angle Visualizer',
+              subtitle: 'See angle effect on load',
+              onPressed: () =>
+                  _open(context, const RiggingAngleVisualizerPage()),
+            ),
+            const SizedBox(height: 12),
+          ],
         ),
       ),
     );

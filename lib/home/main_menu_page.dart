@@ -105,8 +105,12 @@ class _MainMenuPageState extends State<MainMenuPage> {
     final size = MediaQuery.of(context).size;
     final accent = widget.themeController.accentColor;
 
+    final isCompact = size.width < 600;
     final verticalSpacing = size.height * 0.02;
-    final gridSpacing = size.width * 0.02;
+    final gridSpacing = isCompact ? 12.0 : size.width * 0.02;
+    final menuFontSize = (size.width * 0.018).clamp(12.0, 18.0);
+    final cornerFontSize = (size.width * 0.016).clamp(11.0, 15.0);
+    final cornerIconSize = (size.width * 0.02).clamp(16.0, 22.0);
 
     Widget terminalButton(
       BuildContext context,
@@ -135,7 +139,7 @@ class _MainMenuPageState extends State<MainMenuPage> {
             label,
             textAlign: TextAlign.center,
             style: TextStyle(
-              fontSize: size.width * 0.018,
+              fontSize: menuFontSize,
               fontWeight: FontWeight.w600,
               letterSpacing: 1.2,
             ),
@@ -151,13 +155,16 @@ class _MainMenuPageState extends State<MainMenuPage> {
     }) {
       return OutlinedButton.icon(
         onPressed: onPressed,
-        icon: Icon(icon, size: size.width * 0.02),
-        label: Text(label, style: TextStyle(fontSize: size.width * 0.016)),
+        icon: Icon(icon, size: cornerIconSize),
+        label: Text(label, style: TextStyle(fontSize: cornerFontSize)),
         style: OutlinedButton.styleFrom(
           foregroundColor: accent,
-          side: BorderSide(color: accent, width: size.width * 0.002),
+          side: BorderSide(
+            color: accent,
+            width: (size.width * 0.002).clamp(1.0, 2.0),
+          ),
           padding: EdgeInsets.symmetric(
-            horizontal: size.width * 0.02,
+            horizontal: isCompact ? 12 : size.width * 0.02,
             vertical: size.height * 0.012,
           ),
         ),
@@ -185,10 +192,11 @@ class _MainMenuPageState extends State<MainMenuPage> {
               SizedBox(height: verticalSpacing * 0.25),
               Expanded(
                 child: GridView.count(
+                  padding: EdgeInsets.symmetric(horizontal: isCompact ? 12 : 0),
                   crossAxisCount: 2,
                   crossAxisSpacing: gridSpacing,
                   mainAxisSpacing: gridSpacing,
-                  childAspectRatio: 1.6,
+                  childAspectRatio: isCompact ? 1.35 : 1.6,
                   children: [
                     terminalButton(context, "Convert it", () {
                       _openPage(const ConverItPage());

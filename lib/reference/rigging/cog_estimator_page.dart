@@ -21,6 +21,15 @@ class _RiggingCOGEstimatorPageState extends State<RiggingCOGEstimatorPage> {
   double x = 24;
   double y = 12;
 
+  @override
+  void dispose() {
+    _lengthController.dispose();
+    _widthController.dispose();
+    _xController.dispose();
+    _yController.dispose();
+    super.dispose();
+  }
+
   void _recalc() {
     setState(() {
       length = double.tryParse(_lengthController.text) ?? 48;
@@ -55,60 +64,63 @@ class _RiggingCOGEstimatorPageState extends State<RiggingCOGEstimatorPage> {
     return TerminalScaffold(
       title: 'COG Estimator',
       child: SafeArea(
-        child: Padding(
+        child: ListView(
           padding: const EdgeInsets.all(16),
-          child: Column(
-            children: [
-              _panel(
-                'Inputs',
-                Column(
-                  children: [
-                    _field('Length', _lengthController, 'in'),
-                    const SizedBox(height: 10),
-                    _field('Width', _widthController, 'in'),
-                    const SizedBox(height: 10),
-                    _field('COG X', _xController, 'in'),
-                    const SizedBox(height: 10),
-                    _field('COG Y', _yController, 'in'),
-                    const SizedBox(height: 10),
-                    OutlinedButton(
-                      onPressed: _recalc,
-                      child: const Text('Update'),
-                    ),
-                  ],
-                ),
+          children: [
+            _panel(
+              'Inputs',
+              Column(
+                children: [
+                  _field('Length', _lengthController, 'in'),
+                  const SizedBox(height: 10),
+                  _field('Width', _widthController, 'in'),
+                  const SizedBox(height: 10),
+                  _field('COG X', _xController, 'in'),
+                  const SizedBox(height: 10),
+                  _field('COG Y', _yController, 'in'),
+                  const SizedBox(height: 10),
+                  OutlinedButton(
+                    onPressed: _recalc,
+                    child: const Text('Update'),
+                  ),
+                ],
               ),
+            ),
 
-              const SizedBox(height: 16),
+            const SizedBox(height: 16),
 
-              _panel(
-                'Visual',
-                SizedBox(
-                  height: 260,
-                  child: CustomPaint(
-                    painter: _COGPainter(
-                      length: length,
-                      width: width,
-                      x: x,
-                      y: y,
-                    ),
+            _panel(
+              'Visual',
+              SizedBox(
+                height: 240,
+                child: CustomPaint(
+                  painter: _COGPainter(
+                    length: length,
+                    width: width,
+                    x: x,
+                    y: y,
                   ),
                 ),
               ),
+            ),
 
-              const SizedBox(height: 16),
+            const SizedBox(height: 16),
 
-              _panel(
-                'Warnings',
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: warnings
-                      .map((e) => Text('• $e'))
-                      .toList(),
-                ),
+            _panel(
+              'Warnings',
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: warnings
+                    .map(
+                      (e) => Padding(
+                        padding: const EdgeInsets.only(bottom: 6),
+                        child: Text('• $e'),
+                      ),
+                    )
+                    .toList(),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
@@ -128,14 +140,23 @@ class _RiggingCOGEstimatorPageState extends State<RiggingCOGEstimatorPage> {
   }
 
   Widget _panel(String title, Widget child) {
-    return Card(
+    final accent = Theme.of(context).colorScheme.primary;
+
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        color: accent.withValues(alpha: 0.06),
+        border: Border.all(color: accent, width: 1.5),
+        borderRadius: BorderRadius.circular(8),
+      ),
       child: Padding(
         padding: const EdgeInsets.all(14),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(title,
-                style: const TextStyle(fontWeight: FontWeight.bold)),
+            Text(
+              title,
+              style: TextStyle(color: accent, fontWeight: FontWeight.bold),
+            ),
             const SizedBox(height: 10),
             child,
           ],

@@ -40,11 +40,13 @@ import '../../reference/geometry_shop_page.dart';
 import '../../reference/materials/material_reference_page.dart';
 import '../../reference/physics_equations_page.dart';
 import '../../reference/eletrical_tools/eletrical_reference_page.dart';
+import '../../reference/eletrical_tools/eletrical_tools_page.dart';
 import '../../reference/eletrical_tools/ohms_law_page.dart';
 import '../../reference/eletrical_tools/power_law_page.dart';
 import '../../reference/eletrical_tools/voltage_divider_page.dart';
 import '../../reference/eletrical_tools/awg_reference_page.dart';
 import '../../reference/eletrical_tools/battery_runtime_page.dart';
+import '../../reference/eletrical_tools/appliance_power_reference_page.dart';
 import '../../reference/physics/cantilever_beam_page.dart';
 import '../../reference/physics/pulleys_page.dart';
 import '../../reference/physics/section_i_page.dart';
@@ -105,7 +107,8 @@ List<SearchEntry> buildSearchRegistry(AppThemeController themeController) {
     SearchEntry(
       title: 'Fabricate It',
       category: 'Fabrication',
-      description: 'Fabrication tools hub for shop calculations and references.',
+      description:
+          'Fabrication tools hub for shop calculations and references.',
       tags: ['fabricate', 'fabrication', 'shop', 'machining', 'metal'],
       aliases: ['fabrication tools', 'shop tools'],
       routeId: 'fabricate-it',
@@ -114,7 +117,8 @@ List<SearchEntry> buildSearchRegistry(AppThemeController themeController) {
     SearchEntry(
       title: 'Reference It',
       category: 'Reference',
-      description: 'Reference hub for equations, materials, geometry, and tools.',
+      description:
+          'Reference hub for equations, materials, geometry, and tools.',
       tags: [
         'reference',
         'library',
@@ -131,7 +135,8 @@ List<SearchEntry> buildSearchRegistry(AppThemeController themeController) {
     SearchEntry(
       title: 'Window Testing Tools',
       category: 'Window Testing',
-      description: 'Testing tools hub for glass, ratings, sequences, and pressure math.',
+      description:
+          'Testing tools hub for glass, ratings, sequences, and pressure math.',
       tags: [
         'window testing',
         'test',
@@ -260,7 +265,8 @@ List<SearchEntry> buildSearchRegistry(AppThemeController themeController) {
     SearchEntry(
       title: 'MIG Setup Calculator',
       category: 'Fabrication',
-      description: 'MIG voltage, wire speed, wire size, gas, and polarity setup.',
+      description:
+          'MIG voltage, wire speed, wire size, gas, and polarity setup.',
       tags: [
         'mig',
         'mig calc',
@@ -304,7 +310,8 @@ List<SearchEntry> buildSearchRegistry(AppThemeController themeController) {
     SearchEntry(
       title: 'TIG Setup Calculator',
       category: 'Fabrication',
-      description: 'TIG polarity, amps, tungsten type, and tungsten size setup.',
+      description:
+          'TIG polarity, amps, tungsten type, and tungsten size setup.',
       tags: [
         'tig',
         'tig calc',
@@ -346,7 +353,8 @@ List<SearchEntry> buildSearchRegistry(AppThemeController themeController) {
     SearchEntry(
       title: 'Structural Test Math',
       category: 'Window Testing',
-      description: 'Structural testing calculations for load and pressure math.',
+      description:
+          'Structural testing calculations for load and pressure math.',
       tags: ['structural', 'test math', 'load', 'pressure math'],
       aliases: ['structural pressure', 'test calculations'],
       routeId: 'window-testing.structural-test-math',
@@ -436,12 +444,7 @@ List<SearchEntry> buildSearchRegistry(AppThemeController themeController) {
       title: 'Section Properties (I)',
       category: 'Reference',
       description: 'Section property and moment of inertia formulas.',
-      tags: [
-        'section',
-        'moment of inertia',
-        'inertia',
-        'section properties',
-      ],
+      tags: ['section', 'moment of inertia', 'inertia', 'section properties'],
       aliases: ['section inertia', 'i properties'],
       routeId: 'reference.physics.section-properties',
       builder: (_) => const SectionIPage(),
@@ -600,11 +603,29 @@ List<SearchEntry> buildSearchRegistry(AppThemeController themeController) {
       builder: (_) => const MaterialReferencePage(),
     ),
     SearchEntry(
+      title: 'Electrical Tools',
+      category: 'Reference',
+      description: 'Electrical calculators and reference tools hub.',
+      tags: [
+        'electrical',
+        'electric',
+        'wire',
+        'awg',
+        'voltage',
+        'power',
+        'amps',
+        'watts',
+      ],
+      aliases: ['electrical hub', 'electric tools'],
+      routeId: 'reference.electrical-tools',
+      builder: (_) => const ElectricalToolsPage(),
+    ),
+    SearchEntry(
       title: 'Electrical Reference',
       category: 'Reference',
       description: 'Electrical formulas and reference hub.',
       tags: ['electrical', 'electric', 'wire', 'awg', 'voltage'],
-      aliases: ['electrical tools', 'electric reference'],
+      aliases: ['electric reference'],
       routeId: 'reference.electrical-reference',
       builder: (_) => const ElectricalReferencePage(),
     ),
@@ -654,6 +675,90 @@ List<SearchEntry> buildSearchRegistry(AppThemeController themeController) {
       builder: (_) => const BatteryRuntimePage(),
     ),
     SearchEntry(
+      title: 'Common Appliance Power Usage',
+      category: 'Reference',
+      description:
+          'Typical running amps, startup amps, watts, voltage, and breaker sizes for common appliances.',
+      tags: [
+        'appliance',
+        'appliances',
+        'amp draw',
+        'startup amps',
+        'surge amps',
+        'running amps',
+        'watts',
+        'power usage',
+        'electrical load',
+        'generator sizing',
+        'inverter',
+        'household appliances',
+        'refrigerator',
+        'freezer',
+        'microwave',
+        'dishwasher',
+        'garbage disposal',
+        'coffee maker',
+        'kettle',
+        'toaster',
+        'oven',
+        'range',
+        'air fryer',
+        'washing machine',
+        'dryer',
+        'window ac',
+        'portable ac',
+        'central ac',
+        'air conditioner',
+        'furnace blower',
+        'heat pump',
+        'space heater',
+        'dehumidifier',
+        'humidifier',
+        'air compressor',
+        'shop vacuum',
+        'table saw',
+        'miter saw',
+        'circular saw',
+        'drill press',
+        'bench grinder',
+        'welder',
+        'pressure washer',
+        'television',
+        'computer',
+        'gaming pc',
+        'laptop charger',
+        'monitor',
+        'printer',
+        'ceiling fan',
+        'box fan',
+        'led lighting',
+        'vacuum cleaner',
+        'sump pump',
+        'well pump',
+        'sewage ejector pump',
+        'lawn mower',
+        'string trimmer',
+        'leaf blower',
+        'hair dryer',
+        'curling iron',
+        'iron',
+        'phone charger',
+        'battery charger',
+        'cpap',
+      ],
+      aliases: [
+        'appliance watts',
+        'appliance amp draw',
+        'household power usage',
+        'generator load reference',
+        'surge watt reference',
+        'startup watt reference',
+        'electrical load reference',
+      ],
+      routeId: 'reference.electrical.appliance-power',
+      builder: (_) => const AppliancePowerReferencePage(),
+    ),
+    SearchEntry(
       title: 'Fork Lift Load Calculator',
       category: 'Reference',
       description: 'Fork lift load calculator for lift capacity checks.',
@@ -692,7 +797,8 @@ List<SearchEntry> buildSearchRegistry(AppThemeController themeController) {
     SearchEntry(
       title: 'Rigging Load Calculator',
       category: 'Reference',
-      description: 'Rigging load calculator for legs, angle, and hitch effects.',
+      description:
+          'Rigging load calculator for legs, angle, and hitch effects.',
       tags: ['rigging', 'sling', 'load', 'angle', 'hitch', 'lifting'],
       aliases: ['sling load calculator'],
       routeId: 'reference.rigging.load-calculator',
@@ -728,7 +834,13 @@ List<SearchEntry> buildSearchRegistry(AppThemeController themeController) {
       title: 'Rigging Hitch Reference',
       category: 'Reference',
       description: 'Rigging hitch type reference.',
-      tags: ['rigging', 'hitch', 'basket hitch', 'choker hitch', 'vertical hitch'],
+      tags: [
+        'rigging',
+        'hitch',
+        'basket hitch',
+        'choker hitch',
+        'vertical hitch',
+      ],
       aliases: ['hitch types', 'rigging hitch'],
       routeId: 'reference.rigging.hitch-reference',
       builder: (_) => const RiggingHitchReferencePage(),
