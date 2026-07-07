@@ -296,25 +296,16 @@ class _RiggingWllCalculatorPageState extends State<RiggingWllCalculatorPage> {
                     style: Theme.of(context).textTheme.titleMedium,
                   ),
                   const SizedBox(height: 8),
-                  SegmentedButton<RiggingSlingType>(
-                    segments: const [
-                      ButtonSegment(
-                        value: RiggingSlingType.chain,
-                        label: Text('Chain'),
-                      ),
-                      ButtonSegment(
-                        value: RiggingSlingType.wireRope,
-                        label: Text('Wire Rope'),
-                      ),
-                      ButtonSegment(
-                        value: RiggingSlingType.syntheticWeb,
-                        label: Text('Web'),
-                      ),
-                    ],
-                    selected: {_slingType},
-                    onSelectionChanged: (values) {
+                  _optionWrap<RiggingSlingType>(
+                    selected: _slingType,
+                    options: const {
+                      RiggingSlingType.chain: 'Chain',
+                      RiggingSlingType.wireRope: 'Wire Rope',
+                      RiggingSlingType.syntheticWeb: 'Web',
+                    },
+                    onSelected: (value) {
                       setState(() {
-                        _slingType = values.first;
+                        _slingType = value;
                         _syncSelectedSizeIfNeeded();
                       });
                     },
@@ -323,7 +314,7 @@ class _RiggingWllCalculatorPageState extends State<RiggingWllCalculatorPage> {
 
                   if (_slingType == RiggingSlingType.chain) ...[
                     DropdownButtonFormField<String>(
-                      value: _selectedChainGrade,
+                      initialValue: _selectedChainGrade,
                       decoration: const InputDecoration(
                         labelText: 'Chain Grade',
                         border: OutlineInputBorder(),
@@ -348,7 +339,7 @@ class _RiggingWllCalculatorPageState extends State<RiggingWllCalculatorPage> {
                   ],
 
                   DropdownButtonFormField<String>(
-                    value: _selectedSize,
+                    initialValue: _selectedSize,
                     decoration: const InputDecoration(
                       labelText: 'Sling Size',
                       border: OutlineInputBorder(),
@@ -399,21 +390,15 @@ class _RiggingWllCalculatorPageState extends State<RiggingWllCalculatorPage> {
                     style: Theme.of(context).textTheme.titleMedium,
                   ),
                   const SizedBox(height: 8),
-                  SegmentedButton<RiggingAngleReference>(
-                    segments: const [
-                      ButtonSegment(
-                        value: RiggingAngleReference.fromHorizontal,
-                        label: Text('From Horizontal'),
-                      ),
-                      ButtonSegment(
-                        value: RiggingAngleReference.fromVertical,
-                        label: Text('From Vertical'),
-                      ),
-                    ],
-                    selected: {_angleReference},
-                    onSelectionChanged: (values) {
+                  _optionWrap<RiggingAngleReference>(
+                    selected: _angleReference,
+                    options: const {
+                      RiggingAngleReference.fromHorizontal: 'From Horizontal',
+                      RiggingAngleReference.fromVertical: 'From Vertical',
+                    },
+                    onSelected: (value) {
                       setState(() {
-                        _angleReference = values.first;
+                        _angleReference = value;
                       });
                     },
                   ),
@@ -442,25 +427,16 @@ class _RiggingWllCalculatorPageState extends State<RiggingWllCalculatorPage> {
                     style: Theme.of(context).textTheme.titleMedium,
                   ),
                   const SizedBox(height: 8),
-                  SegmentedButton<RiggingHitchType>(
-                    segments: const [
-                      ButtonSegment(
-                        value: RiggingHitchType.vertical,
-                        label: Text('Vertical'),
-                      ),
-                      ButtonSegment(
-                        value: RiggingHitchType.choker,
-                        label: Text('Choker'),
-                      ),
-                      ButtonSegment(
-                        value: RiggingHitchType.basket,
-                        label: Text('Basket'),
-                      ),
-                    ],
-                    selected: {_hitchType},
-                    onSelectionChanged: (values) {
+                  _optionWrap<RiggingHitchType>(
+                    selected: _hitchType,
+                    options: const {
+                      RiggingHitchType.vertical: 'Vertical',
+                      RiggingHitchType.choker: 'Choker',
+                      RiggingHitchType.basket: 'Basket',
+                    },
+                    onSelected: (value) {
                       setState(() {
-                        _hitchType = values.first;
+                        _hitchType = value;
                       });
                     },
                   ),
@@ -588,7 +564,7 @@ class _RiggingWllCalculatorPageState extends State<RiggingWllCalculatorPage> {
             );
 
             if (isWide) {
-              return Padding(
+              return SingleChildScrollView(
                 padding: const EdgeInsets.all(16),
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -646,9 +622,35 @@ class _RiggingWllCalculatorPageState extends State<RiggingWllCalculatorPage> {
         children: [
           Expanded(child: Text(label)),
           const SizedBox(width: 12),
-          Text(value, style: style),
+          Flexible(
+            child: Text(value, style: style, textAlign: TextAlign.end),
+          ),
         ],
       ),
+    );
+  }
+
+  Widget _optionWrap<T>({
+    required T selected,
+    required Map<T, String> options,
+    required ValueChanged<T> onSelected,
+  }) {
+    return Wrap(
+      spacing: 8,
+      runSpacing: 8,
+      children: options.entries.map((entry) {
+        final isSelected = entry.key == selected;
+        final accent = Theme.of(context).colorScheme.primary;
+        return ChoiceChip(
+          label: Text(entry.value),
+          selected: isSelected,
+          onSelected: (_) => onSelected(entry.key),
+          backgroundColor: Colors.transparent,
+          selectedColor: accent.withValues(alpha: 0.18),
+          side: BorderSide(color: accent.withValues(alpha: 0.85)),
+          labelStyle: TextStyle(color: accent),
+        );
+      }).toList(),
     );
   }
 }
@@ -661,14 +663,25 @@ class _Panel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      clipBehavior: Clip.antiAlias,
+    final accent = Theme.of(context).colorScheme.primary;
+
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        color: accent.withValues(alpha: 0.06),
+        border: Border.all(color: accent, width: 1.5),
+        borderRadius: BorderRadius.circular(8),
+      ),
       child: Padding(
         padding: const EdgeInsets.all(14),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(title, style: Theme.of(context).textTheme.titleLarge),
+            Text(
+              title,
+              style: Theme.of(
+                context,
+              ).textTheme.titleLarge?.copyWith(color: accent),
+            ),
             const SizedBox(height: 12),
             child,
           ],

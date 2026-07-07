@@ -6,6 +6,7 @@ import 'eletrical_reference_page.dart';
 import 'voltage_divider_page.dart';
 import 'battery_runtime_page.dart';
 import 'awg_reference_page.dart';
+import 'appliance_power_reference_page.dart';
 
 class ElectricalToolsPage extends StatelessWidget {
   const ElectricalToolsPage({super.key});
@@ -46,48 +47,50 @@ class ElectricalToolsPage extends StatelessWidget {
     return TerminalScaffold(
       title: 'Electrical Tools',
       child: SafeArea(
-        child: Padding(
+        child: ListView(
           padding: EdgeInsets.all(size.width * 0.05),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              terminalButton(
-                context,
-                'Ohm’s Law Calculator',
-                () => openPage(context, const OhmsLawPage()),
-              ),
-              terminalButton(
-                context,
-                'Power Law Calculator',
-                () => openPage(context, const PowerLawPage()),
-              ),
-              terminalButton(
-                context,
-                'Voltage Divider Calculator',
-                () => openPage(context, const VoltageDividerPage()),
-              ),
-              terminalButton(
-                context,
-                'Battery Runtime Estimator',
-                () => openPage(context, const BatteryRuntimePage()),
-              ),
-              terminalButton(
-                context,
-                'AWG Quick Reference',
-                () => openPage(context, const AwgReferencePage()),
-              ),
-              terminalButton(
-                context,
-                'Electrical Reference',
-                () => openPage(context, const ElectricalReferencePage()),
-              ),
-              const Spacer(),
-              Text(
-                'Quick electrical math and reference tools for design, shop, and field use.',
-                textAlign: TextAlign.center,
-              ),
-            ],
-          ),
+          children: [
+            terminalButton(
+              context,
+              'Ohm’s Law Calculator',
+              () => openPage(context, const OhmsLawPage()),
+            ),
+            terminalButton(
+              context,
+              'Power Law Calculator',
+              () => openPage(context, const PowerLawPage()),
+            ),
+            terminalButton(
+              context,
+              'Voltage Divider Calculator',
+              () => openPage(context, const VoltageDividerPage()),
+            ),
+            terminalButton(
+              context,
+              'Battery Runtime Estimator',
+              () => openPage(context, const BatteryRuntimePage()),
+            ),
+            terminalButton(
+              context,
+              'AWG Quick Reference',
+              () => openPage(context, const AwgReferencePage()),
+            ),
+            terminalButton(
+              context,
+              'Common Appliance Power Usage',
+              () => openPage(context, const AppliancePowerReferencePage()),
+            ),
+            terminalButton(
+              context,
+              'Electrical Reference',
+              () => openPage(context, const ElectricalReferencePage()),
+            ),
+            const SizedBox(height: 18),
+            const Text(
+              'Quick electrical math and reference tools for design, shop, and field use.',
+              textAlign: TextAlign.center,
+            ),
+          ],
         ),
       ),
     );

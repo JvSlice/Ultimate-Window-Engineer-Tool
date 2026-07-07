@@ -251,12 +251,17 @@ class _ChangeSummary extends StatelessWidget {
         for (final entry in entries)
           Padding(
             padding: const EdgeInsets.only(bottom: 8),
-            child: Text(
-              '> $entry',
-              style: TextStyle(
-                color: accent.withValues(alpha: 0.9),
-                fontSize: 15,
-                height: 1.25,
+            child: SizedBox(
+              width: double.infinity,
+              child: Text(
+                '> $entry',
+                softWrap: true,
+                overflow: TextOverflow.visible,
+                style: TextStyle(
+                  color: accent.withValues(alpha: 0.9),
+                  fontSize: 15,
+                  height: 1.25,
+                ),
               ),
             ),
           ),

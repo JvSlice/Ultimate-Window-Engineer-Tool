@@ -12,6 +12,7 @@ Build: 1
 * Markdown-based release notes loaded from a single asset file.
 * Current app version and build display.
 * Version change splash page with a first-open change summary.
+* Common Appliance Power Usage reference under Electrical Tools.
 
 ### Changed
 
@@ -25,7 +26,12 @@ Build: 1
 
 ### Fixed
 
-* No fixes in this release.
+* Added missing Rigging Tools button under Reference It.
+* Removed stale duplicate rigging hub buttons.
+* Fixed overflow on Reference It and Rigging Tools hub pages on shorter screens.
+* Fixed overflow on Rigging Load, WLL, and COG calculator pages.
+* Fixed mobile web viewport sizing so page content and back buttons stay on screen.
+* Improved main menu 2x2 grid sizing on narrow screens.
 
 ### Known Issues
 
