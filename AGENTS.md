@@ -51,3 +51,4 @@ If Flutter/Dart commands fail because of sandbox or snap permissions, state that
 - Documentation updated if architecture changed
 - Release notes updated for user-facing changes
 - Manual test checklist provided
+- update log in splash page to show users changes made
