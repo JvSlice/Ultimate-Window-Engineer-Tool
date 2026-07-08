@@ -31,7 +31,7 @@ class _AppliancePowerReferencePageState
         child: ListView(
           padding: const EdgeInsets.all(16),
           children: [
-            _noticeCard(context),
+            _noticePanel(context),
             const SizedBox(height: 12),
             TextField(
               controller: _filterController,
@@ -87,7 +87,7 @@ class _AppliancePowerReferencePageState
         .toList();
   }
 
-  Widget _noticeCard(BuildContext context) {
+  Widget _noticePanel(BuildContext context) {
     return _terminalPanel(
       context,
       child: Padding(
@@ -186,7 +186,7 @@ class _AppliancePowerReferencePageState
 
     return DecoratedBox(
       decoration: BoxDecoration(
-        color: Colors.black.withValues(alpha: 0.18),
+        color: accent.withValues(alpha: 0.06),
         border: Border.all(color: accent, width: 1.5),
         borderRadius: BorderRadius.circular(8),
       ),

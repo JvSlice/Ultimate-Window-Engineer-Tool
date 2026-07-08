@@ -119,6 +119,22 @@ class _BatteryRuntimePageState extends State<BatteryRuntimePage> {
     );
   }
 
+  Widget _terminalPanel(BuildContext context, Widget child) {
+    final accent = Theme.of(context).colorScheme.primary;
+
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        color: accent.withValues(alpha: 0.06),
+        border: Border.all(color: accent, width: 1.5),
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: SizedBox(width: double.infinity, child: child),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return TerminalScaffold(
@@ -128,9 +144,17 @@ class _BatteryRuntimePageState extends State<BatteryRuntimePage> {
           padding: const EdgeInsets.all(16),
           child: Column(
             children: [
-              _inputField('Battery Capacity (Ah)', 'Example: 50', _batteryAhController),
+              _inputField(
+                'Battery Capacity (Ah)',
+                'Example: 50',
+                _batteryAhController,
+              ),
               _inputField('Load Current (A)', 'Example: 5', _loadAController),
-              _inputField('Usable Battery (%)', 'Example: 80', _usablePercentController),
+              _inputField(
+                'Usable Battery (%)',
+                'Example: 80',
+                _usablePercentController,
+              ),
               const SizedBox(height: 8),
               Row(
                 children: [
@@ -150,41 +174,31 @@ class _BatteryRuntimePageState extends State<BatteryRuntimePage> {
                 ],
               ),
               const SizedBox(height: 20),
-              Card(
-                child: Padding(
-                  padding: const EdgeInsets.all(16),
-                  child: SizedBox(
-                    width: double.infinity,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          _result,
-                          style: Theme.of(context).textTheme.titleMedium,
-                        ),
-                        if (_detail.isNotEmpty) ...[
-                          const SizedBox(height: 10),
-                          Text(_detail),
-                        ],
-                      ],
+              _terminalPanel(
+                context,
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      _result,
+                      style: Theme.of(context).textTheme.titleMedium,
                     ),
-                  ),
+                    if (_detail.isNotEmpty) ...[
+                      const SizedBox(height: 10),
+                      Text(_detail),
+                    ],
+                  ],
                 ),
               ),
               const SizedBox(height: 20),
-              const Card(
-                child: Padding(
-                  padding: EdgeInsets.all(16),
-                  child: SizedBox(
-                    width: double.infinity,
-                    child: Text(
-                      'Formula:\n'
-                      'Runtime (hours) = Usable Ah ÷ Load Current\n\n'
-                      'Example:\n'
-                      '50 Ah battery at 80% usable = 40 Ah usable\n'
-                      '40 Ah ÷ 5 A = 8 hours',
-                    ),
-                  ),
+              _terminalPanel(
+                context,
+                const Text(
+                  'Formula:\n'
+                  'Runtime (hours) = Usable Ah ÷ Load Current\n\n'
+                  'Example:\n'
+                  '50 Ah battery at 80% usable = 40 Ah usable\n'
+                  '40 Ah ÷ 5 A = 8 hours',
                 ),
               ),
             ],

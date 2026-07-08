@@ -23,30 +23,33 @@ class ReferenceHomePage extends StatelessWidget {
     Widget terminalButton(String label, VoidCallback onPressed) {
       return SizedBox(
         width: double.infinity,
-        height: size.height * 0.10,
+        height: size.height * 0.11,
         child: OutlinedButton(
           onPressed: onPressed,
           style:
               OutlinedButton.styleFrom(
+                backgroundColor: accent.withValues(alpha: 0.10),
                 foregroundColor: accent,
                 side: BorderSide(color: accent, width: 2),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10),
                 ),
-                padding: EdgeInsets.zero,
               ).copyWith(
                 overlayColor: WidgetStateProperty.all(
-                  accent.withValues(alpha: 0.08),
+                  accent.withValues(alpha: 0.18),
                 ),
               ),
-          child: Text(
-            label,
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              fontSize: size.width * 0.018,
-              fontWeight: FontWeight.w700,
-              letterSpacing: 1.1,
-              color: accent,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+            child: Text(
+              label,
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+                letterSpacing: 0.8,
+                color: accent,
+              ),
             ),
           ),
         ),

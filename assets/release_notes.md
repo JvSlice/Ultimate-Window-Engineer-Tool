@@ -23,6 +23,7 @@ Build: 1
 
 * Settings now has a place for application information.
 * Users can tap the splash page to skip directly to the main menu.
+* Reference It and Electrical Tools now use the same green terminal button and panel styling as Rigging Tools.
 
 ### Fixed
 

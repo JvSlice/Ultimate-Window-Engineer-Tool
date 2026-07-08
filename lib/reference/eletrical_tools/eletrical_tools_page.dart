@@ -18,25 +18,41 @@ class ElectricalToolsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
+    final accent = Theme.of(context).colorScheme.primary;
 
     Widget terminalButton(
       BuildContext context,
       String label,
       VoidCallback onPressed,
     ) {
-      return Padding(
-        padding: EdgeInsets.symmetric(vertical: size.height * 0.010),
-        child: SizedBox(
-          width: double.infinity,
-          height: size.height * 0.085,
-          child: OutlinedButton(
-            onPressed: onPressed,
+      return SizedBox(
+        width: double.infinity,
+        height: size.height * 0.11,
+        child: OutlinedButton(
+          onPressed: onPressed,
+          style:
+              OutlinedButton.styleFrom(
+                backgroundColor: accent.withValues(alpha: 0.10),
+                foregroundColor: accent,
+                side: BorderSide(color: accent, width: 2),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+              ).copyWith(
+                overlayColor: WidgetStateProperty.all(
+                  accent.withValues(alpha: 0.18),
+                ),
+              ),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
             child: Text(
               label,
               textAlign: TextAlign.center,
               style: TextStyle(
-                fontSize: size.width * 0.043,
+                color: accent,
+                fontSize: 18,
                 fontWeight: FontWeight.bold,
+                letterSpacing: 0.8,
               ),
             ),
           ),
@@ -55,40 +71,47 @@ class ElectricalToolsPage extends StatelessWidget {
               'Ohm’s Law Calculator',
               () => openPage(context, const OhmsLawPage()),
             ),
+            const SizedBox(height: 12),
             terminalButton(
               context,
               'Power Law Calculator',
               () => openPage(context, const PowerLawPage()),
             ),
+            const SizedBox(height: 12),
             terminalButton(
               context,
               'Voltage Divider Calculator',
               () => openPage(context, const VoltageDividerPage()),
             ),
+            const SizedBox(height: 12),
             terminalButton(
               context,
               'Battery Runtime Estimator',
               () => openPage(context, const BatteryRuntimePage()),
             ),
+            const SizedBox(height: 12),
             terminalButton(
               context,
               'AWG Quick Reference',
               () => openPage(context, const AwgReferencePage()),
             ),
+            const SizedBox(height: 12),
             terminalButton(
               context,
               'Common Appliance Power Usage',
               () => openPage(context, const AppliancePowerReferencePage()),
             ),
+            const SizedBox(height: 12),
             terminalButton(
               context,
               'Electrical Reference',
               () => openPage(context, const ElectricalReferencePage()),
             ),
             const SizedBox(height: 18),
-            const Text(
+            Text(
               'Quick electrical math and reference tools for design, shop, and field use.',
               textAlign: TextAlign.center,
+              style: TextStyle(color: accent),
             ),
           ],
         ),

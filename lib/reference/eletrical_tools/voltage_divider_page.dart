@@ -107,6 +107,22 @@ class _VoltageDividerPageState extends State<VoltageDividerPage> {
     );
   }
 
+  Widget _terminalPanel(BuildContext context, Widget child) {
+    final accent = Theme.of(context).colorScheme.primary;
+
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        color: accent.withValues(alpha: 0.06),
+        border: Border.all(color: accent, width: 1.5),
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: SizedBox(width: double.infinity, child: child),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return TerminalScaffold(
@@ -116,7 +132,11 @@ class _VoltageDividerPageState extends State<VoltageDividerPage> {
           padding: const EdgeInsets.all(16),
           child: Column(
             children: [
-              _inputField('Input Voltage Vin (V)', 'Example: 12', _vinController),
+              _inputField(
+                'Input Voltage Vin (V)',
+                'Example: 12',
+                _vinController,
+              ),
               _inputField('R1 (Ω)', 'Example: 1000', _r1Controller),
               _inputField('R2 (Ω)', 'Example: 2200', _r2Controller),
               const SizedBox(height: 8),
@@ -138,40 +158,30 @@ class _VoltageDividerPageState extends State<VoltageDividerPage> {
                 ],
               ),
               const SizedBox(height: 20),
-              Card(
-                child: Padding(
-                  padding: const EdgeInsets.all(16),
-                  child: SizedBox(
-                    width: double.infinity,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          _result,
-                          style: Theme.of(context).textTheme.titleMedium,
-                        ),
-                        if (_detail.isNotEmpty) ...[
-                          const SizedBox(height: 10),
-                          Text(_detail),
-                        ],
-                      ],
+              _terminalPanel(
+                context,
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      _result,
+                      style: Theme.of(context).textTheme.titleMedium,
                     ),
-                  ),
+                    if (_detail.isNotEmpty) ...[
+                      const SizedBox(height: 10),
+                      Text(_detail),
+                    ],
+                  ],
                 ),
               ),
               const SizedBox(height: 20),
-              const Card(
-                child: Padding(
-                  padding: EdgeInsets.all(16),
-                  child: SizedBox(
-                    width: double.infinity,
-                    child: Text(
-                      'Formula:\n'
-                      'Vout = Vin × (R2 / (R1 + R2))\n\n'
-                      'This is the ideal unloaded voltage divider.\n'
-                      'If you later want, we can add a loaded divider version too.',
-                    ),
-                  ),
+              _terminalPanel(
+                context,
+                const Text(
+                  'Formula:\n'
+                  'Vout = Vin × (R2 / (R1 + R2))\n\n'
+                  'This is the ideal unloaded voltage divider.\n'
+                  'If you later want, we can add a loaded divider version too.',
                 ),
               ),
             ],

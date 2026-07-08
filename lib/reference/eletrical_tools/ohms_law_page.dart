@@ -54,7 +54,8 @@ class _OhmsLawPageState extends State<OhmsLawPage> {
 
     if ((i != null && i == 0) || (r != null && r == 0)) {
       setState(() {
-        _result = 'Current and resistance must be greater than 0 when used as divisors.';
+        _result =
+            'Current and resistance must be greater than 0 when used as divisors.';
         _detail = '';
       });
       return;
@@ -122,6 +123,22 @@ class _OhmsLawPageState extends State<OhmsLawPage> {
     );
   }
 
+  Widget _terminalPanel(BuildContext context, Widget child) {
+    final accent = Theme.of(context).colorScheme.primary;
+
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        color: accent.withValues(alpha: 0.06),
+        border: Border.all(color: accent, width: 1.5),
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: SizedBox(width: double.infinity, child: child),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return TerminalScaffold(
@@ -165,41 +182,31 @@ class _OhmsLawPageState extends State<OhmsLawPage> {
                 ],
               ),
               const SizedBox(height: 20),
-              Card(
-                child: Padding(
-                  padding: const EdgeInsets.all(16),
-                  child: SizedBox(
-                    width: double.infinity,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          _result,
-                          style: Theme.of(context).textTheme.titleMedium,
-                        ),
-                        if (_detail.isNotEmpty) ...[
-                          const SizedBox(height: 10),
-                          Text(_detail),
-                        ],
-                      ],
+              _terminalPanel(
+                context,
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      _result,
+                      style: Theme.of(context).textTheme.titleMedium,
                     ),
-                  ),
+                    if (_detail.isNotEmpty) ...[
+                      const SizedBox(height: 10),
+                      Text(_detail),
+                    ],
+                  ],
                 ),
               ),
               const SizedBox(height: 20),
-              Card(
-                child: Padding(
-                  padding: const EdgeInsets.all(16),
-                  child: SizedBox(
-                    width: double.infinity,
-                    child: Text(
-                      'Common formulas:\n'
-                      'V = I × R\n'
-                      'I = V ÷ R\n'
-                      'R = V ÷ I\n'
-                      'P = V × I',
-                    ),
-                  ),
+              _terminalPanel(
+                context,
+                const Text(
+                  'Common formulas:\n'
+                  'V = I × R\n'
+                  'I = V ÷ R\n'
+                  'R = V ÷ I\n'
+                  'P = V × I',
                 ),
               ),
             ],
