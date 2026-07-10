@@ -114,11 +114,31 @@ class MainMenuSearchEngine {
       final normalizedToken = _normalize(token);
       if (normalizedToken.isEmpty) continue;
 
-      score += _bestTokenScore(normalizedToken, index.titleTokens, labelWeight: 34);
-      score += _bestTokenScore(normalizedToken, index.categoryTokens, labelWeight: 20);
-      score += _bestTokenScore(normalizedToken, index.descriptionTokens, labelWeight: 18);
-      score += _bestTokenScore(normalizedToken, index.tagTokens, labelWeight: 16);
-      score += _bestTokenScore(normalizedToken, index.aliasTokens, labelWeight: 22);
+      score += _bestTokenScore(
+        normalizedToken,
+        index.titleTokens,
+        labelWeight: 34,
+      );
+      score += _bestTokenScore(
+        normalizedToken,
+        index.categoryTokens,
+        labelWeight: 20,
+      );
+      score += _bestTokenScore(
+        normalizedToken,
+        index.descriptionTokens,
+        labelWeight: 18,
+      );
+      score += _bestTokenScore(
+        normalizedToken,
+        index.tagTokens,
+        labelWeight: 16,
+      );
+      score += _bestTokenScore(
+        normalizedToken,
+        index.aliasTokens,
+        labelWeight: 22,
+      );
 
       if (_isSubsequence(normalizedToken, index.titleCompact)) score += 10;
       if (_isSubsequence(normalizedToken, index.allTextCompact)) score += 5;
@@ -127,7 +147,9 @@ class MainMenuSearchEngine {
     final matchedTokenCount = queryTokens.where((token) {
       final normalizedToken = _normalize(token);
       if (normalizedToken.length < 2) return false;
-      return index.allTokens.any((candidate) => _tokenLooksRelated(normalizedToken, candidate));
+      return index.allTokens.any(
+        (candidate) => _tokenLooksRelated(normalizedToken, candidate),
+      );
     }).length;
 
     if (queryTokens.isNotEmpty && matchedTokenCount == queryTokens.length) {
@@ -159,7 +181,8 @@ class MainMenuSearchEngine {
         best = math.max(best, labelWeight * 2);
       } else if (candidate.contains(queryToken)) {
         best = math.max(best, labelWeight);
-      } else if (queryToken.length >= 4 && _isFuzzyClose(queryToken, candidate)) {
+      } else if (queryToken.length >= 4 &&
+          _isFuzzyClose(queryToken, candidate)) {
         best = math.max(best, (labelWeight * 0.9).round());
       }
     }
@@ -171,20 +194,50 @@ class MainMenuSearchEngine {
     int score = 0;
 
     const synonymGroups = <List<String>>[
-      ['calc', 'calculator', 'calculate', 'calculation', 'math', 'formula', 'solver'],
-      ['electric', 'electrical', 'voltage', 'volt', 'volts', 'current', 'amps', 'amp', 'resistance', 'ohm', 'wire'],
+      [
+        'calc',
+        'calculator',
+        'calculate',
+        'calculation',
+        'math',
+        'formula',
+        'solver',
+      ],
+      [
+        'electric',
+        'electrical',
+        'voltage',
+        'volt',
+        'volts',
+        'current',
+        'amps',
+        'amp',
+        'resistance',
+        'ohm',
+        'wire',
+      ],
       ['weld', 'welding', 'mig', 'tig', 'stick', 'rod', 'electrode'],
       ['glass', 'glazing', 'lite', 'deflection', 'e1300'],
       ['test', 'testing', 'astm', 'pressure', 'structural', 'rating'],
       ['rigging', 'sling', 'lift', 'lifting', 'wll', 'load', 'hitch'],
-      ['geometry', 'shape', 'area', 'volume', 'triangle', 'circle', 'rectangle'],
+      [
+        'geometry',
+        'shape',
+        'area',
+        'volume',
+        'triangle',
+        'circle',
+        'rectangle',
+      ],
       ['material', 'materials', 'steel', 'aluminum', 'concrete', 'plastic'],
       ['thermal', 'temperature', 'heat', 'expansion', 'uvalue', 'rvalue'],
       ['drill', 'tap', 'thread', 'hole', 'bit'],
     ];
 
     for (final group in synonymGroups) {
-      final queryHitsGroup = queryTokens.any((token) => group.contains(_normalize(token)));
+      final queryHitsGroup = queryTokens.any(
+        (token) => group.contains(_normalize(token)),
+      );
       if (!queryHitsGroup) continue;
 
       final targetHitsGroup = index.allTokens.any(group.contains);
@@ -268,19 +321,21 @@ class MainMenuSearchEngine {
   String _compact(String value) => _tokens(value).join();
 
   String _acronym(String value) {
-    return _tokens(value).where((token) => token.isNotEmpty).map((token) => token[0]).join();
+    return _tokens(
+      value,
+    ).where((token) => token.isNotEmpty).map((token) => token[0]).join();
   }
 
   ConversionMatch? _parseConversionQuery(String query) {
     if (query.trim().isEmpty) return null;
 
     final numericPattern = RegExp(
-      r'^\s*([-+]?\d*\.?\d+)\s*([A-Za-z°µΩ²³/·\-\s/]+?)\s*(?:to|into|->|→)\s*([A-Za-z°µΩ²³/·\-\s/]+)\s*$',
+      r'^\s*([-+]?\d*\.?\d+)\s*([A-Za-z°µΩ²³/·.\-\s/]+?)\s*(?:to|into|->|→)\s*([A-Za-z°µΩ²³/·.\-\s/]+)\s*$',
       caseSensitive: false,
     );
 
     final noValuePattern = RegExp(
-      r'^\s*([A-Za-z°µΩ²³/·\-\s/]+?)\s*(?:to|into|->|→)\s*([A-Za-z°µΩ²³/·\-\s/]+)\s*$',
+      r'^\s*([A-Za-z°µΩ²³/·.\-\s/]+?)\s*(?:to|into|->|→)\s*([A-Za-z°µΩ²³/·.\-\s/]+)\s*$',
       caseSensitive: false,
     );
 
@@ -363,11 +418,24 @@ class MainMenuSearchEngine {
         .replaceAll('·', '')
         .replaceAll(' ', '')
         .replaceAll('_', '')
+        .replaceAll('.', '')
         .replaceAll(RegExp(r'\.$'), '');
 
     const aliases = <String, String>{
       'psi': 'psi',
       'psf': 'psf',
+      'inwc': 'inwc',
+      'iwc': 'inwc',
+      'inwater': 'inwc',
+      'inchwater': 'inwc',
+      'incheswater': 'inwc',
+      'inchofwater': 'inwc',
+      'inchesofwater': 'inwc',
+      'watercolumn': 'inwc',
+      'inchwatercolumn': 'inwc',
+      'incheswatercolumn': 'inwc',
+      'inchofwatercolumn': 'inwc',
+      'inchesofwatercolumn': 'inwc',
       'pa': 'pa',
       'pascal': 'pa',
       'pascals': 'pa',
@@ -492,7 +560,9 @@ class _SearchIndex {
     final categoryTokens = engine._tokens(entry.category);
     final descriptionTokens = engine._tokens(entry.description);
     final tagTokens = entry.tags.expand(engine._tokens).toList(growable: false);
-    final aliasTokens = entry.aliases.expand(engine._tokens).toList(growable: false);
+    final aliasTokens = entry.aliases
+        .expand(engine._tokens)
+        .toList(growable: false);
     final routeTokens = engine._tokens(entry.routeId);
 
     final allTokens = <String>{
@@ -530,8 +600,5 @@ class _ScoredEntry {
   final SearchEntry entry;
   final int score;
 
-  const _ScoredEntry({
-    required this.entry,
-    required this.score,
-  });
+  const _ScoredEntry({required this.entry, required this.score});
 }

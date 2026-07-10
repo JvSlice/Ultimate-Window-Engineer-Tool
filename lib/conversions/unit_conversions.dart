@@ -51,6 +51,9 @@ class ConversionTool {
   final ConversionCategory category;
   final String toUnit;
   final String fromUnit;
+  final List<String> aliases;
+  final int decimalPlaces;
+  final bool trimTrailingZeros;
   final double Function(double input) toFn;
   final double Function(double input) fromFn;
 
@@ -59,6 +62,9 @@ class ConversionTool {
     required this.category,
     required this.toUnit,
     required this.fromUnit,
+    this.aliases = const [],
+    this.decimalPlaces = 3,
+    this.trimTrailingZeros = false,
     required this.toFn,
     required this.fromFn,
   });
@@ -66,7 +72,11 @@ class ConversionTool {
   String convert(Direction direction, double input) {
     final value = direction == Direction.to ? toFn(input) : fromFn(input);
     final unit = direction == Direction.to ? toUnit : fromUnit;
-    return "${value.toStringAsFixed(3)} $unit";
+    var formatted = value.toStringAsFixed(decimalPlaces);
+    if (trimTrailingZeros) {
+      formatted = formatted.replaceFirst(RegExp(r'\.?0+$'), '');
+    }
+    return "$formatted $unit";
   }
 }
 
@@ -87,6 +97,54 @@ final List<ConversionTool> conversionTools = [
     fromUnit: "psi",
     toFn: (input) => input * 144.0,
     fromFn: (input) => input / 144.0,
+  ),
+  ConversionTool(
+    label: "in. w.c. ↔ PSF",
+    category: ConversionCategory.pressureAir,
+    toUnit: "psf",
+    fromUnit: "in. w.c.",
+    aliases: [
+      "inches of water",
+      "inch of water",
+      "in water",
+      "in wc",
+      "in w.c.",
+      "iwc",
+      "water column",
+      "inches water column",
+      "inches of water column",
+      "test pressure",
+      "air pressure",
+      "water pressure",
+    ],
+    decimalPlaces: 4,
+    trimTrailingZeros: true,
+    toFn: (input) => input * 5.202,
+    fromFn: (input) => input * 0.1922,
+  ),
+  ConversionTool(
+    label: "in. w.c. ↔ PSI",
+    category: ConversionCategory.pressureAir,
+    toUnit: "psi",
+    fromUnit: "in. w.c.",
+    aliases: [
+      "inches of water",
+      "inch of water",
+      "in water",
+      "in wc",
+      "in w.c.",
+      "iwc",
+      "water column",
+      "inches water column",
+      "inches of water column",
+      "test pressure",
+      "air pressure",
+      "water pressure",
+    ],
+    decimalPlaces: 5,
+    trimTrailingZeros: true,
+    toFn: (input) => input * 0.03613,
+    fromFn: (input) => input * 27.68,
   ),
   ConversionTool(
     label: "PSF ↔ Pa",

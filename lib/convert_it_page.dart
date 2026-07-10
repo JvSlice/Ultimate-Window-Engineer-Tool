@@ -85,7 +85,8 @@ class _ConvertItBodyState extends State<ConvertItBody>
 
       return tool.label.toLowerCase().contains(query) ||
           tool.toUnit.toLowerCase().contains(query) ||
-          tool.fromUnit.toLowerCase().contains(query);
+          tool.fromUnit.toLowerCase().contains(query) ||
+          tool.aliases.any((alias) => alias.toLowerCase().contains(query));
     }).toList();
   }
 

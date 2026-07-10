@@ -8,6 +8,7 @@ Build: 1
 
 ### Added
 
+* Inches of water column pressure conversions under Convert It > Pressure / Air.
 * Version History page under Settings > About UWE.
 * Markdown-based release notes loaded from a single asset file.
 * Current app version and build display.
