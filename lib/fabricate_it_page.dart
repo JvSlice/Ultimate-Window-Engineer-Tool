@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:ultimate_window_engineer_tool/fabrication/drill_tap_Selector_page.dart';
+import 'package:ultimate_window_engineer_tool/fabrication/fastener_layout_calculator.dart';
 import 'package:ultimate_window_engineer_tool/fabrication/test_buck_calculator.dart';
 import 'terminal_scaffold.dart';
 import 'fabrication/drill_index_page.dart';
 import 'fabrication/weld_it_page.dart';
 import 'fabrication/fraction_decimal_page.dart';
-import 'fabrication/test_buck_calculator.dart';
 
 // import 'drill_tap_selector_page';
 import 'fabrication/speed_feed_page.dart';
@@ -35,8 +35,7 @@ class _FabricateItBody extends StatelessWidget {
         constraints: const BoxConstraints(maxWidth: 600),
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
+          child: ListView(
             children: [
               TerminalMenuButton(
                 accent: accent,
@@ -120,8 +119,21 @@ class _FabricateItBody extends StatelessWidget {
                 },
               ),
               const SizedBox(height: 12),
+              TerminalMenuButton(
+                accent: accent,
+                label: "Fastener Layout Calculator",
+                sublabel: "equal perimeter anchor spacing",
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => const FastenerLayoutCalculatorPage(),
+                    ),
+                  );
+                },
+              ),
+              const SizedBox(height: 12),
 
-              const Spacer(),
               Opacity(
                 opacity: 0.65,
                 child: Text(
@@ -158,37 +170,46 @@ class TerminalMenuButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return OutlinedButton(
-      onPressed: onPressed,
-      style: OutlinedButton.styleFrom(
-        side: BorderSide(color: accent, width: 2),
-        backgroundColor: accent.withValues(alpha: 0.06),
-        padding: const EdgeInsets.symmetric(vertical: 18, horizontal: 14),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            label,
-            style: TextStyle(
-              color: accent,
-              fontWeight: FontWeight.w800,
-              letterSpacing: 2,
-              fontSize: 16,
-            ),
+    return SizedBox(
+      width: double.infinity,
+      child: OutlinedButton(
+        onPressed: onPressed,
+        style: OutlinedButton.styleFrom(
+          side: BorderSide(color: accent, width: 2),
+          backgroundColor: accent.withValues(alpha: 0.06),
+          padding: const EdgeInsets.symmetric(vertical: 18, horizontal: 14),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
           ),
-          if (sublabel != null) ...[
-            const SizedBox(height: 6),
-            Opacity(
-              opacity: 0.75,
-              child: Text(
-                sublabel!,
-                style: TextStyle(color: accent, letterSpacing: 1, fontSize: 12),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              label,
+              style: TextStyle(
+                color: accent,
+                fontWeight: FontWeight.w800,
+                letterSpacing: 2,
+                fontSize: 16,
               ),
             ),
+            if (sublabel != null) ...[
+              const SizedBox(height: 6),
+              Opacity(
+                opacity: 0.75,
+                child: Text(
+                  sublabel!,
+                  style: TextStyle(
+                    color: accent,
+                    letterSpacing: 1,
+                    fontSize: 12,
+                  ),
+                ),
+              ),
+            ],
           ],
-        ],
+        ),
       ),
     );
   }

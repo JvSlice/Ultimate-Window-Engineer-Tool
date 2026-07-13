@@ -11,6 +11,7 @@ import '../../release_notes/version_history_page.dart';
 // Fabrication
 import '../../fabrication/drill_index_page.dart';
 import '../../fabrication/drill_tap_Selector_page.dart';
+import '../../fabrication/fastener_layout_calculator.dart';
 import '../../fabrication/fraction_decimal_page.dart';
 import '../../fabrication/shielding_gas_page.dart';
 import '../../fabrication/speed_feed_page.dart';
@@ -33,6 +34,7 @@ import '../../window_testing_tools/spray_rack_pump_sizing_page.dart';
 // Reference
 import '../../reference/forklift_load_calculator_page.dart';
 import '../../reference/forklift_suspended_boom_calculator_page.dart';
+import '../../reference/fastener_torque_chart_page.dart';
 import '../../reference/geometry_page.dart';
 import '../../reference/geometry_2d_page.dart';
 import '../../reference/geometry_3d_page.dart';
@@ -52,6 +54,7 @@ import '../../reference/physics/pulleys_page.dart';
 import '../../reference/physics/section_i_page.dart';
 import '../../reference/physics/thermal_expansion_page.dart';
 import '../../reference/physics/torque_power_page.dart';
+import '../../reference/physics/torque_wrench_extension_page.dart';
 import '../../reference/physics/velocity_page.dart';
 import '../../reference/rigging/cog_estimator_page.dart';
 import '../../reference/rigging/hardware_reference_page.dart';
@@ -284,6 +287,40 @@ List<SearchEntry> buildSearchRegistry(AppThemeController themeController) {
       builder: (_) => const TestBuckCalculatorPage(),
     ),
     SearchEntry(
+      title: 'Fastener Layout Calculator',
+      category: 'Fabrication',
+      description:
+          'Calculate equal perimeter fastener and anchor spacing with cumulative layout dimensions.',
+      tags: [
+        'fastener layout',
+        'fastener spacing',
+        'anchor layout',
+        'anchor spacing',
+        'screw spacing',
+        'screw layout',
+        'window fasteners',
+        'window anchors',
+        'perimeter fasteners',
+        'perimeter anchors',
+        'fastener locations',
+        'anchor locations',
+        'on center',
+        'oc spacing',
+        'o.c. spacing',
+        'buck fasteners',
+        'window layout',
+        '16 inch on center',
+      ],
+      aliases: [
+        'fastener calculator',
+        'anchor calculator',
+        'window anchor layout',
+        'buck anchor spacing',
+      ],
+      routeId: 'fabrication.fastener-layout-calculator',
+      builder: (_) => const FastenerLayoutCalculatorPage(),
+    ),
+    SearchEntry(
       title: 'MIG Setup Calculator',
       category: 'Fabrication',
       description:
@@ -433,6 +470,69 @@ List<SearchEntry> buildSearchRegistry(AppThemeController themeController) {
       aliases: ['torque calculator', 'horsepower calculator'],
       routeId: 'reference.physics.torque-power',
       builder: (_) => const TorquePowerPage(),
+    ),
+    SearchEntry(
+      title: 'Torque Wrench Extension Calculator',
+      category: 'Reference',
+      description:
+          'Calculate torque wrench settings for crowfoot and inline torque adapters.',
+      tags: [
+        'torque wrench',
+        'torque extension',
+        'crowfoot',
+        'crows foot',
+        'torque adapter',
+        'wrench setting',
+        'extension angle',
+        'inline extension',
+        '90 degree extension',
+        'torque correction',
+        'torque calculator',
+        'in-lb',
+        'ft-lb',
+        'nm',
+        'n m',
+      ],
+      aliases: [
+        'crowfoot calculator',
+        'torque wrench adapter',
+        'torque wrench correction',
+        'extension torque calculator',
+      ],
+      routeId: 'reference.physics.torque-wrench-extension',
+      builder: (_) => const TorqueWrenchExtensionPage(),
+    ),
+    SearchEntry(
+      title: 'Fastener Torque Chart',
+      category: 'Reference',
+      description:
+          'General reference torque chart by fastener size, grade, and dry or lubricated condition.',
+      tags: [
+        'fastener torque',
+        'bolt torque',
+        'screw torque',
+        'torque chart',
+        'recommended torque',
+        'grade 2',
+        'grade 5',
+        'grade 8',
+        'stainless torque',
+        'metric torque',
+        'class 8.8',
+        'class 10.9',
+        'class 12.9',
+        'dry torque',
+        'lubricated torque',
+        'plated torque',
+      ],
+      aliases: [
+        'bolt torque chart',
+        'fastener torque table',
+        'recommended bolt torque',
+        'screw torque chart',
+      ],
+      routeId: 'reference.fastener-torque-chart',
+      builder: (_) => const FastenerTorqueChartPage(),
     ),
     SearchEntry(
       title: 'Cantilever Beam',

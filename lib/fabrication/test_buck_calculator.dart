@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../terminal_scaffold.dart';
+import 'fastener_layout_calculator.dart';
 
 class TestBuckCalculatorPage extends StatefulWidget {
   const TestBuckCalculatorPage({super.key});
@@ -84,6 +85,25 @@ class _TestBuckCalculatorPageState extends State<TestBuckCalculatorPage> {
     );
   }
 
+  bool _hasValidUnitDimensions() {
+    return _readDouble(_unitWidthController) > 0 &&
+        _readDouble(_unitHeightController) > 0;
+  }
+
+  void _openFastenerLayout() {
+    if (!_hasValidUnitDimensions()) return;
+
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => FastenerLayoutCalculatorPage(
+          initialWidth: _readDouble(_unitWidthController),
+          initialHeight: _readDouble(_unitHeightController),
+          sourceMessage: 'Loaded dimensions from Test Buck Calculator.',
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -101,25 +121,25 @@ class _TestBuckCalculatorPageState extends State<TestBuckCalculatorPage> {
     // ==========================================================
     final horizontalCut =
         unitWidth + (caulkJoint * 2) + (2 * materialThickness);
-    final doubleHorizontalCut =
-      horizontalCut + (2 * materialThickness);
+    final doubleHorizontalCut = horizontalCut + (2 * materialThickness);
 
     final verticalCut = unitHeight + (caulkJoint * 2);
-    final doubleVerticalCut = verticalCut + (2* materialThickness) ; 
-       
+    final doubleVerticalCut = verticalCut + (2 * materialThickness);
 
     // Optional extra outputs. Keep, remove, or expand as needed.
     final outsideWidth = horizontalCut;
     final outsideHeight = verticalCut + (2 * materialThickness);
     final crossMeasurseOut = sqrt(
-      (horizontalCut * horizontalCut) + (verticalCut * verticalCut+(2* materialThickness)),
+      (horizontalCut * horizontalCut) +
+          (verticalCut * verticalCut + (2 * materialThickness)),
     );
     final crossMeasurseIn = sqrt(
       ((unitHeight + (caulkJoint * 2)) * (unitHeight + (caulkJoint * 2))) +
           ((unitWidth + caulkJoint) * (unitWidth + caulkJoint)),
     );
     final doubleCrossMeasurseOut = sqrt(
-      (doubleHorizontalCut * doubleHorizontalCut) + (doubleVerticalCut * doubleVerticalCut+(2* materialThickness)),
+      (doubleHorizontalCut * doubleHorizontalCut) +
+          (doubleVerticalCut * doubleVerticalCut + (2 * materialThickness)),
     );
     return TerminalScaffold(
       title: 'Test Buck Calculator',
@@ -163,6 +183,13 @@ class _TestBuckCalculatorPageState extends State<TestBuckCalculatorPage> {
                         label: 'Reset Defaults',
                         onPressed: _resetDefaults,
                       ),
+                      _terminalActionButton(
+                        context: context,
+                        label: 'Open Fastener Layout',
+                        onPressed: _hasValidUnitDimensions()
+                            ? _openFastenerLayout
+                            : null,
+                      ),
 
                       // ======================================================
                       // TEMPLATE BUTTON SLOT
@@ -191,33 +218,50 @@ class _TestBuckCalculatorPageState extends State<TestBuckCalculatorPage> {
                   _outputRow('Bottom Piece', _formatNumber(horizontalCut)),
                   _outputRow('Left Side', _formatNumber(verticalCut)),
                   _outputRow('Right Side', _formatNumber(verticalCut)),
-                  
-                          ],
+                ],
               ),
               const SizedBox(height: 16),
 
-                        const SizedBox(height: 16),
+              const SizedBox(height: 16),
               _outputCard(
                 context,
                 title: 'Double Buck Lumber Cut Sizes',
                 rows: [
-                  _outputRow('Double Buck Top Piece', _formatNumber(doubleHorizontalCut)),
-                  _outputRow('Double Buck Bottom Piece', _formatNumber(doubleHorizontalCut)),
-                  _outputRow('Double Buck Left Side', _formatNumber(doubleVerticalCut)),
-                  _outputRow('Double Buck Right Side', _formatNumber(doubleVerticalCut)),
+                  _outputRow(
+                    'Double Buck Top Piece',
+                    _formatNumber(doubleHorizontalCut),
+                  ),
+                  _outputRow(
+                    'Double Buck Bottom Piece',
+                    _formatNumber(doubleHorizontalCut),
+                  ),
+                  _outputRow(
+                    'Double Buck Left Side',
+                    _formatNumber(doubleVerticalCut),
+                  ),
+                  _outputRow(
+                    'Double Buck Right Side',
+                    _formatNumber(doubleVerticalCut),
+                  ),
                 ],
               ),
               const SizedBox(height: 16),
-              
+
               _outputCard(
                 context,
                 title: 'Quick Summary',
                 rows: [
                   _outputRow('2x Horizontal', _formatNumber(horizontalCut)),
                   _outputRow('2x Vertical', _formatNumber(verticalCut)),
-                  _outputRow('2x  Double Buck Horizontal', _formatNumber(doubleHorizontalCut)),
-                  _outputRow('2x Double Buck Vertical', _formatNumber(doubleVerticalCut)),
-                  
+                  _outputRow(
+                    '2x  Double Buck Horizontal',
+                    _formatNumber(doubleHorizontalCut),
+                  ),
+                  _outputRow(
+                    '2x Double Buck Vertical',
+                    _formatNumber(doubleVerticalCut),
+                  ),
+
                   _outputRow('Outside Width', _formatNumber(outsideWidth)),
                   _outputRow('Outside Height', _formatNumber(outsideHeight)),
                   _outputRow(
@@ -228,7 +272,7 @@ class _TestBuckCalculatorPageState extends State<TestBuckCalculatorPage> {
                     "Cross Measure Reference Inside",
                     _formatNumber(crossMeasurseIn),
                   ),
-                   _outputRow(
+                  _outputRow(
                     "Double Buck Cross Measure Reference Outside",
                     _formatNumber(doubleCrossMeasurseOut),
                   ),
@@ -348,7 +392,7 @@ class _TestBuckCalculatorPageState extends State<TestBuckCalculatorPage> {
   Widget _terminalActionButton({
     required BuildContext context,
     required String label,
-    required VoidCallback onPressed,
+    required VoidCallback? onPressed,
   }) {
     final accent = Theme.of(context).colorScheme.primary;
 
@@ -366,7 +410,7 @@ class _TestBuckCalculatorPageState extends State<TestBuckCalculatorPage> {
 
 //import 'test_buck_calculator_page.dart';
 //terminalButton(
-  //context,
-  //'Test Buck Calculator',
-  //() => openPage(context, const TestBuckCalculatorPage()),
+//context,
+//'Test Buck Calculator',
+//() => openPage(context, const TestBuckCalculatorPage()),
 //),

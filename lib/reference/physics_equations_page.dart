@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../terminal_scaffold.dart';
 import 'physics/torque_power_page.dart';
+import 'physics/torque_wrench_extension_page.dart';
 import 'physics/cantilever_beam_page.dart';
 import 'physics/pulleys_page.dart';
 import 'physics/velocity_page.dart';
@@ -60,6 +61,11 @@ class PhysicsEquationsPage extends StatelessWidget {
             terminalButton(
               "Torque & Power",
               () => _open(context, const TorquePowerPage()),
+            ),
+            const SizedBox(height: 14),
+            terminalButton(
+              "Torque Wrench Extension",
+              () => _open(context, const TorqueWrenchExtensionPage()),
             ),
             const SizedBox(height: 14),
             terminalButton(

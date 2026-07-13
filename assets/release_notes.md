@@ -1,5 +1,23 @@
 # Ultimate Window Engineer Release Notes
 
+## v1.0.1
+
+Released: 2026-07-11
+
+Build: 2
+
+### Added
+
+* Added a Fastener Torque Chart for general bolt torque references by size, grade, and thread condition.
+* Added a Torque Wrench Extension Calculator for crowfoot and torque-adapter setting corrections.
+* Added a Fastener Layout Calculator that creates equal perimeter anchor spacing and can load dimensions directly from the Test Buck Calculator.
+
+### Changed
+
+* Fabricate It now scrolls on shorter screens so all fabrication tools remain accessible.
+* Improved the Fastener Layout Calculator diagram so horizontal and vertical side runs are clearer.
+* Expanded the Fastener Torque Chart to use Drill & Tap Selector thread sizes with thread, grade, and search filters.
+
 ## v1.0.0
 
 Released: 2026-07-03
