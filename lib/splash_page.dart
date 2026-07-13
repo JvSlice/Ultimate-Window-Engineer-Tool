@@ -93,9 +93,9 @@ class _SplashPageState extends State<SplashPage> {
     final info = _packageInfo;
     final note = _latestNote;
 
-    return Listener(
+    return GestureDetector(
       behavior: HitTestBehavior.opaque,
-      onPointerDown: (_) {
+      onTap: () {
         if (_ready) _finishSplash();
       },
       child: Scaffold(
@@ -114,88 +114,97 @@ class _SplashPageState extends State<SplashPage> {
               ),
             ),
             SafeArea(
-              child: Center(
-                child: ConstrainedBox(
-                  constraints: const BoxConstraints(maxWidth: 720),
-                  child: Padding(
+              child: LayoutBuilder(
+                builder: (context, constraints) {
+                  return SingleChildScrollView(
                     padding: const EdgeInsets.all(24),
-                    child: AnimatedOpacity(
-                      opacity: _ready ? 1 : 0.45,
-                      duration: const Duration(milliseconds: 500),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          Text(
-                            'UWE',
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              color: accent,
-                              fontSize: 72,
-                              fontWeight: FontWeight.w900,
-                              letterSpacing: 8,
-                            ),
-                          ),
-                          const SizedBox(height: 8),
-                          Text(
-                            'Ultimate Window Engineer',
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              color: accent.withValues(alpha: 0.86),
-                              fontSize: 18,
-                              letterSpacing: 2,
-                              fontWeight: FontWeight.w700,
-                            ),
-                          ),
-                          const SizedBox(height: 30),
-                          Container(
-                            padding: const EdgeInsets.all(18),
-                            decoration: BoxDecoration(
-                              color: Colors.black,
-                              border: Border.all(color: accent, width: 2),
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            child: _ready
-                                ? _ChangeSummary(
-                                    accent: accent,
-                                    version: info == null
-                                        ? 'Loading'
-                                        : 'v${info.version}',
-                                    buildNumber: info?.buildNumber ?? '',
-                                    note: note,
-                                  )
-                                : Center(
-                                    child: CircularProgressIndicator(
-                                      color: accent,
-                                    ),
+                    child: Center(
+                      child: ConstrainedBox(
+                        constraints: BoxConstraints(
+                          maxWidth: 720,
+                          minHeight: constraints.maxHeight - 48,
+                        ),
+                        child: AnimatedOpacity(
+                          opacity: _ready ? 1 : 0.45,
+                          duration: const Duration(milliseconds: 500),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: [
+                              Text(
+                                'UWE',
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  color: accent,
+                                  fontSize: 72,
+                                  fontWeight: FontWeight.w900,
+                                  letterSpacing: 8,
+                                ),
+                              ),
+                              const SizedBox(height: 8),
+                              Text(
+                                'Ultimate Window Engineer',
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  color: accent.withValues(alpha: 0.86),
+                                  fontSize: 18,
+                                  letterSpacing: 2,
+                                  fontWeight: FontWeight.w700,
+                                ),
+                              ),
+                              const SizedBox(height: 30),
+                              Container(
+                                padding: const EdgeInsets.all(18),
+                                decoration: BoxDecoration(
+                                  color: Colors.black,
+                                  border: Border.all(color: accent, width: 2),
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                child: _ready
+                                    ? _ChangeSummary(
+                                        accent: accent,
+                                        version: info == null
+                                            ? 'Loading'
+                                            : 'v${info.version}',
+                                        buildNumber: info?.buildNumber ?? '',
+                                        note: note,
+                                      )
+                                    : Center(
+                                        child: CircularProgressIndicator(
+                                          color: accent,
+                                        ),
+                                      ),
+                              ),
+                              const SizedBox(height: 18),
+                              Text(
+                                _ready
+                                    ? 'Tap anywhere or press Continue'
+                                    : 'Loading...',
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  color: accent.withValues(alpha: 0.68),
+                                  letterSpacing: 1.5,
+                                ),
+                              ),
+                              const SizedBox(height: 12),
+                              OutlinedButton(
+                                onPressed: _ready ? _finishSplash : null,
+                                style: OutlinedButton.styleFrom(
+                                  foregroundColor: accent,
+                                  side: BorderSide(color: accent, width: 2),
+                                  padding: const EdgeInsets.symmetric(
+                                    vertical: 14,
                                   ),
+                                ),
+                                child: const Text('Continue'),
+                              ),
+                            ],
                           ),
-                          const SizedBox(height: 18),
-                          Text(
-                            _ready
-                                ? 'Tap anywhere or press Continue'
-                                : 'Loading...',
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              color: accent.withValues(alpha: 0.68),
-                              letterSpacing: 1.5,
-                            ),
-                          ),
-                          const SizedBox(height: 12),
-                          OutlinedButton(
-                            onPressed: _ready ? _finishSplash : null,
-                            style: OutlinedButton.styleFrom(
-                              foregroundColor: accent,
-                              side: BorderSide(color: accent, width: 2),
-                              padding: const EdgeInsets.symmetric(vertical: 14),
-                            ),
-                            child: const Text('Continue'),
-                          ),
-                        ],
+                        ),
                       ),
                     ),
-                  ),
-                ),
+                  );
+                },
               ),
             ),
           ],

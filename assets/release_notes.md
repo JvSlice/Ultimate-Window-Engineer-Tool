@@ -15,6 +15,7 @@ Build: 2
 ### Changed
 
 * Fabricate It now scrolls on shorter screens so all fabrication tools remain accessible.
+* Improved the version splash page on phones so the Continue button can be reached by scrolling.
 * Improved the Fastener Layout Calculator diagram so horizontal and vertical side runs are clearer.
 * Expanded the Fastener Torque Chart to use Drill & Tap Selector thread sizes with thread, grade, and search filters.
 
