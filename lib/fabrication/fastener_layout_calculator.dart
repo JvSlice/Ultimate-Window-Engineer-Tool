@@ -175,11 +175,13 @@ String formatFastenerInches(
   FastenerDisplayMode mode, {
   int denominator = 16,
 }) {
+  final roundedValue = _roundToNearestFraction(value, denominator);
+
   if (mode == FastenerDisplayMode.decimal) {
-    return '${_trimFixed(value, 3)} in';
+    return '${_trimFixed(roundedValue, 3)} in';
   }
 
-  final rounded = (value * denominator).round();
+  final rounded = (roundedValue * denominator).round();
   final whole = rounded ~/ denominator;
   var numerator = rounded % denominator;
   var displayDenominator = denominator;
@@ -192,6 +194,10 @@ String formatFastenerInches(
 
   if (whole == 0) return '$numerator/$displayDenominator in';
   return '$whole $numerator/$displayDenominator in';
+}
+
+double _roundToNearestFraction(double value, int denominator) {
+  return (value * denominator).round() / denominator;
 }
 
 String _trimFixed(double value, int places) {

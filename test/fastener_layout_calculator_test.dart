@@ -87,9 +87,24 @@ void main() {
 
       expect(
         formatFastenerInches(side.spacing, FastenerDisplayMode.decimal),
-        '17.333 in',
+        '17.313 in',
       );
       expect(side.locations.last, 56);
+    });
+
+    test('rounds displayed values to nearest sixteenth', () {
+      expect(
+        formatFastenerInches(18.02, FastenerDisplayMode.fraction),
+        '18 in',
+      );
+      expect(
+        formatFastenerInches(18.04, FastenerDisplayMode.fraction),
+        '18 1/16 in',
+      );
+      expect(
+        formatFastenerInches(18.04, FastenerDisplayMode.decimal),
+        '18.063 in',
+      );
     });
 
     test('rejects short side when available distance is below minimum', () {
