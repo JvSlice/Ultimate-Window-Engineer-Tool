@@ -116,9 +116,9 @@ class RatingReferencePage extends StatelessWidget {
                   "ASD/DP: 15.04 PSF\n"
                   "Deflection: Report Only\n"
                   "Structural Pressure (Overload): 22.56 PSF\n"
-                  "Water(minimum):2.92 PSF \n"
+                  "Water(minimum):2.92 PSF\n"
                   "Water performace is 15% of ASD/DP\n"
-                  "Air: +/- 1.57 PSF Allowed .3 cfm/sqft\n ",
+                  "Air: +/- 1.57 PSF Allowed .3 cfm/sqft ",
 
             ),
 
@@ -130,11 +130,11 @@ class RatingReferencePage extends StatelessWidget {
               notes:
                   "Typically used when the product needs more strength and durability than basic residential class products.\n"
                   "ASD/DP: 25.06 PSF\n"
-                  "Deflection: Report Only",
+                  "Deflection: Report Only\n"
                   "Structural Pressure (Overload): 37.59 PSF\n"
-                  "Water(Minimum):3.76 PSF \n"
+                  "Water(Minimum):3.76 PSF\n"
                   "Water performace is 15% of ASD/DP\n"
-                  "Air: +/- 1.57 PSF Allowed .3 cfm/sqft \n",
+                  "Air: +/- 1.57 PSF Allowed .3 cfm/sqft ",
             ),
 
             _ratingCard(
@@ -149,7 +149,7 @@ class RatingReferencePage extends StatelessWidget {
                   "Structural Pressure (Overload): 45.11 PSF\n"
                   "Water(Minimum):4.59 PSF\n "
                   "Water performace is 20% of ASD/DP\n"
-                  "Air: +/- 1.57 PSF Allowed .2 cfm/sqft\n ",
+                  "Air: +/- 1.57 PSF Allowed .2 cfm/sqft",
             ),
 
             _ratingCard(
@@ -162,11 +162,11 @@ class RatingReferencePage extends StatelessWidget {
                   "ASD/DP: 40.10 PSF\n"
                   "Deflection: L/175\n"
                   "Structural Pressure (Overload): 60.15 PSF\n"
-                  "Water(Minimum):8.15 PSF\n "
+                  "Water(Minimum):8.15 PSF\n"
                   "Water performace is 20% of ASD/DP\n"
                   "Air:\n"
                   "+ 6.24  PSF (infiltration) Allowed .3 cfm/sqft\n "
-                  "-1.57 PSF (exfiltration) Allowed .2 cfm/sqft\n",
+                  "-1.57 PSF (exfiltration) Allowed .2 cfm/sqft",
             ),
 
             const SizedBox(height: 10),
