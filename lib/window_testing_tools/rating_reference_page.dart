@@ -112,13 +112,13 @@ class RatingReferencePage extends StatelessWidget {
               useCase:
                   "Residential-style products and lighter-duty applications.",
               notes:
-                  "Used where loading, size, and duty expectations are lower. Generally the lightest performance class in the set.",
-                  "ASD/DP: 15.04 PSF",
-                  "Deflection: Report Only",
-                  "Structural Pressure (Overload): 22.56 PSF",
-                  "Water(minimum):2.92 PSF ",
-                  "Water performace is 15% of ASD/DP",
-                  "Air: +/- 1.57 PSF Allowed .3 cfm/sqft ",
+                  "Used where loading, size, and duty expectations are lower. Generally the lightest performance class in the set.\n"
+                  "ASD/DP: 15.04 PSF\n"
+                  "Deflection: Report Only\n"
+                  "Structural Pressure (Overload): 22.56 PSF\n"
+                  "Water(minimum):2.92 PSF \n"
+                  "Water performace is 15% of ASD/DP\n"
+                  "Air: +/- 1.57 PSF Allowed .3 cfm/sqft\n ",
 
             ),
 
@@ -128,13 +128,13 @@ class RatingReferencePage extends StatelessWidget {
               useCase:
                   "Light commercial applications and heavier-duty residential conditions.",
               notes:
-                  "Typically used when the product needs more strength and durability than basic residential class products.",
-                  "ASD/DP: 25.06 PSF",
+                  "Typically used when the product needs more strength and durability than basic residential class products.\n"
+                  "ASD/DP: 25.06 PSF\n"
                   "Deflection: Report Only",
-                  "Structural Pressure (Overload): 37.59 PSF",
-                  "Water(Minimum):3.76 PSF ",
-                  "Water performace is 15% of ASD/DP",
-                  "Air: +/- 1.57 PSF Allowed .3 cfm/sqft ",
+                  "Structural Pressure (Overload): 37.59 PSF\n"
+                  "Water(Minimum):3.76 PSF \n"
+                  "Water performace is 15% of ASD/DP\n"
+                  "Air: +/- 1.57 PSF Allowed .3 cfm/sqft \n",
             ),
 
             _ratingCard(
@@ -143,13 +143,13 @@ class RatingReferencePage extends StatelessWidget {
               useCase:
                   "Commercial window applications with higher structural and performance demands.",
               notes:
-                  "Often used for larger products or more demanding building conditions than LC/R classes.",
-                  "ASD/DP: 30.08 PSF",
-                  "Deflection: L/175",
-                  "Structural Pressure (Overload): 45.11 PSF",
-                  "Water(Minimum):4.59 PSF ",
-                  "Water performace is 20% of ASD/DP",
-                  "Air: +/- 1.57 PSF Allowed .2 cfm/sqft ",
+                  "Often used for larger products or more demanding building conditions than LC/R classes.\n"
+                  "ASD/DP: 30.08 PSF\n"
+                  "Deflection: L/175\n"
+                  "Structural Pressure (Overload): 45.11 PSF\n"
+                  "Water(Minimum):4.59 PSF\n "
+                  "Water performace is 20% of ASD/DP\n"
+                  "Air: +/- 1.57 PSF Allowed .2 cfm/sqft\n ",
             ),
 
             _ratingCard(
@@ -158,15 +158,15 @@ class RatingReferencePage extends StatelessWidget {
               useCase:
                   "Architectural window applications with the highest duty expectations in this class group.",
               notes:
-                  "Typically tied to more demanding commercial/architectural service conditions, larger sizes, heavier use, and more severe test expectations.",
-                  "ASD/DP: 40.10 PSF",
-                  "Deflection: L/175",
-                  "Structural Pressure (Overload): 60.15 PSF",
-                  "Water(Minimum):8.15 PSF ",
-                  "Water performace is 20% of ASD/DP",
-                  "Air:", 
-                  "+ 6.24  PSF (infiltration) Allowed .3 cfm/sqft ",
-                  "-1.57 PSF (exfiltration) Allowed .2 cfm/sqft",
+                  "Typically tied to more demanding commercial/architectural service conditions, larger sizes, heavier use, and more severe test expectations.\n"
+                  "ASD/DP: 40.10 PSF\n"
+                  "Deflection: L/175\n"
+                  "Structural Pressure (Overload): 60.15 PSF\n"
+                  "Water(Minimum):8.15 PSF\n "
+                  "Water performace is 20% of ASD/DP\n"
+                  "Air:\n"
+                  "+ 6.24  PSF (infiltration) Allowed .3 cfm/sqft\n "
+                  "-1.57 PSF (exfiltration) Allowed .2 cfm/sqft\n",
             ),
 
             const SizedBox(height: 10),
