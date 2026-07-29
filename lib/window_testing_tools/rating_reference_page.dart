@@ -118,7 +118,7 @@ class RatingReferencePage extends StatelessWidget {
                   "Structural Pressure (Overload): 22.56 PSF\n"
                   "Water(minimum):2.92 PSF\n"
                   "Water performace is 15% of ASD/DP\n"
-                  "Air: +/- 1.57 PSF Allowed .3 cfm/sqft "
+                  "Air: +/- 1.57 PSF Allowed .3 cfm/sqft \n"
                   "Gateway Sizes(inches):\n"
                   "Fixed:\n"
                   "Awings,Hopers,Projected:\n"
@@ -142,8 +142,8 @@ class RatingReferencePage extends StatelessWidget {
                   "Structural Pressure (Overload): 37.59 PSF\n"
                   "Water(Minimum):3.76 PSF\n"
                   "Water performace is 15% of ASD/DP\n"
-                  "Air: +/- 1.57 PSF Allowed .3 cfm/sqft "
-                  "Gateway Sizes:\N"
+                  "Air: +/- 1.57 PSF Allowed .3 cfm/sqft\n "
+                  "Gateway Sizes:\n"
                   "Fixed: 55.125 x 55.125\n"
                   "Awings,Hopers,Projected: 47.24 x 31.50\n"
                   "Casement: 31.50 x 59.06\n"
@@ -166,7 +166,7 @@ class RatingReferencePage extends StatelessWidget {
                   "Structural Pressure (Overload): 45.11 PSF\n"
                   "Water(Minimum):4.59 PSF\n "
                   "Water performace is 20% of ASD/DP\n"
-                  "Air: +/- 1.57 PSF Allowed .2 cfm/sqft"
+                  "Air: +/- 1.57 PSF Allowed .2 cfm/sqft\n"
                    "Gateway Sizes(inches):\n"
                   "Fixed:59.06 x 59.06\n"
                   "Awings,Hopers,Projected: 47.24 x 31.50\n"
@@ -201,7 +201,7 @@ class RatingReferencePage extends StatelessWidget {
                   "dual Action (tilt turn): 47.24 x 70.87\n"
                   "Slding Window: 98.43 x 87.74\n"
                   "Sliding Door:122.05 x 94.49\n"
-                  "folding Door: Not available"
+                  "folding Door: Not available\n"
                   "Terrace Door: 47.24 x 95.67",
             ),
 
