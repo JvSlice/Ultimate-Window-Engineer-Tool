@@ -118,7 +118,15 @@ class RatingReferencePage extends StatelessWidget {
                   "Structural Pressure (Overload): 22.56 PSF\n"
                   "Water(minimum):2.92 PSF\n"
                   "Water performace is 15% of ASD/DP\n"
-                  "Air: +/- 1.57 PSF Allowed .3 cfm/sqft ",
+                  "Air: +/- 1.57 PSF Allowed .3 cfm/sqft "
+                  "Gateway Sizes(inches):\n"
+                  "Fixed:\n"
+                  "Awings,Hopers,Projected:\n"
+                  "Casement:\n"
+                  "dual Action (tilt turn):\n"
+                  "Slding Window:\n"
+                  "Sliding Door:\n"
+                  "Terrace Door: Not available",
 
             ),
 
@@ -134,7 +142,16 @@ class RatingReferencePage extends StatelessWidget {
                   "Structural Pressure (Overload): 37.59 PSF\n"
                   "Water(Minimum):3.76 PSF\n"
                   "Water performace is 15% of ASD/DP\n"
-                  "Air: +/- 1.57 PSF Allowed .3 cfm/sqft ",
+                  "Air: +/- 1.57 PSF Allowed .3 cfm/sqft "
+                  "Gateway Sizes:\N"
+                  "Fixed: 55.125 x 55.125\n"
+                  "Awings,Hopers,Projected: 47.24 x 31.50\n"
+                  "Casement: 31.50 x 59.06\n"
+                  "dual Action (tilt turn): 47.24 x 59.06\n"
+                  "Slding Window: 70.87 x 55.12\n"
+                  "Sliding Door: 86.61 x 82.68\n"
+                  "Folding Door: 86.61 x 82.68\n"
+                  "Terrace Door: Not available",
             ),
 
             _ratingCard(
@@ -149,8 +166,18 @@ class RatingReferencePage extends StatelessWidget {
                   "Structural Pressure (Overload): 45.11 PSF\n"
                   "Water(Minimum):4.59 PSF\n "
                   "Water performace is 20% of ASD/DP\n"
-                  "Air: +/- 1.57 PSF Allowed .2 cfm/sqft",
+                  "Air: +/- 1.57 PSF Allowed .2 cfm/sqft"
+                   "Gateway Sizes(inches):\n"
+                  "Fixed:59.06 x 59.06\n"
+                  "Awings,Hopers,Projected: 47.24 x 31.50\n"
+                  "Casement: 31.50 x 59.06\n"
+                  "dual Action (tilt turn): 47.24 x 70.87\n"
+                  "Slding Window: 70.87 x 59.06\n"
+                  "Sliding Door: 94.49 x 82.68\n"
+                  "Folding Door: 94.49 x 82.68\n"
+                  "Terrace Door:Not available",
             ),
+
 
             _ratingCard(
               accent: accent,
@@ -166,7 +193,16 @@ class RatingReferencePage extends StatelessWidget {
                   "Water performace is 20% of ASD/DP\n"
                   "Air:\n"
                   "+ 6.24  PSF (infiltration) Allowed .3 cfm/sqft\n "
-                  "-1.57 PSF (exfiltration) Allowed .2 cfm/sqft",
+                  "-1.57 PSF (exfiltration) Allowed .2 cfm/sqft\n"
+                  "Gateway Sizes(inches):\n"
+                  "Fixed: 59.06 x 998.43"
+                  "Awings,Hopers,Projected: 59.06 x 35.43\n"
+                  "Casement:35.43 x 59.06\n"
+                  "dual Action (tilt turn): 47.24 x 70.87\n"
+                  "Slding Window: 98.43 x 87.74\n"
+                  "Sliding Door:122.05 x 94.49\n"
+                  "folding Door: Not available"
+                  "Terrace Door: 47.24 x 95.67",
             ),
 
             const SizedBox(height: 10),
