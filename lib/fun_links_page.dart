@@ -60,10 +60,10 @@ class FunLinksPage extends StatelessWidget {
               "Revenge of the Wookiee",
               "https://jvslice.github.io/Revenge-Of-The-Wookiee/",
             ),
-            funButton(
-              "Flight Fight",
-              "https://jvslice.github.io/Flight_Fight/",
-            ),
+            //funButton(
+           //   "Flight Fight",
+            //  "https://jvslice.github.io/Flight_Fight/",
+            //),
             funButton(
               "Holo Chess / Dejarik",
               "https://jvslice.github.io/HoloChess/",
