@@ -1,5 +1,17 @@
 # Ultimate Window Engineer Release Notes
 
+## v1.0.3
+
+Released: 2026-08-05
+
+Build: 4
+
+### Changed
+
+* Restructured the Test Buck Calculator so users choose Single Buck or Double Buck before viewing results.
+* Single Buck mode now shows only single buck cuts and summary values.
+* Double Buck mode now labels the single-buck values as Inner Buck and double-buck values as Outer Buck.
+
 ## v1.0.2
 
 Released: 2026-07-14

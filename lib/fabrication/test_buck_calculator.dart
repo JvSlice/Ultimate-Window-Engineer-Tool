@@ -5,6 +5,77 @@ import 'package:flutter/services.dart';
 import '../terminal_scaffold.dart';
 import 'fastener_layout_calculator.dart';
 
+enum TestBuckType { single, double }
+
+extension TestBuckTypeLabel on TestBuckType {
+  String get label {
+    switch (this) {
+      case TestBuckType.single:
+        return 'Single Buck';
+      case TestBuckType.double:
+        return 'Double Buck';
+    }
+  }
+}
+
+class TestBuckCalculation {
+  final double horizontalCut;
+  final double verticalCut;
+  final double doubleHorizontalCut;
+  final double doubleVerticalCut;
+  final double outsideWidth;
+  final double outsideHeight;
+  final double crossMeasureOutside;
+  final double crossMeasureInside;
+  final double doubleCrossMeasureOutside;
+
+  const TestBuckCalculation({
+    required this.horizontalCut,
+    required this.verticalCut,
+    required this.doubleHorizontalCut,
+    required this.doubleVerticalCut,
+    required this.outsideWidth,
+    required this.outsideHeight,
+    required this.crossMeasureOutside,
+    required this.crossMeasureInside,
+    required this.doubleCrossMeasureOutside,
+  });
+}
+
+TestBuckCalculation calculateTestBuck({
+  required double unitWidth,
+  required double unitHeight,
+  required double caulkJoint,
+  required double materialThickness,
+}) {
+  final horizontalCut = unitWidth + (caulkJoint * 2) + (2 * materialThickness);
+  final doubleHorizontalCut = horizontalCut + (2 * materialThickness);
+
+  final verticalCut = unitHeight + (caulkJoint * 2);
+  final doubleVerticalCut = verticalCut + (2 * materialThickness);
+
+  return TestBuckCalculation(
+    horizontalCut: horizontalCut,
+    verticalCut: verticalCut,
+    doubleHorizontalCut: doubleHorizontalCut,
+    doubleVerticalCut: doubleVerticalCut,
+    outsideWidth: horizontalCut,
+    outsideHeight: verticalCut + (2 * materialThickness),
+    crossMeasureOutside: sqrt(
+      (horizontalCut * horizontalCut) +
+          (verticalCut * verticalCut + (2 * materialThickness)),
+    ),
+    crossMeasureInside: sqrt(
+      ((unitHeight + (caulkJoint * 2)) * (unitHeight + (caulkJoint * 2))) +
+          ((unitWidth + caulkJoint) * (unitWidth + caulkJoint)),
+    ),
+    doubleCrossMeasureOutside: sqrt(
+      (doubleHorizontalCut * doubleHorizontalCut) +
+          (doubleVerticalCut * doubleVerticalCut + (2 * materialThickness)),
+    ),
+  );
+}
+
 class TestBuckCalculatorPage extends StatefulWidget {
   const TestBuckCalculatorPage({super.key});
 
@@ -26,6 +97,8 @@ class _TestBuckCalculatorPageState extends State<TestBuckCalculatorPage> {
   late final TextEditingController _unitHeightController;
   late final TextEditingController _caulkJointController;
   late final TextEditingController _materialThicknessController;
+
+  TestBuckType _selectedBuckType = TestBuckType.single;
 
   @override
   void initState() {
@@ -114,33 +187,13 @@ class _TestBuckCalculatorPageState extends State<TestBuckCalculatorPage> {
     final caulkJoint = _readDouble(_caulkJointController);
     final materialThickness = _readDouble(_materialThicknessController);
 
-    // ==========================================================
-    // HACKABLE FORMULAS
-    // These are the only lines you need to edit for a new simple
-    // calculator page built from this template.
-    // ==========================================================
-    final horizontalCut =
-        unitWidth + (caulkJoint * 2) + (2 * materialThickness);
-    final doubleHorizontalCut = horizontalCut + (2 * materialThickness);
+    final calculation = calculateTestBuck(
+      unitWidth: unitWidth,
+      unitHeight: unitHeight,
+      caulkJoint: caulkJoint,
+      materialThickness: materialThickness,
+    );
 
-    final verticalCut = unitHeight + (caulkJoint * 2);
-    final doubleVerticalCut = verticalCut + (2 * materialThickness);
-
-    // Optional extra outputs. Keep, remove, or expand as needed.
-    final outsideWidth = horizontalCut;
-    final outsideHeight = verticalCut + (2 * materialThickness);
-    final crossMeasurseOut = sqrt(
-      (horizontalCut * horizontalCut) +
-          (verticalCut * verticalCut + (2 * materialThickness)),
-    );
-    final crossMeasurseIn = sqrt(
-      ((unitHeight + (caulkJoint * 2)) * (unitHeight + (caulkJoint * 2))) +
-          ((unitWidth + caulkJoint) * (unitWidth + caulkJoint)),
-    );
-    final doubleCrossMeasurseOut = sqrt(
-      (doubleHorizontalCut * doubleHorizontalCut) +
-          (doubleVerticalCut * doubleVerticalCut + (2 * materialThickness)),
-    );
     return TerminalScaffold(
       title: 'Test Buck Calculator',
       child: SafeArea(
@@ -149,6 +202,8 @@ class _TestBuckCalculatorPageState extends State<TestBuckCalculatorPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
+              const SizedBox(height: 16),
+              _buckTypeCard(context),
               const SizedBox(height: 16),
               _inputCard(
                 context,
@@ -210,74 +265,7 @@ class _TestBuckCalculatorPageState extends State<TestBuckCalculatorPage> {
                 ],
               ),
               const SizedBox(height: 16),
-              _outputCard(
-                context,
-                title: 'Single Buck Lumber Cut Sizes',
-                rows: [
-                  _outputRow('Top Piece', _formatNumber(horizontalCut)),
-                  _outputRow('Bottom Piece', _formatNumber(horizontalCut)),
-                  _outputRow('Left Side', _formatNumber(verticalCut)),
-                  _outputRow('Right Side', _formatNumber(verticalCut)),
-                ],
-              ),
-              const SizedBox(height: 16),
-
-              const SizedBox(height: 16),
-              _outputCard(
-                context,
-                title: 'Double Buck Lumber Cut Sizes',
-                rows: [
-                  _outputRow(
-                    'Double Buck Top Piece',
-                    _formatNumber(doubleHorizontalCut),
-                  ),
-                  _outputRow(
-                    'Double Buck Bottom Piece',
-                    _formatNumber(doubleHorizontalCut),
-                  ),
-                  _outputRow(
-                    'Double Buck Left Side',
-                    _formatNumber(doubleVerticalCut),
-                  ),
-                  _outputRow(
-                    'Double Buck Right Side',
-                    _formatNumber(doubleVerticalCut),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 16),
-
-              _outputCard(
-                context,
-                title: 'Quick Summary',
-                rows: [
-                  _outputRow('2x Horizontal', _formatNumber(horizontalCut)),
-                  _outputRow('2x Vertical', _formatNumber(verticalCut)),
-                  _outputRow(
-                    '2x  Double Buck Horizontal',
-                    _formatNumber(doubleHorizontalCut),
-                  ),
-                  _outputRow(
-                    '2x Double Buck Vertical',
-                    _formatNumber(doubleVerticalCut),
-                  ),
-
-                  _outputRow('Outside Width', _formatNumber(outsideWidth)),
-                  _outputRow('Outside Height', _formatNumber(outsideHeight)),
-                  _outputRow(
-                    "Cross Measure Reference Outside",
-                    _formatNumber(crossMeasurseOut),
-                  ),
-                  _outputRow(
-                    "Cross Measure Reference Inside",
-                    _formatNumber(crossMeasurseIn),
-                  ),
-                  _outputRow(
-                    "Double Buck Cross Measure Reference Outside",
-                    _formatNumber(doubleCrossMeasurseOut),
-                  ),
-                ],
-              ),
+              ..._resultCards(context, calculation),
               const SizedBox(height: 16),
               _infoCard(
                 context,
@@ -314,6 +302,189 @@ class _TestBuckCalculatorPageState extends State<TestBuckCalculatorPage> {
         isDense: true,
       ),
     );
+  }
+
+  Widget _buckTypeCard(BuildContext context) {
+    return _inputCard(
+      context,
+      title: 'Buck Type',
+      children: [
+        Row(
+          children: [
+            _buckTypeButton(TestBuckType.single),
+            const SizedBox(width: 12),
+            _buckTypeButton(TestBuckType.double),
+          ],
+        ),
+      ],
+    );
+  }
+
+  Widget _buckTypeButton(TestBuckType type) {
+    final accent = Theme.of(context).colorScheme.primary;
+    final selected = _selectedBuckType == type;
+
+    return Expanded(
+      child: OutlinedButton(
+        onPressed: () {
+          setState(() {
+            _selectedBuckType = type;
+          });
+        },
+        style: OutlinedButton.styleFrom(
+          foregroundColor: accent,
+          side: BorderSide(color: accent, width: 2),
+          backgroundColor: selected
+              ? accent.withValues(alpha: 0.15)
+              : Colors.transparent,
+          padding: const EdgeInsets.symmetric(vertical: 14),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+        ),
+        child: Text(type.label, textAlign: TextAlign.center),
+      ),
+    );
+  }
+
+  List<Widget> _resultCards(
+    BuildContext context,
+    TestBuckCalculation calculation,
+  ) {
+    switch (_selectedBuckType) {
+      case TestBuckType.single:
+        return _singleBuckResultCards(context, calculation);
+      case TestBuckType.double:
+        return _doubleBuckResultCards(context, calculation);
+    }
+  }
+
+  List<Widget> _singleBuckResultCards(
+    BuildContext context,
+    TestBuckCalculation calculation,
+  ) {
+    return [
+      _outputCard(
+        context,
+        title: 'Single Buck Lumber Cut Sizes',
+        rows: [
+          _outputRow('Top Piece', _formatNumber(calculation.horizontalCut)),
+          _outputRow('Bottom Piece', _formatNumber(calculation.horizontalCut)),
+          _outputRow('Left Side', _formatNumber(calculation.verticalCut)),
+          _outputRow('Right Side', _formatNumber(calculation.verticalCut)),
+        ],
+      ),
+      const SizedBox(height: 16),
+      _outputCard(
+        context,
+        title: 'Single Buck Quick Summary',
+        rows: [
+          _outputRow('2x Horizontal', _formatNumber(calculation.horizontalCut)),
+          _outputRow('2x Vertical', _formatNumber(calculation.verticalCut)),
+          _outputRow('Outside Width', _formatNumber(calculation.outsideWidth)),
+          _outputRow(
+            'Outside Height',
+            _formatNumber(calculation.outsideHeight),
+          ),
+          _outputRow(
+            'Cross Measure Reference Outside',
+            _formatNumber(calculation.crossMeasureOutside),
+          ),
+          _outputRow(
+            'Cross Measure Reference Inside',
+            _formatNumber(calculation.crossMeasureInside),
+          ),
+        ],
+      ),
+    ];
+  }
+
+  List<Widget> _doubleBuckResultCards(
+    BuildContext context,
+    TestBuckCalculation calculation,
+  ) {
+    return [
+      _outputCard(
+        context,
+        title: 'Inner Buck Lumber Cut Sizes',
+        rows: [
+          _outputRow(
+            'Inner Buck Top Piece',
+            _formatNumber(calculation.horizontalCut),
+          ),
+          _outputRow(
+            'Inner Buck Bottom Piece',
+            _formatNumber(calculation.horizontalCut),
+          ),
+          _outputRow(
+            'Inner Buck Left Side',
+            _formatNumber(calculation.verticalCut),
+          ),
+          _outputRow(
+            'Inner Buck Right Side',
+            _formatNumber(calculation.verticalCut),
+          ),
+        ],
+      ),
+      const SizedBox(height: 16),
+      _outputCard(
+        context,
+        title: 'Outer Buck Lumber Cut Sizes',
+        rows: [
+          _outputRow(
+            'Outer Buck Top Piece',
+            _formatNumber(calculation.doubleHorizontalCut),
+          ),
+          _outputRow(
+            'Outer Buck Bottom Piece',
+            _formatNumber(calculation.doubleHorizontalCut),
+          ),
+          _outputRow(
+            'Outer Buck Left Side',
+            _formatNumber(calculation.doubleVerticalCut),
+          ),
+          _outputRow(
+            'Outer Buck Right Side',
+            _formatNumber(calculation.doubleVerticalCut),
+          ),
+        ],
+      ),
+      const SizedBox(height: 16),
+      _outputCard(
+        context,
+        title: 'Double Buck Quick Summary',
+        rows: [
+          _outputRow(
+            '2x Inner Buck Horizontal',
+            _formatNumber(calculation.horizontalCut),
+          ),
+          _outputRow(
+            '2x Inner Buck Vertical',
+            _formatNumber(calculation.verticalCut),
+          ),
+          _outputRow(
+            '2x Outer Buck Horizontal',
+            _formatNumber(calculation.doubleHorizontalCut),
+          ),
+          _outputRow(
+            '2x Outer Buck Vertical',
+            _formatNumber(calculation.doubleVerticalCut),
+          ),
+          _outputRow(
+            'Inner Buck Cross Measure Reference Outside',
+            _formatNumber(calculation.crossMeasureOutside),
+          ),
+          _outputRow(
+            'Inner Buck Cross Measure Reference Inside',
+            _formatNumber(calculation.crossMeasureInside),
+          ),
+          _outputRow(
+            'Outer Buck Cross Measure Reference Outside',
+            _formatNumber(calculation.doubleCrossMeasureOutside),
+          ),
+        ],
+      ),
+    ];
   }
 
   Widget _infoCard(
