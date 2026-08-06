@@ -24,9 +24,7 @@ class MainMenuSearchOverlay extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: size.width > 900 ? 760 : size.width * 0.92,
-      constraints: BoxConstraints(
-        maxHeight: size.height * 0.72,
-      ),
+      constraints: BoxConstraints(maxHeight: size.height * 0.72),
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         border: Border.all(color: accent, width: 2),
@@ -48,9 +46,7 @@ class MainMenuSearchOverlay extends StatelessWidget {
                   style: TextStyle(color: accent),
                   decoration: InputDecoration(
                     hintText: 'Search tools or type: 25 psi to psf',
-                    hintStyle: TextStyle(
-                      color: accent.withValues(alpha: 0.40),
-                    ),
+                    hintStyle: TextStyle(color: accent.withValues(alpha: 0.40)),
                     border: InputBorder.none,
                     isDense: true,
                   ),
@@ -82,18 +78,18 @@ class MainMenuSearchOverlay extends StatelessWidget {
                       child: Text(
                         controller.text.trim().isEmpty
                             ? 'Try: tap drill, e1300, awg 12, torque, glass, 25 psi to psf'
-                            : 'No results found',
-                        style: TextStyle(
-                          color: accent.withValues(alpha: 0.55),
-                        ),
+                            : 'No direct match found',
+                        style: TextStyle(color: accent.withValues(alpha: 0.55)),
                       ),
                     ),
                   )
                 : ListView.separated(
                     shrinkWrap: true,
                     itemCount: hits.length,
-                    separatorBuilder: (_, _) =>
-                        Divider(color: accent.withValues(alpha: 0.12), height: 1),
+                    separatorBuilder: (_, _) => Divider(
+                      color: accent.withValues(alpha: 0.12),
+                      height: 1,
+                    ),
                     itemBuilder: (context, index) {
                       final hit = hits[index];
                       final isInstant = hit.kindLabel == 'instant';

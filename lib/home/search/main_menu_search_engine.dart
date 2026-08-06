@@ -6,6 +6,7 @@ import 'search_models.dart';
 
 class MainMenuSearchEngine {
   static final RegExp _splitPattern = RegExp(r'[^a-z0-9]+');
+  static const int _minimumEntryScore = 75;
 
   List<SearchHit> buildHits({
     required String query,
@@ -44,7 +45,7 @@ class MainMenuSearchEngine {
         index: index,
       );
 
-      if (score > 0) {
+      if (score >= _minimumEntryScore) {
         scored.add(_ScoredEntry(entry: entry, score: score));
       }
     }
@@ -63,7 +64,7 @@ class MainMenuSearchEngine {
             title: entry.entry.title,
             category: entry.entry.category,
             description: entry.entry.description,
-            kindLabel: 'page',
+            kindLabel: entry.entry.resultType,
             onTap: () => onOpenEntry(entry.entry),
           ),
         );
@@ -79,34 +80,41 @@ class MainMenuSearchEngine {
     required List<String> queryTokens,
     required _SearchIndex index,
   }) {
-    int score = 0;
+    int score = index.priority;
 
-    if (index.title == normalizedQuery) score += 260;
-    if (index.title.startsWith(normalizedQuery)) score += 190;
-    if (index.title.contains(normalizedQuery)) score += 120;
+    if (index.title == normalizedQuery) score += 520;
+    if (index.title.startsWith(normalizedQuery)) score += 310;
+    if (index.title.contains(normalizedQuery)) score += 150;
 
-    if (index.description == normalizedQuery) score += 130;
-    if (index.description.startsWith(normalizedQuery)) score += 80;
-    if (index.description.contains(normalizedQuery)) score += 45;
+    if (index.parentTitle == normalizedQuery) score += 260;
+    if (index.parentTitle.startsWith(normalizedQuery)) score += 130;
 
     if (index.category == normalizedQuery) score += 120;
     if (index.category.startsWith(normalizedQuery)) score += 75;
-    if (index.category.contains(normalizedQuery)) score += 40;
 
     if (index.acronym == normalizedQuery) score += 150;
     if (index.acronym.startsWith(normalizedQuery)) score += 70;
 
+    for (final exactTerm in index.exactTerms) {
+      if (exactTerm == normalizedQuery) score += 460;
+      if (exactTerm.startsWith(normalizedQuery)) score += 240;
+    }
+
     for (final tag in index.tags) {
-      if (tag == normalizedQuery) score += 170;
-      if (tag.startsWith(normalizedQuery)) score += 95;
-      if (tag.contains(normalizedQuery)) score += 50;
+      if (tag == normalizedQuery) score += 210;
+      if (tag.startsWith(normalizedQuery)) score += 110;
+      if (tag.contains(normalizedQuery)) score += 35;
     }
 
     for (final alias in index.aliases) {
-      if (alias == normalizedQuery) score += 185;
-      if (alias.startsWith(normalizedQuery)) score += 105;
-      if (alias.contains(normalizedQuery)) score += 55;
+      if (alias == normalizedQuery) score += 440;
+      if (alias.startsWith(normalizedQuery)) score += 230;
+      if (alias.contains(normalizedQuery)) score += 80;
     }
+
+    if (index.description == normalizedQuery) score += 90;
+    if (index.description.startsWith(normalizedQuery)) score += 35;
+    if (index.description.contains(normalizedQuery)) score += 12;
 
     for (final token in queryTokens) {
       if (token.length < 2) continue;
@@ -122,26 +130,36 @@ class MainMenuSearchEngine {
       score += _bestTokenScore(
         normalizedToken,
         index.categoryTokens,
-        labelWeight: 20,
-      );
-      score += _bestTokenScore(
-        normalizedToken,
-        index.descriptionTokens,
-        labelWeight: 18,
+        labelWeight: 12,
       );
       score += _bestTokenScore(
         normalizedToken,
         index.tagTokens,
-        labelWeight: 16,
+        labelWeight: 14,
       );
       score += _bestTokenScore(
         normalizedToken,
         index.aliasTokens,
-        labelWeight: 22,
+        labelWeight: 34,
+      );
+      score += _bestTokenScore(
+        normalizedToken,
+        index.exactTermTokens,
+        labelWeight: 42,
+      );
+      score += _bestTokenScore(
+        normalizedToken,
+        index.parentTitleTokens,
+        labelWeight: 18,
+      );
+      score += _bestTokenScore(
+        normalizedToken,
+        index.descriptionTokens,
+        labelWeight: 4,
+        allowFuzzy: false,
       );
 
       if (_isSubsequence(normalizedToken, index.titleCompact)) score += 10;
-      if (_isSubsequence(normalizedToken, index.allTextCompact)) score += 5;
     }
 
     final matchedTokenCount = queryTokens.where((token) {
@@ -153,9 +171,9 @@ class MainMenuSearchEngine {
     }).length;
 
     if (queryTokens.isNotEmpty && matchedTokenCount == queryTokens.length) {
-      score += 90;
+      score += queryTokens.length > 1 ? 140 : 45;
     } else if (matchedTokenCount > 1) {
-      score += matchedTokenCount * 22;
+      score += matchedTokenCount * 24;
     }
 
     // Small, generic engineering synonym handling. This is intentionally broad,
@@ -169,6 +187,7 @@ class MainMenuSearchEngine {
     String queryToken,
     List<String> candidateTokens, {
     required int labelWeight,
+    bool allowFuzzy = true,
   }) {
     int best = 0;
 
@@ -181,9 +200,10 @@ class MainMenuSearchEngine {
         best = math.max(best, labelWeight * 2);
       } else if (candidate.contains(queryToken)) {
         best = math.max(best, labelWeight);
-      } else if (queryToken.length >= 4 &&
+      } else if (allowFuzzy &&
+          queryToken.length >= 4 &&
           _isFuzzyClose(queryToken, candidate)) {
-        best = math.max(best, (labelWeight * 0.9).round());
+        best = math.max(best, (labelWeight * 0.65).round());
       }
     }
 
@@ -527,15 +547,20 @@ class _SearchIndex {
   final String description;
   final List<String> tags;
   final List<String> aliases;
+  final List<String> exactTerms;
+  final String parentTitle;
   final List<String> titleTokens;
   final List<String> categoryTokens;
   final List<String> descriptionTokens;
   final List<String> tagTokens;
   final List<String> aliasTokens;
+  final List<String> exactTermTokens;
+  final List<String> parentTitleTokens;
   final List<String> allTokens;
   final String titleCompact;
   final String allTextCompact;
   final String acronym;
+  final int priority;
 
   _SearchIndex({
     required this.title,
@@ -543,15 +568,20 @@ class _SearchIndex {
     required this.description,
     required this.tags,
     required this.aliases,
+    required this.exactTerms,
+    required this.parentTitle,
     required this.titleTokens,
     required this.categoryTokens,
     required this.descriptionTokens,
     required this.tagTokens,
     required this.aliasTokens,
+    required this.exactTermTokens,
+    required this.parentTitleTokens,
     required this.allTokens,
     required this.titleCompact,
     required this.allTextCompact,
     required this.acronym,
+    required this.priority,
   });
 
   factory _SearchIndex.fromEntry(SearchEntry entry) {
@@ -563,6 +593,10 @@ class _SearchIndex {
     final aliasTokens = entry.aliases
         .expand(engine._tokens)
         .toList(growable: false);
+    final exactTermTokens = entry.exactTerms
+        .expand(engine._tokens)
+        .toList(growable: false);
+    final parentTitleTokens = engine._tokens(entry.parentTitle ?? '');
     final routeTokens = engine._tokens(entry.routeId);
 
     final allTokens = <String>{
@@ -571,11 +605,13 @@ class _SearchIndex {
       ...descriptionTokens,
       ...tagTokens,
       ...aliasTokens,
+      ...exactTermTokens,
+      ...parentTitleTokens,
       ...routeTokens,
     }.toList(growable: false);
 
     final allText =
-        '${entry.title} ${entry.category} ${entry.description} ${entry.tags.join(' ')} ${entry.aliases.join(' ')} ${entry.routeId}';
+        '${entry.title} ${entry.category} ${entry.parentTitle ?? ''} ${entry.description} ${entry.tags.join(' ')} ${entry.aliases.join(' ')} ${entry.exactTerms.join(' ')} ${entry.routeId}';
 
     return _SearchIndex(
       title: engine._normalize(entry.title),
@@ -583,15 +619,22 @@ class _SearchIndex {
       description: engine._normalize(entry.description),
       tags: entry.tags.map(engine._normalize).toList(growable: false),
       aliases: entry.aliases.map(engine._normalize).toList(growable: false),
+      exactTerms: entry.exactTerms
+          .map(engine._normalize)
+          .toList(growable: false),
+      parentTitle: engine._normalize(entry.parentTitle ?? ''),
       titleTokens: titleTokens,
       categoryTokens: categoryTokens,
       descriptionTokens: descriptionTokens,
       tagTokens: tagTokens,
       aliasTokens: aliasTokens,
+      exactTermTokens: exactTermTokens,
+      parentTitleTokens: parentTitleTokens,
       allTokens: allTokens,
       titleCompact: engine._compact(entry.title),
       allTextCompact: engine._compact(allText),
       acronym: engine._acronym(entry.title),
+      priority: entry.priority,
     );
   }
 }

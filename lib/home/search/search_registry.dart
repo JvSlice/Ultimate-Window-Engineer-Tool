@@ -1,5 +1,6 @@
 import '../../app_theme.dart';
 import '../../convert_it_page.dart';
+import '../../conversions/unit_conversions.dart';
 import '../../fabricate_it_page.dart';
 import '../../fun_links_page.dart';
 import '../../settings_page.dart';
@@ -1038,5 +1039,183 @@ List<SearchEntry> buildSearchRegistry(AppThemeController themeController) {
       routeId: 'settings.version-history',
       builder: (_) => const VersionHistoryPage(),
     ),
+    ..._conversionSearchEntries(),
+    ..._applianceSearchEntries(),
   ];
+}
+
+List<SearchEntry> _conversionSearchEntries() {
+  final entries = <SearchEntry>[];
+
+  for (final tool in conversionTools) {
+    entries.add(
+      SearchEntry(
+        title: tool.label,
+        category: 'Conversion',
+        description:
+            'Convert ${tool.fromUnit} and ${tool.toUnit} in ${_searchCategoryLabel(tool.category)}.',
+        tags: [
+          _searchCategoryLabel(tool.category),
+          tool.fromUnit,
+          tool.toUnit,
+          ...tool.aliases,
+        ],
+        aliases: [
+          '${tool.fromUnit} to ${tool.toUnit}',
+          '${tool.toUnit} to ${tool.fromUnit}',
+          ...tool.aliases,
+        ],
+        exactTerms: [tool.label, tool.fromUnit, tool.toUnit, ...tool.aliases],
+        routeId: 'conversion.${tool.label}',
+        resultType: 'conversion',
+        priority: 24,
+        builder: (_) => ConverItPage(
+          initialCategory: tool.category,
+          initialToolLabel: tool.label,
+        ),
+      ),
+    );
+
+    entries.addAll([
+      _unitSearchEntry(
+        tool: tool,
+        unit: tool.fromUnit,
+        direction: Direction.to,
+      ),
+      _unitSearchEntry(
+        tool: tool,
+        unit: tool.toUnit,
+        direction: Direction.from,
+      ),
+    ]);
+  }
+
+  return entries;
+}
+
+SearchEntry _unitSearchEntry({
+  required ConversionTool tool,
+  required String unit,
+  required Direction direction,
+}) {
+  final unitAliases = _unitAliases(unit);
+  final category = _searchCategoryLabel(tool.category);
+
+  return SearchEntry(
+    title: _unitTitle(unit),
+    category: 'Unit · $category Conversion',
+    description: 'Convert $unit with ${tool.label}.',
+    tags: [category, unit, tool.label, tool.fromUnit, tool.toUnit],
+    aliases: [unit, ...unitAliases],
+    exactTerms: [unit, ...unitAliases],
+    routeId: 'unit.${tool.label}.$unit',
+    resultType: 'unit',
+    parentTitle: tool.label,
+    priority: 36,
+    builder: (_) => ConverItPage(
+      initialCategory: tool.category,
+      initialToolLabel: tool.label,
+      initialSearch: unit,
+      initialDirection: direction,
+    ),
+  );
+}
+
+List<SearchEntry> _applianceSearchEntries() {
+  return [
+    for (final item in applianceSearchItems())
+      SearchEntry(
+        title: item.name,
+        category: 'Reference Entry · Common Appliance Power Usage',
+        description: item.description,
+        tags: [
+          item.group,
+          item.name,
+          'appliance',
+          'amps',
+          'watts',
+          'power usage',
+          ...item.aliases,
+        ],
+        aliases: item.aliases,
+        exactTerms: [item.name, ...item.aliases],
+        routeId: 'reference.appliance-power.${item.name}',
+        resultType: 'reference entry',
+        parentTitle: 'Common Appliance Power Usage',
+        priority: 40,
+        builder: (_) => AppliancePowerReferencePage(initialFilter: item.name),
+      ),
+  ];
+}
+
+String _unitTitle(String unit) {
+  final normalized = unit.trim();
+  const titles = <String, String>{
+    'cups': 'Cups',
+    'gal': 'Gallons',
+    'L': 'Liters',
+    'mL': 'Milliliters',
+    'fl oz': 'Fluid Ounces',
+    'psi': 'PSI',
+    'psf': 'PSF',
+    'in. w.c.': 'Inches of Water Column',
+    'in': 'Inches',
+    'ft': 'Feet',
+    'mph': 'MPH',
+    'kt': 'Knots',
+    'ft·lbf': 'Foot-Pounds',
+    'in·lbf': 'Inch-Pounds',
+    'N·m': 'Newton-Meters',
+  };
+  return titles[normalized] ?? normalized;
+}
+
+List<String> _unitAliases(String unit) {
+  switch (unit) {
+    case 'cups':
+      return const [
+        'cup',
+        'cups',
+        'measuring cup',
+        'kitchen cup',
+        'us cup',
+        'volume cup',
+      ];
+    case 'gal':
+      return const ['gallon', 'gallons', 'gal'];
+    case 'L':
+      return const ['liter', 'liters', 'litre', 'litres'];
+    case 'psi':
+      return const ['psi', 'pounds per square inch', 'lb/in2'];
+    case 'psf':
+      return const ['psf', 'pounds per square foot', 'lb/ft2'];
+    case 'in. w.c.':
+      return const [
+        'in wc',
+        'in. w.c.',
+        'iwc',
+        'inch water',
+        'inches water',
+        'inch of water',
+        'inches of water',
+        'water column',
+        'inches of water column',
+      ];
+    case 'in':
+      return const ['inch', 'inches', 'in'];
+    case 'ft':
+      return const ['foot', 'feet', 'ft'];
+    case 'ft·lbf':
+      return const ['ft lb', 'ft-lb', 'foot pound', 'foot-pounds'];
+    case 'in·lbf':
+      return const ['in lb', 'in-lb', 'inch pound', 'inch-pounds'];
+    case 'N·m':
+      return const ['nm', 'n m', 'newton meter', 'newton-meters'];
+  }
+  return const [];
+}
+
+String _searchCategoryLabel(ConversionCategory category) {
+  if (category == ConversionCategory.cooking) return 'Volume';
+  return categoryLabel(category);
 }

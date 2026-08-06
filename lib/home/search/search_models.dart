@@ -7,7 +7,11 @@ class SearchEntry {
   final String description;
   final List<String> tags;
   final List<String> aliases;
+  final List<String> exactTerms;
   final String routeId;
+  final String resultType;
+  final String? parentTitle;
+  final int priority;
   final Widget Function(BuildContext context) builder;
 
   const SearchEntry({
@@ -16,7 +20,11 @@ class SearchEntry {
     required this.description,
     required this.tags,
     required this.aliases,
+    this.exactTerms = const [],
     required this.routeId,
+    this.resultType = 'page',
+    this.parentTitle,
+    this.priority = 0,
     required this.builder,
   });
 }
@@ -41,18 +49,12 @@ class ResolvedTool {
   final ConversionTool tool;
   final Direction direction;
 
-  const ResolvedTool({
-    required this.tool,
-    required this.direction,
-  });
+  const ResolvedTool({required this.tool, required this.direction});
 }
 
 class ConversionMatch {
   final String title;
   final String subtitle;
 
-  const ConversionMatch({
-    required this.title,
-    required this.subtitle,
-  });
+  const ConversionMatch({required this.title, required this.subtitle});
 }

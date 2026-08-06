@@ -1,5 +1,17 @@
 # Ultimate Window Engineer Release Notes
 
+## v1.0.4
+
+Released: 2026-08-05
+
+Build: 5
+
+### Improved
+
+* Search now takes you more directly to conversions, calculators, and specific reference information.
+* Improved global search to prioritize direct tools, units, aliases, and reference entries over weak description matches.
+* Appliance and conversion search results can now open with relevant filter or unit context already selected where supported.
+
 ## v1.0.3
 
 Released: 2026-08-05

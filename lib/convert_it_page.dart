@@ -4,7 +4,20 @@ import 'package:ultimate_window_engineer_tool/conversions/unit_conversions.dart'
 import 'terminal_scaffold.dart';
 
 class ConverItPage extends StatelessWidget {
-  const ConverItPage({super.key});
+  final ConversionCategory? initialCategory;
+  final String? initialToolLabel;
+  final String? initialSearch;
+  final double? initialValue;
+  final Direction? initialDirection;
+
+  const ConverItPage({
+    super.key,
+    this.initialCategory,
+    this.initialToolLabel,
+    this.initialSearch,
+    this.initialValue,
+    this.initialDirection,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -14,7 +27,14 @@ class ConverItPage extends StatelessWidget {
       title: 'Convert It',
       child: Padding(
         padding: const EdgeInsets.all(16),
-        child: ConvertItBody(accent: accent),
+        child: ConvertItBody(
+          accent: accent,
+          initialCategory: initialCategory,
+          initialToolLabel: initialToolLabel,
+          initialSearch: initialSearch,
+          initialValue: initialValue,
+          initialDirection: initialDirection,
+        ),
       ),
     );
   }
@@ -22,7 +42,21 @@ class ConverItPage extends StatelessWidget {
 
 class ConvertItBody extends StatefulWidget {
   final Color accent;
-  const ConvertItBody({super.key, required this.accent});
+  final ConversionCategory? initialCategory;
+  final String? initialToolLabel;
+  final String? initialSearch;
+  final double? initialValue;
+  final Direction? initialDirection;
+
+  const ConvertItBody({
+    super.key,
+    required this.accent,
+    this.initialCategory,
+    this.initialToolLabel,
+    this.initialSearch,
+    this.initialValue,
+    this.initialDirection,
+  });
 
   @override
   State<ConvertItBody> createState() => _ConvertItBodyState();
@@ -56,6 +90,35 @@ class _ConvertItBodyState extends State<ConvertItBody>
         ),
     };
 
+    final initialCategory = widget.initialCategory;
+    if (initialCategory != null) {
+      _tabController.index = categories.indexOf(initialCategory);
+    }
+
+    final initialToolLabel = widget.initialToolLabel;
+    if (initialToolLabel != null) {
+      final initialTool = _findConversionTool(initialToolLabel);
+      if (initialTool != null) {
+        selectedByCategory[initialTool.category] = initialTool;
+        _tabController.index = categories.indexOf(initialTool.category);
+      }
+    }
+
+    final initialSearch = widget.initialSearch;
+    if (initialSearch != null && initialSearch.isNotEmpty) {
+      searchController.text = initialSearch;
+    }
+
+    final initialValue = widget.initialValue;
+    if (initialValue != null) {
+      valueController.text = _formatInput(initialValue);
+    }
+
+    final initialDirection = widget.initialDirection;
+    if (initialDirection != null) {
+      direction = initialDirection;
+    }
+
     _tabController.addListener(() {
       if (_tabController.indexIsChanging) return;
       setState(() {
@@ -75,6 +138,18 @@ class _ConvertItBodyState extends State<ConvertItBody>
   }
 
   ConversionCategory get currentCategory => categories[_tabController.index];
+
+  ConversionTool? _findConversionTool(String label) {
+    for (final tool in conversionTools) {
+      if (tool.label == label) return tool;
+    }
+    return null;
+  }
+
+  String _formatInput(double value) {
+    if (value == value.roundToDouble()) return value.toStringAsFixed(0);
+    return value.toStringAsFixed(3).replaceFirst(RegExp(r'\.?0+$'), '');
+  }
 
   List<ConversionTool> get currentTools {
     final query = searchController.text.trim().toLowerCase();

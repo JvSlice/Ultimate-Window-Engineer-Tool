@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 import '../../terminal_scaffold.dart';
 
 class AppliancePowerReferencePage extends StatefulWidget {
-  const AppliancePowerReferencePage({super.key});
+  final String? initialFilter;
+
+  const AppliancePowerReferencePage({super.key, this.initialFilter});
 
   @override
   State<AppliancePowerReferencePage> createState() =>
@@ -13,6 +15,12 @@ class AppliancePowerReferencePage extends StatefulWidget {
 class _AppliancePowerReferencePageState
     extends State<AppliancePowerReferencePage> {
   final _filterController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    _filterController.text = widget.initialFilter ?? '';
+  }
 
   @override
   void dispose() {
@@ -237,6 +245,53 @@ class _ApplianceGroup {
   final List<_ApplianceLoad> entries;
 
   const _ApplianceGroup(this.name, this.entries);
+}
+
+class ApplianceSearchItem {
+  final String name;
+  final String group;
+  final String description;
+  final List<String> aliases;
+
+  const ApplianceSearchItem({
+    required this.name,
+    required this.group,
+    required this.description,
+    required this.aliases,
+  });
+}
+
+List<ApplianceSearchItem> applianceSearchItems() {
+  return [
+    for (final group in appliancePowerGroups)
+      for (final entry in group.entries)
+        ApplianceSearchItem(
+          name: entry.name,
+          group: group.name,
+          description:
+              '${entry.runningAmps} running, ${entry.startupAmps} startup. ${entry.notes}',
+          aliases: _applianceAliases(entry.name),
+        ),
+  ];
+}
+
+List<String> _applianceAliases(String name) {
+  final lower = name.toLowerCase();
+  if (lower == 'refrigerator') {
+    return const [
+      'fridge',
+      'fridges',
+      'refrigerator',
+      'refrigerators',
+      'freezer',
+      'refrigerator freezer',
+      'fridge amps',
+      'refrigerator amps',
+      'fridge power',
+      'refrigerator power',
+    ];
+  }
+  return const [];
 }
 
 class _ApplianceLoad {
