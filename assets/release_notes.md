@@ -10,10 +10,18 @@ Build: 6
 
 * Added a privacy-focused anonymous analytics foundation to help guide future UWE improvements.
 * Added an Analytics preference in Settings so anonymous usage analytics can be disabled.
+* Added a Lathe Speed & Feed Calculator for turning RPM and feed-rate starting points in Imperial and Metric units.
+* Added Brass and Copper to the centralized Material Properties database.
+* Added a Material Compare page for reviewing up to three material property records side-by-side.
 
 ### Improved
 
 * Analytics now tracks high-level app usage such as page views, tool opens, searches, and conversions without collecting engineering inputs or raw search text.
+
+### Fixed
+
+* Fixed the ASTM E1300 reference calculator so Monolithic mode shows and calculates single-lite glass instead of using IGU lite inputs.
+* Fixed the Fraction Calculator input so users can type shop fractions such as 7/16 and 3 7/16.
 
 ## v1.0.4
 

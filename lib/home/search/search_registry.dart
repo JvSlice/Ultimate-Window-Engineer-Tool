@@ -14,6 +14,7 @@ import '../../fabrication/drill_index_page.dart';
 import '../../fabrication/drill_tap_Selector_page.dart';
 import '../../fabrication/fastener_layout_calculator.dart';
 import '../../fabrication/fraction_decimal_page.dart';
+import '../../fabrication/lathe_speed_feed_page.dart';
 import '../../fabrication/shielding_gas_page.dart';
 import '../../fabrication/speed_feed_page.dart';
 import '../../fabrication/stick_rod_page.dart';
@@ -40,6 +41,7 @@ import '../../reference/geometry_page.dart';
 import '../../reference/geometry_2d_page.dart';
 import '../../reference/geometry_3d_page.dart';
 import '../../reference/geometry_shop_page.dart';
+import '../../reference/materials/material_compare_page.dart';
 import '../../reference/materials/material_reference_page.dart';
 import '../../reference/physics_equations_page.dart';
 import '../../reference/eletrical_tools/eletrical_reference_page.dart';
@@ -217,6 +219,36 @@ List<SearchEntry> buildSearchRegistry(AppThemeController themeController) {
       aliases: ['speeds and feeds', 'machining calculator'],
       routeId: 'fabrication.speed-feeds',
       builder: (_) => const SpeedFeedPage(),
+    ),
+    SearchEntry(
+      title: 'Lathe Speed & Feed',
+      category: 'Fabrication',
+      description:
+          'Turning RPM and feed-rate calculator with imperial and metric inputs.',
+      tags: [
+        'lathe',
+        'turning',
+        'turn',
+        'rpm',
+        'sfm',
+        'speed',
+        'feed',
+        'feed rate',
+        'surface speed',
+        'spindle speed',
+        'machining',
+        'carbide',
+        'hss',
+      ],
+      aliases: [
+        'lathe calculator',
+        'turning calculator',
+        'spindle speed calculator',
+        'lathe rpm',
+        'lathe feed',
+      ],
+      routeId: 'fabrication.lathe-speed-feed',
+      builder: (_) => const LatheSpeedFeedPage(),
     ),
     SearchEntry(
       title: 'Weld It',
@@ -723,6 +755,25 @@ List<SearchEntry> buildSearchRegistry(AppThemeController themeController) {
       aliases: ['material properties', 'material data'],
       routeId: 'reference.material-reference',
       builder: (_) => const MaterialReferencePage(),
+    ),
+    SearchEntry(
+      title: 'Compare Materials',
+      category: 'Reference',
+      description:
+          'Compare up to three material property records side-by-side.',
+      tags: [
+        'compare materials',
+        'material compare',
+        'material comparison',
+        'materials',
+        'machinability',
+        'density',
+        'strength',
+        'thermal expansion',
+      ],
+      aliases: ['compare material properties', 'material table'],
+      routeId: 'reference.material-compare',
+      builder: (_) => const MaterialComparePage(),
     ),
     SearchEntry(
       title: 'Electrical Tools',

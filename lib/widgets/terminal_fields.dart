@@ -5,11 +5,18 @@ Widget terminalNumberField({
   required String label,
   required String hint,
   required TextEditingController controller,
+  TextInputType keyboardType = const TextInputType.numberWithOptions(
+    decimal: true,
+  ),
+  ValueChanged<String>? onChanged,
 }) {
   return Column(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
-      Text(label, style: TextStyle(color: accent, fontWeight: FontWeight.w700)),
+      Text(
+        label,
+        style: TextStyle(color: accent, fontWeight: FontWeight.w700),
+      ),
       const SizedBox(height: 6),
       Container(
         padding: const EdgeInsets.symmetric(horizontal: 12),
@@ -27,13 +34,14 @@ Widget terminalNumberField({
         ),
         child: TextField(
           controller: controller,
-          keyboardType: const TextInputType.numberWithOptions(decimal: true),
+          keyboardType: keyboardType,
           style: TextStyle(color: accent),
           decoration: InputDecoration(
             hintText: hint,
             hintStyle: TextStyle(color: accent.withValues(alpha: 0.4)),
             border: InputBorder.none,
           ),
+          onChanged: onChanged,
         ),
       ),
     ],
@@ -61,10 +69,12 @@ Widget terminalResultCard({
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: lines
-          .map((l) => Padding(
-                padding: const EdgeInsets.symmetric(vertical: 4),
-                child: Text(l, style: TextStyle(color: accent)),
-              ))
+          .map(
+            (l) => Padding(
+              padding: const EdgeInsets.symmetric(vertical: 4),
+              child: Text(l, style: TextStyle(color: accent)),
+            ),
+          )
           .toList(),
     ),
   );

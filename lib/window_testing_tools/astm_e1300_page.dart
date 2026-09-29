@@ -5,7 +5,9 @@ import '../../widgets/terminal_fields.dart';
 import '../../widgets/calc_button.dart';
 
 enum GlassBuild { monolithic, igu }
+
 enum GlassType { annealed, heatStrengthened, tempered, laminated }
+
 enum LoadDuration { shortDuration, longDuration }
 
 class AstmE1300Page extends StatefulWidget {
@@ -121,7 +123,7 @@ class _AstmE1300PageState extends State<AstmE1300Page> {
       final longDim = max(shortSide, longSide);
       aspectRatio = longDim / shortDim;
 
-      if (build == GlassBuild.monolithic) {
+      if (glassbuild == GlassBuild.monolithic) {
         if (monoThickness == null || monoThickness <= 0) {
           warning = "Enter a valid monolithic glass thickness.";
           return;
@@ -169,7 +171,8 @@ class _AstmE1300PageState extends State<AstmE1300Page> {
           duration: duration,
         );
 
-        iguPass = lite1Applied! <= lite1AllowablePsf! &&
+        iguPass =
+            lite1Applied! <= lite1AllowablePsf! &&
             lite2Applied! <= lite2AllowablePsf!;
       }
 
@@ -192,15 +195,13 @@ class _AstmE1300PageState extends State<AstmE1300Page> {
         onPressed: onPressed,
         style: OutlinedButton.styleFrom(
           side: BorderSide(color: accent, width: 2),
-          backgroundColor:
-              selected ? accent.withValues(alpha: 0.80) : Colors.transparent,
+          backgroundColor: selected
+              ? accent.withValues(alpha: 0.80)
+              : Colors.transparent,
         ),
         child: Text(
           label,
-          style: TextStyle(
-            color: accent,
-            fontWeight: FontWeight.w800,
-          ),
+          style: TextStyle(color: accent, fontWeight: FontWeight.w800),
           textAlign: TextAlign.center,
         ),
       ),
@@ -400,7 +401,7 @@ class _AstmE1300PageState extends State<AstmE1300Page> {
 
             const SizedBox(height: 18),
 
-            if (build == GlassBuild.monolithic) ...[
+            if (glassbuild == GlassBuild.monolithic) ...[
               _glassTypeDropdown(
                 accent: accent,
                 value: monoType,
@@ -461,10 +462,7 @@ class _AstmE1300PageState extends State<AstmE1300Page> {
 
             const SizedBox(height: 16),
 
-            terminalCalcButton(
-              accent: accent,
-              onPressed: _calculate,
-            ),
+            terminalCalcButton(accent: accent, onPressed: _calculate),
 
             const SizedBox(height: 18),
 
@@ -484,14 +482,14 @@ class _AstmE1300PageState extends State<AstmE1300Page> {
               accent: accent,
               lines: [
                 "Aspect Ratio (long / short): ${aspectRatio == null ? '—' : aspectRatio!.toStringAsFixed(3)}",
-                "Build: ${build == GlassBuild.monolithic ? 'Monolithic' : 'IGU'}",
+                "Build: ${glassbuild == GlassBuild.monolithic ? 'Monolithic' : 'IGU'}",
                 "Duration: ${duration == LoadDuration.shortDuration ? 'Short' : 'Long'}",
               ],
             ),
 
             const SizedBox(height: 14),
 
-            if (build == GlassBuild.monolithic)
+            if (glassbuild == GlassBuild.monolithic)
               terminalResultCard(
                 accent: accent,
                 lines: [
@@ -524,4 +522,3 @@ class _AstmE1300PageState extends State<AstmE1300Page> {
     );
   }
 }
-

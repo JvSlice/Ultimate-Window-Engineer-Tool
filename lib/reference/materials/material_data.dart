@@ -2,7 +2,7 @@ import 'material_models.dart';
 
 const materials = <MaterialSpec>[
   // ---- Steels ----
-    // ---- Steels ----
+  // ---- Steels ----
   MaterialSpec(
     name: "A36 (Structural)",
     category: MaterialCategory.steel,
@@ -10,10 +10,7 @@ const materials = <MaterialSpec>[
     thermalExpansionMicroInInF: 6.5,
     commonUse: "Plate, structural shapes, general fabrication",
     melting: TempRange(minF: 2590, maxF: 2660, minC: 1420, maxC: 1460),
-    strength: StrengthProps(
-      yieldPsi: 36000,
-      tensilePsi: 58000,
-    ),
+    strength: StrengthProps(yieldPsi: 36000, tensilePsi: 58000),
     hardness: HardnessRange(scale: "HB", min: 120, max: 180),
     machining: MachineProps(
       machinabilityPercent: 60,
@@ -22,7 +19,8 @@ const materials = <MaterialSpec>[
     ),
     weldability: WeldabilityRating.excellent,
     weldNotes: "Very weldable. Common fabrication/structural steel.",
-    notes: "Use as a practical structural baseline. Actual properties vary by section/spec.",
+    notes:
+        "Use as a practical structural baseline. Actual properties vary by section/spec.",
   ),
 
   MaterialSpec(
@@ -32,10 +30,7 @@ const materials = <MaterialSpec>[
     thermalExpansionMicroInInF: 6.5,
     commonUse: "General machining, shafts, brackets, mild structural parts",
     melting: TempRange(minF: 2590, maxF: 2660, minC: 1420, maxC: 1460),
-    strength: StrengthProps(
-      yieldPsi: 53700,
-      tensilePsi: 63800,
-    ),
+    strength: StrengthProps(yieldPsi: 53700, tensilePsi: 63800),
     hardness: HardnessRange(scale: "HB", min: 120, max: 130),
     machining: MachineProps(
       machinabilityPercent: 70,
@@ -52,12 +47,10 @@ const materials = <MaterialSpec>[
     category: MaterialCategory.steel,
     densityKgM3: 7850,
     thermalExpansionMicroInInF: 6.5,
-    commonUse: "Shafts, tooling, stronger machine parts, impact-loaded components",
+    commonUse:
+        "Shafts, tooling, stronger machine parts, impact-loaded components",
     melting: TempRange(minF: 2590, maxF: 2660, minC: 1420, maxC: 1460),
-    strength: StrengthProps(
-      yieldPsi: 95000,
-      tensilePsi: 148000,
-    ),
+    strength: StrengthProps(yieldPsi: 95000, tensilePsi: 148000),
     hardness: HardnessRange(scale: "HB", min: 190, max: 230),
     machining: MachineProps(
       machinabilityPercent: 65,
@@ -68,11 +61,14 @@ const materials = <MaterialSpec>[
       normalize: TempRange(minF: 1600, maxF: 1650),
       austenitize: TempRange(minF: 1525, maxF: 1575),
       temper: TempRange(minF: 400, maxF: 1200),
-      notes: "Oil quench is common; final temper depends heavily on target hardness/toughness.",
+      notes:
+          "Oil quench is common; final temper depends heavily on target hardness/toughness.",
     ),
     weldability: WeldabilityRating.fair,
-    weldNotes: "Can be welded with preheat and post-weld care; crack risk is higher than mild steel.",
-    notes: "Very common machine/alloy steel when you need more strength than 1018.",
+    weldNotes:
+        "Can be welded with preheat and post-weld care; crack risk is higher than mild steel.",
+    notes:
+        "Very common machine/alloy steel when you need more strength than 1018.",
   ),
 
   MaterialSpec(
@@ -95,11 +91,14 @@ const materials = <MaterialSpec>[
     heatTreat: HeatTreatProps(
       austenitize: TempRange(minF: 1500, maxF: 1550),
       temper: TempRange(minF: 350, maxF: 500),
-      notes: "Commonly oil quenched; temper depends on desired toughness vs hardness.",
+      notes:
+          "Commonly oil quenched; temper depends on desired toughness vs hardness.",
     ),
     weldability: WeldabilityRating.fair,
-    weldNotes: "Weldable with care, but preheat/postheat are important and cracking is a concern.",
-    notes: "Excellent toughness and popular with bladesmiths and spring applications.",
+    weldNotes:
+        "Weldable with care, but preheat/postheat are important and cracking is a concern.",
+    notes:
+        "Excellent toughness and popular with bladesmiths and spring applications.",
   ),
 
   MaterialSpec(
@@ -107,38 +106,40 @@ const materials = <MaterialSpec>[
     category: MaterialCategory.steel,
     densityKgM3: 7850,
     thermalExpansionMicroInInF: 6.5,
-    commonUse: "Blades, springs, wear parts, simple high-carbon heat-treat steel",
+    commonUse:
+        "Blades, springs, wear parts, simple high-carbon heat-treat steel",
     melting: TempRange(minF: 2760, maxF: 2760, minC: 1515, maxC: 1515),
     hardness: HardnessRange(scale: "HRC", min: 58, max: 66),
     machining: MachineProps(
       machinabilityPercent: 45,
       sfmNotes: "Annealed: HSS ~50–80 SFM, Carbide ~160–250 SFM",
-      notes: "Machines much better annealed; hard condition is much less friendly.",
+      notes:
+          "Machines much better annealed; hard condition is much less friendly.",
     ),
     forge: ForgeProps(
       forge: TempRange(minF: 1500, maxF: 2000),
-      notes: "Narrower forging window than low-carbon steels; avoid overheating and over-forging cold.",
+      notes:
+          "Narrower forging window than low-carbon steels; avoid overheating and over-forging cold.",
     ),
     heatTreat: HeatTreatProps(
       austenitize: TempRange(minF: 1475, maxF: 1525),
       temper: TempRange(minF: 350, maxF: 450),
-      notes: "Commonly oil quenched; final hardness depends strongly on temper and section size.",
+      notes:
+          "Commonly oil quenched; final hardness depends strongly on temper and section size.",
     ),
     weldability: WeldabilityRating.poor,
     weldNotes: "Generally not recommended for welding due to crack risk.",
-    notes: "Simple high-carbon steel with high hardness potential and low alloy complexity.",
+    notes:
+        "Simple high-carbon steel with high hardness potential and low alloy complexity.",
   ),
-    MaterialSpec(
+  MaterialSpec(
     name: "A500 Grade B",
     category: MaterialCategory.steel,
     densityKgM3: 7800,
     thermalExpansionMicroInInF: 6.5,
     commonUse: "Structural tubing, frames, welded assemblies",
     melting: TempRange(minF: 2590, maxF: 2660, minC: 1420, maxC: 1460),
-    strength: StrengthProps(
-      yieldPsi: 45700,
-      tensilePsi: 58000,
-    ),
+    strength: StrengthProps(yieldPsi: 45700, tensilePsi: 58000),
     hardness: HardnessRange(scale: "HB", min: 120, max: 180),
     machining: MachineProps(
       machinabilityPercent: 60,
@@ -157,10 +158,7 @@ const materials = <MaterialSpec>[
     thermalExpansionMicroInInF: 6.5,
     commonUse: "Higher-strength structural plate and shapes",
     melting: TempRange(minF: 2590, maxF: 2660, minC: 1420, maxC: 1460),
-    strength: StrengthProps(
-      yieldPsi: 50000,
-      tensilePsi: 65300,
-    ),
+    strength: StrengthProps(yieldPsi: 50000, tensilePsi: 65300),
     hardness: HardnessRange(scale: "HB", min: 135, max: 190),
     machining: MachineProps(
       machinabilityPercent: 55,
@@ -168,7 +166,8 @@ const materials = <MaterialSpec>[
       notes: "Higher strength than A36; expect tougher cutting.",
     ),
     weldability: WeldabilityRating.good,
-    weldNotes: "Good weldability with proper procedures for thickness and restraint.",
+    weldNotes:
+        "Good weldability with proper procedures for thickness and restraint.",
     notes: "Common upgrade from A36 when you want higher yield strength.",
   ),
 
@@ -177,12 +176,10 @@ const materials = <MaterialSpec>[
     category: MaterialCategory.steel,
     densityKgM3: 8000,
     thermalExpansionMicroInInF: 9.6,
-    commonUse: "General corrosion-resistant parts, sheet, food/contact hardware",
+    commonUse:
+        "General corrosion-resistant parts, sheet, food/contact hardware",
     melting: TempRange(minF: 2550, maxF: 2650, minC: 1400, maxC: 1450),
-    strength: StrengthProps(
-      yieldPsi: 31200,
-      tensilePsi: 92800,
-    ),
+    strength: StrengthProps(yieldPsi: 31200, tensilePsi: 92800),
     hardness: HardnessRange(scale: "HRB", min: 70, max: 92),
     machining: MachineProps(
       machinabilityPercent: 45,
@@ -199,17 +196,16 @@ const materials = <MaterialSpec>[
     category: MaterialCategory.steel,
     densityKgM3: 8000,
     thermalExpansionMicroInInF: 9.6,
-    commonUse: "Corrosion-resistant parts, marine/chemical service, food equipment",
+    commonUse:
+        "Corrosion-resistant parts, marine/chemical service, food equipment",
     melting: TempRange(minF: 2500, maxF: 2550, minC: 1370, maxC: 1400),
-    strength: StrengthProps(
-      yieldPsi: 42100,
-      tensilePsi: 84100,
-    ),
+    strength: StrengthProps(yieldPsi: 42100, tensilePsi: 84100),
     hardness: HardnessRange(scale: "HRB", min: 75, max: 85),
     machining: MachineProps(
       machinabilityPercent: 36,
       sfmNotes: "HSS ~30–60 SFM, Carbide ~100–220 SFM",
-      notes: "Tough, gummy, and work-hardening. More difficult than 304 in many shops.",
+      notes:
+          "Tough, gummy, and work-hardening. More difficult than 304 in many shops.",
     ),
     weldability: WeldabilityRating.excellent,
     weldNotes: "Very weldable; stronger corrosion resistance than 304.",
@@ -223,10 +219,7 @@ const materials = <MaterialSpec>[
     thermalExpansionMicroInInF: 6.5,
     commonUse: "Screw machine parts, bushings, fittings, high-speed machining",
     melting: TempRange(minF: 2590, maxF: 2660, minC: 1420, maxC: 1460),
-    strength: StrengthProps(
-      yieldPsi: 60200,
-      tensilePsi: 78300,
-    ),
+    strength: StrengthProps(yieldPsi: 60200, tensilePsi: 78300),
     hardness: HardnessRange(scale: "HB", min: 150, max: 170),
     machining: MachineProps(
       machinabilityPercent: 160,
@@ -235,7 +228,8 @@ const materials = <MaterialSpec>[
     ),
     weldability: WeldabilityRating.poor,
     weldNotes: "Generally not recommended for welding.",
-    notes: "Fantastic for lathe/mill production parts when welding is not needed.",
+    notes:
+        "Fantastic for lathe/mill production parts when welding is not needed.",
   ),
 
   MaterialSpec(
@@ -254,11 +248,13 @@ const materials = <MaterialSpec>[
     heatTreat: HeatTreatProps(
       austenitize: TempRange(minF: 1450, maxF: 1500),
       temper: TempRange(minF: 300, maxF: 500),
-      notes: "Oil-hardening tool steel. Final temper depends on desired hardness/toughness.",
+      notes:
+          "Oil-hardening tool steel. Final temper depends on desired hardness/toughness.",
     ),
     weldability: WeldabilityRating.poor,
     weldNotes: "Generally not recommended for routine welding.",
-    notes: "Good dimensional stability and a classic general-purpose tool steel.",
+    notes:
+        "Good dimensional stability and a classic general-purpose tool steel.",
   ),
 
   MaterialSpec(
@@ -272,7 +268,8 @@ const materials = <MaterialSpec>[
     machining: MachineProps(
       machinabilityPercent: 55,
       sfmNotes: "Annealed: HSS ~40–70 SFM, Carbide ~120–220 SFM",
-      notes: "Much easier to machine annealed than hardened. High wear resistance.",
+      notes:
+          "Much easier to machine annealed than hardened. High wear resistance.",
     ),
     heatTreat: HeatTreatProps(
       austenitize: TempRange(minF: 1800, maxF: 1900),
@@ -280,12 +277,12 @@ const materials = <MaterialSpec>[
       notes: "Air-hardening high-carbon high-chromium tool steel.",
     ),
     weldability: WeldabilityRating.poor,
-    weldNotes: "Generally not recommended except specialized repair procedures.",
+    weldNotes:
+        "Generally not recommended except specialized repair procedures.",
     notes: "Great wear resistance, lower toughness than O1/5160.",
   ),
 
-  
-    // ---- Aluminum ----
+  // ---- Aluminum ----
   MaterialSpec(
     name: "6063-T5",
     category: MaterialCategory.aluminum,
@@ -293,18 +290,17 @@ const materials = <MaterialSpec>[
     thermalExpansionMicroInInF: 13.1,
     commonUse: "Architectural extrusions, window/door framing, railings, trim",
     melting: TempRange(minF: 1140, maxF: 1210, minC: 616, maxC: 654),
-    strength: StrengthProps(
-      yieldPsi: 16000,
-      tensilePsi: 22000,
-    ),
+    strength: StrengthProps(yieldPsi: 16000, tensilePsi: 22000),
     hardness: HardnessRange(scale: "HB", min: 55, max: 65),
     machining: MachineProps(
       machinabilityPercent: 70,
       sfmNotes: "Carbide ~600–1200 SFM, HSS ~200–400 SFM",
-      notes: "Extrudes very well, good finish/anodizing response, not as strong as T6.",
+      notes:
+          "Extrudes very well, good finish/anodizing response, not as strong as T6.",
     ),
     weldability: WeldabilityRating.good,
-    weldNotes: "Weldable, but like other heat-treated aluminums, strength drops in the HAZ.",
+    weldNotes:
+        "Weldable, but like other heat-treated aluminums, strength drops in the HAZ.",
     notes: "Good corrosion resistance. Common architectural alloy.",
   ),
 
@@ -313,12 +309,10 @@ const materials = <MaterialSpec>[
     category: MaterialCategory.aluminum,
     densityKgM3: 2700,
     thermalExpansionMicroInInF: 13.1,
-    commonUse: "Stronger architectural extrusions, rails, tubing, light structural shapes",
+    commonUse:
+        "Stronger architectural extrusions, rails, tubing, light structural shapes",
     melting: TempRange(minF: 1140, maxF: 1210, minC: 616, maxC: 654),
-    strength: StrengthProps(
-      yieldPsi: 25000,
-      tensilePsi: 30000,
-    ),
+    strength: StrengthProps(yieldPsi: 25000, tensilePsi: 30000),
     hardness: HardnessRange(scale: "HB", min: 70, max: 80),
     machining: MachineProps(
       machinabilityPercent: 75,
@@ -326,7 +320,8 @@ const materials = <MaterialSpec>[
       notes: "Stronger than T5, still good finish and corrosion resistance.",
     ),
     weldability: WeldabilityRating.good,
-    weldNotes: "Weldable; expect heat-affected zone softening unless re-heat treated.",
+    weldNotes:
+        "Weldable; expect heat-affected zone softening unless re-heat treated.",
     notes: "Typical 6063-T6 values depend on section thickness.",
   ),
 
@@ -335,12 +330,10 @@ const materials = <MaterialSpec>[
     category: MaterialCategory.aluminum,
     densityKgM3: 2710,
     thermalExpansionMicroInInF: 13.1,
-    commonUse: "Structural extrusions, transport, ladders, framing, stronger profiles",
+    commonUse:
+        "Structural extrusions, transport, ladders, framing, stronger profiles",
     melting: TempRange(minF: 1085, maxF: 1202, minC: 585, maxC: 650),
-    strength: StrengthProps(
-      yieldPsi: 32000,
-      tensilePsi: 38000,
-    ),
+    strength: StrengthProps(yieldPsi: 32000, tensilePsi: 38000),
     hardness: HardnessRange(scale: "HB", min: 75, max: 90),
     machining: MachineProps(
       machinabilityPercent: 70,
@@ -348,7 +341,8 @@ const materials = <MaterialSpec>[
       notes: "Good extrusion alloy with better structural strength than 6063.",
     ),
     weldability: WeldabilityRating.good,
-    weldNotes: "Good corrosion resistance and reasonable weldability; strength loss in HAZ applies.",
+    weldNotes:
+        "Good corrosion resistance and reasonable weldability; strength loss in HAZ applies.",
     notes: "Medium-strength, heat-treatable structural extrusion alloy.",
   ),
 
@@ -359,18 +353,17 @@ const materials = <MaterialSpec>[
     thermalExpansionMicroInInF: 13.1,
     commonUse: "General structural aluminum, brackets, machine parts, frames",
     melting: TempRange(minF: 1080, maxF: 1205, minC: 582, maxC: 652),
-    strength: StrengthProps(
-      yieldPsi: 35000,
-      tensilePsi: 42000,
-    ),
+    strength: StrengthProps(yieldPsi: 35000, tensilePsi: 42000),
     hardness: HardnessRange(scale: "HB", min: 90, max: 100),
     machining: MachineProps(
       machinabilityPercent: 90,
       sfmNotes: "Carbide ~600–1200 SFM, HSS ~200–400 SFM",
-      notes: "Very common general-purpose alloy; good balance of strength and machinability.",
+      notes:
+          "Very common general-purpose alloy; good balance of strength and machinability.",
     ),
     weldability: WeldabilityRating.good,
-    weldNotes: "Weldable, but T6 properties are reduced in the heat-affected zone.",
+    weldNotes:
+        "Weldable, but T6 properties are reduced in the heat-affected zone.",
   ),
 
   MaterialSpec(
@@ -378,17 +371,16 @@ const materials = <MaterialSpec>[
     category: MaterialCategory.aluminum,
     densityKgM3: 2680,
     thermalExpansionMicroInInF: 13.1,
-    commonUse: "Sheet metal, bent parts, enclosures, marine/light corrosion service",
+    commonUse:
+        "Sheet metal, bent parts, enclosures, marine/light corrosion service",
     melting: TempRange(minF: 1125, maxF: 1200, minC: 607, maxC: 649),
-    strength: StrengthProps(
-      yieldPsi: 28000,
-      tensilePsi: 33000,
-    ),
+    strength: StrengthProps(yieldPsi: 28000, tensilePsi: 33000),
     hardness: HardnessRange(scale: "HB", min: 60, max: 70),
     machining: MachineProps(
       machinabilityPercent: 60,
       sfmNotes: "Carbide ~500–1000 SFM, HSS ~150–300 SFM",
-      notes: "Best known for formability and corrosion resistance more than machining.",
+      notes:
+          "Best known for formability and corrosion resistance more than machining.",
     ),
     weldability: WeldabilityRating.excellent,
     weldNotes: "Excellent weldability; strong choice for sheet fabrication.",
@@ -401,18 +393,63 @@ const materials = <MaterialSpec>[
     thermalExpansionMicroInInF: 13.1,
     commonUse: "High-strength parts, fixtures, aerospace-style hardware",
     melting: TempRange(minF: 890, maxF: 1175, minC: 477, maxC: 635),
-    strength: StrengthProps(
-      yieldPsi: 73000,
-      tensilePsi: 83000,
-    ),
+    strength: StrengthProps(yieldPsi: 73000, tensilePsi: 83000),
     hardness: HardnessRange(scale: "HB", min: 140, max: 160),
     machining: MachineProps(
       machinabilityPercent: 70,
       sfmNotes: "Carbide ~400–900 SFM, HSS ~120–250 SFM",
-      notes: "Very strong, machines well, but poorer corrosion/weld behavior than 6xxx.",
+      notes:
+          "Very strong, machines well, but poorer corrosion/weld behavior than 6xxx.",
     ),
     weldability: WeldabilityRating.poor,
     weldNotes: "Generally not recommended for welding.",
+  ),
+
+  // ---- Non-ferrous metals ----
+  MaterialSpec(
+    name: "Brass (C360 Free-Cutting)",
+    category: MaterialCategory.nonFerrous,
+    densityKgM3: 8490,
+    thermalExpansionMicroInInF: 11.4,
+    commonUse:
+        "Machined fittings, bushings, valves, fasteners, decorative hardware",
+    melting: TempRange(minF: 1650, maxF: 1720, minC: 899, maxC: 938),
+    strength: StrengthProps(yieldPsi: 45000, tensilePsi: 58000),
+    hardness: HardnessRange(scale: "HB", min: 80, max: 110),
+    machining: MachineProps(
+      machinabilityPercent: 100,
+      sfmNotes: "HSS ~150–250 SFM, Carbide ~500–800 SFM",
+      notes:
+          "Free-cutting brass machines very well. Lead-free and cartridge brasses can behave differently.",
+    ),
+    weldability: WeldabilityRating.fair,
+    weldNotes:
+        "Brazing and soldering are common. Fusion welding brass is specialized because zinc can fume and composition varies.",
+    notes:
+        "Representative C360 free-cutting brass values. Brass properties vary significantly by alloy, lead content, temper, and cold work.",
+  ),
+
+  MaterialSpec(
+    name: "Copper (C110 ETP)",
+    category: MaterialCategory.nonFerrous,
+    densityKgM3: 8960,
+    thermalExpansionMicroInInF: 9.4,
+    commonUse:
+        "Electrical conductors, bus bars, heat transfer parts, plumbing, formed sheet",
+    melting: TempRange(minF: 1981, maxF: 1981, minC: 1083, maxC: 1083),
+    strength: StrengthProps(yieldPsi: 10000, tensilePsi: 32000),
+    hardness: HardnessRange(scale: "HB", min: 35, max: 60),
+    machining: MachineProps(
+      machinabilityPercent: 20,
+      sfmNotes: "HSS ~100–200 SFM, Carbide ~300–600 SFM",
+      notes:
+          "Copper can be gummy. Use sharp tools, positive rake, lubrication, and enough feed to avoid rubbing.",
+    ),
+    weldability: WeldabilityRating.good,
+    weldNotes:
+        "Can be soldered, brazed, and welded with proper procedure. High thermal conductivity demands heat input control.",
+    notes:
+        "Representative C110 electrolytic tough pitch copper values. Strength and hardness vary strongly with temper and cold work.",
   ),
 
   // ---- Plastics ----
@@ -423,19 +460,19 @@ const materials = <MaterialSpec>[
     thermalExpansionMicroInInF: 48.0,
     commonUse: "Bushings, gears, low-friction parts, fixtures, wear strips",
     melting: TempRange(minF: 352, maxF: 352, minC: 178, maxC: 178),
-    strength: StrengthProps(
-      yieldPsi: 10150,
-      yieldMpa: 70.0,
-    ),
+    strength: StrengthProps(yieldPsi: 10150, yieldMpa: 70.0),
     hardness: HardnessRange(scale: "Shore D", min: 80, max: 90),
     machining: MachineProps(
       machinabilityPercent: 95,
-      sfmNotes: "High SFM with sharp tooling; avoid heat buildup and stringy chips.",
-      notes: "Excellent machining plastic. Very dimensionally stable and low friction.",
+      sfmNotes:
+          "High SFM with sharp tooling; avoid heat buildup and stringy chips.",
+      notes:
+          "Excellent machining plastic. Very dimensionally stable and low friction.",
     ),
     weldability: WeldabilityRating.notRecommended,
     weldNotes: "Usually machined or mechanically fastened rather than welded.",
-    notes: "Great default engineering plastic when you want strength + machinability.",
+    notes:
+        "Great default engineering plastic when you want strength + machinability.",
   ),
 
   MaterialSpec(
@@ -445,15 +482,14 @@ const materials = <MaterialSpec>[
     thermalExpansionMicroInInF: 45.0,
     commonUse: "Bushings, wear pads, spacers, rollers, impact-resistant parts",
     melting: TempRange(minF: 365, maxF: 504, minC: 185, maxC: 262),
-    strength: StrengthProps(
-      tensilePsi: 9240,
-      tensileMpa: 63.7,
-    ),
+    strength: StrengthProps(tensilePsi: 9240, tensileMpa: 63.7),
     hardness: HardnessRange(scale: "Shore D", min: 70, max: 85),
     machining: MachineProps(
       machinabilityPercent: 80,
-      sfmNotes: "Sharp tools, moderate-to-high SFM, avoid heat and support flexible parts.",
-      notes: "Absorbs moisture, so dimensions can change. Tough and wear-resistant.",
+      sfmNotes:
+          "Sharp tools, moderate-to-high SFM, avoid heat and support flexible parts.",
+      notes:
+          "Absorbs moisture, so dimensions can change. Tough and wear-resistant.",
     ),
     weldability: WeldabilityRating.notRecommended,
     weldNotes: "Typically machined or mechanically fastened.",
@@ -466,10 +502,7 @@ const materials = <MaterialSpec>[
     densityKgM3: 1040,
     thermalExpansionMicroInInF: 52.0,
     commonUse: "Housings, covers, printed parts, light fixtures, prototyping",
-    strength: StrengthProps(
-      yieldPsi: 8600,
-      yieldMpa: 59.3,
-    ),
+    strength: StrengthProps(yieldPsi: 8600, yieldMpa: 59.3),
     hardness: HardnessRange(scale: "Shore D", min: 70, max: 80),
     machining: MachineProps(
       machinabilityPercent: 70,
@@ -477,8 +510,10 @@ const materials = <MaterialSpec>[
       notes: "Easy to work, but heat buildup can rough up the finish.",
     ),
     weldability: WeldabilityRating.fair,
-    weldNotes: "Plastic welding is possible on some ABS forms, depending on setup and part.",
-    notes: "No clean true melt point like crystalline plastics; Tg is around 108–109 °C (226–228 °F).",
+    weldNotes:
+        "Plastic welding is possible on some ABS forms, depending on setup and part.",
+    notes:
+        "No clean true melt point like crystalline plastics; Tg is around 108–109 °C (226–228 °F).",
   ),
 
   MaterialSpec(
@@ -488,10 +523,7 @@ const materials = <MaterialSpec>[
     thermalExpansionMicroInInF: 50.0,
     commonUse: "3D printed prototypes, jigs, fixtures, low-temp parts",
     melting: TempRange(minF: 147, maxF: 428, minC: 64, maxC: 220),
-    strength: StrengthProps(
-      yieldPsi: 6550,
-      yieldMpa: 45.2,
-    ),
+    strength: StrengthProps(yieldPsi: 6550, yieldMpa: 45.2),
     hardness: HardnessRange(scale: "Shore D", min: 75, max: 85),
     machining: MachineProps(
       machinabilityPercent: 65,
@@ -499,8 +531,10 @@ const materials = <MaterialSpec>[
       notes: "Brittle compared with ABS/PETG; heat resistance is limited.",
     ),
     weldability: WeldabilityRating.notRecommended,
-    weldNotes: "Usually printed, bonded, or mechanically fastened instead of welded.",
-    notes: "Property ranges vary a lot between filament brands and print orientation.",
+    weldNotes:
+        "Usually printed, bonded, or mechanically fastened instead of welded.",
+    notes:
+        "Property ranges vary a lot between filament brands and print orientation.",
   ),
 
   MaterialSpec(
@@ -509,19 +543,19 @@ const materials = <MaterialSpec>[
     densityKgM3: 1200,
     thermalExpansionMicroInInF: 37.5,
     commonUse: "Guards, impact-resistant covers, clear machine shields",
-    strength: StrengthProps(
-      yieldPsi: 9060,
-      yieldMpa: 62.5,
-    ),
+    strength: StrengthProps(yieldPsi: 9060, yieldMpa: 62.5),
     hardness: HardnessRange(scale: "Shore D", min: 75, max: 80),
     machining: MachineProps(
       machinabilityPercent: 70,
       sfmNotes: "Sharp tools, moderate SFM, avoid heat cracking and melting.",
-      notes: "Very tough and impact resistant. Better for guards than acrylic in many cases.",
+      notes:
+          "Very tough and impact resistant. Better for guards than acrylic in many cases.",
     ),
     weldability: WeldabilityRating.fair,
-    weldNotes: "Plastic welding is possible in some cases, but fabrication is often mechanical.",
-    notes: "Use Tg/softening behavior rather than a simple melt point; Tg is commonly around 146 °C (295 °F).",
+    weldNotes:
+        "Plastic welding is possible in some cases, but fabrication is often mechanical.",
+    notes:
+        "Use Tg/softening behavior rather than a simple melt point; Tg is commonly around 146 °C (295 °F).",
   ),
 
   MaterialSpec(
@@ -529,11 +563,9 @@ const materials = <MaterialSpec>[
     category: MaterialCategory.plastic,
     densityKgM3: 1270,
     thermalExpansionMicroInInF: 50.0,
-    commonUse: "Printed parts, clear guards, thermoformed parts, general prototypes",
-    strength: StrengthProps(
-      yieldPsi: 6960,
-      yieldMpa: 48.0,
-    ),
+    commonUse:
+        "Printed parts, clear guards, thermoformed parts, general prototypes",
+    strength: StrengthProps(yieldPsi: 6960, yieldMpa: 48.0),
     hardness: HardnessRange(scale: "Shore D", min: 70, max: 80),
     machining: MachineProps(
       machinabilityPercent: 70,
@@ -542,7 +574,8 @@ const materials = <MaterialSpec>[
     ),
     weldability: WeldabilityRating.fair,
     weldNotes: "Not a common structural welding plastic in shop use.",
-    notes: "Often treated more by Tg/softening than a single true melt point in shop reference use.",
+    notes:
+        "Often treated more by Tg/softening than a single true melt point in shop reference use.",
   ),
 
   MaterialSpec(
@@ -552,14 +585,12 @@ const materials = <MaterialSpec>[
     thermalExpansionMicroInInF: 70.0,
     commonUse: "Cutting boards, tanks, wear surfaces, chemical-resistant parts",
     melting: TempRange(minF: 244, maxF: 279, minC: 118, maxC: 137),
-    strength: StrengthProps(
-      yieldPsi: 3800,
-      yieldMpa: 26.2,
-    ),
+    strength: StrengthProps(yieldPsi: 3800, yieldMpa: 26.2),
     hardness: HardnessRange(scale: "Shore D", min: 60, max: 70),
     machining: MachineProps(
       machinabilityPercent: 85,
-      sfmNotes: "High SFM possible, but support the work and control chip/stringing.",
+      sfmNotes:
+          "High SFM possible, but support the work and control chip/stringing.",
       notes: "Soft, tough, and slippery. Great chemical resistance.",
     ),
     weldability: WeldabilityRating.good,
@@ -572,21 +603,21 @@ const materials = <MaterialSpec>[
     category: MaterialCategory.plastic,
     densityKgM3: 930,
     thermalExpansionMicroInInF: 100.0,
-    commonUse: "Wear strips, sliders, low-friction liners, impact/abrasion parts",
+    commonUse:
+        "Wear strips, sliders, low-friction liners, impact/abrasion parts",
     melting: TempRange(minF: 271, maxF: 271, minC: 133, maxC: 133),
-    strength: StrengthProps(
-      yieldPsi: 2900,
-      yieldMpa: 20.0,
-    ),
+    strength: StrengthProps(yieldPsi: 2900, yieldMpa: 20.0),
     hardness: HardnessRange(scale: "Shore D", min: 63, max: 70),
     machining: MachineProps(
       machinabilityPercent: 85,
-      sfmNotes: "Machines easily but can deflect; use sharp tools and good support.",
+      sfmNotes:
+          "Machines easily but can deflect; use sharp tools and good support.",
       notes: "Very slippery and impact resistant, but not very stiff.",
     ),
     weldability: WeldabilityRating.fair,
     weldNotes: "Can be welded in some plastic-fabrication processes.",
-    notes: "Excellent wear material; not great when tight stiffness/tolerance is required.",
+    notes:
+        "Excellent wear material; not great when tight stiffness/tolerance is required.",
   ),
 
   MaterialSpec(
@@ -595,10 +626,7 @@ const materials = <MaterialSpec>[
     densityKgM3: 1400,
     thermalExpansionMicroInInF: 28.0,
     commonUse: "Piping, guards, utility panels, chemical-resistant sheet",
-    strength: StrengthProps(
-      yieldPsi: 6150,
-      yieldMpa: 42.4,
-    ),
+    strength: StrengthProps(yieldPsi: 6150, yieldMpa: 42.4),
     hardness: HardnessRange(scale: "Shore D", min: 75, max: 85),
     machining: MachineProps(
       machinabilityPercent: 75,
@@ -606,12 +634,13 @@ const materials = <MaterialSpec>[
       notes: "Rigid PVC machines fairly well in sheet/rod form.",
     ),
     weldability: WeldabilityRating.good,
-    weldNotes: "PVC sheet and pipe can be plastic welded in fabrication settings.",
-    notes: "Better treated by softening/Tg behavior than a clean metal-style melt point in a quick reference page.",
+    weldNotes:
+        "PVC sheet and pipe can be plastic welded in fabrication settings.",
+    notes:
+        "Better treated by softening/Tg behavior than a clean metal-style melt point in a quick reference page.",
   ),
-  
+
   // ---- Woods ----
-  
   MaterialSpec(
     name: "Pine (Eastern White Pine)",
     category: MaterialCategory.wood,
@@ -622,11 +651,14 @@ const materials = <MaterialSpec>[
     hardness: HardnessRange(scale: "Janka lbf", min: 380, max: 380),
     machining: MachineProps(
       machinabilityPercent: 85,
-      sfmNotes: "Very easy to cut; sharp tools reduce tear-out and fuzzy grain.",
-      notes: "Soft, light, easy to work. Watch denting and compression under clamps.",
+      sfmNotes:
+          "Very easy to cut; sharp tools reduce tear-out and fuzzy grain.",
+      notes:
+          "Soft, light, easy to work. Watch denting and compression under clamps.",
     ),
     weldability: WeldabilityRating.notRecommended,
-    notes: "Good utility wood when weight and cost matter more than wear resistance.",
+    notes:
+        "Good utility wood when weight and cost matter more than wear resistance.",
   ),
 
   MaterialSpec(
@@ -634,16 +666,19 @@ const materials = <MaterialSpec>[
     category: MaterialCategory.wood,
     densityKgM3: 380,
     thermalExpansionMicroInInF: 1.7,
-    commonUse: "Outdoor projects, trim, weather-resistant parts, light structures",
+    commonUse:
+        "Outdoor projects, trim, weather-resistant parts, light structures",
     strength: StrengthProps(),
     hardness: HardnessRange(scale: "Janka lbf", min: 350, max: 350),
     machining: MachineProps(
       machinabilityPercent: 85,
       sfmNotes: "Cuts easily; soft fibers can crush or fuzz with dull tooling.",
-      notes: "Lightweight, rot resistant, easy to machine, but not a high-strength wood.",
+      notes:
+          "Lightweight, rot resistant, easy to machine, but not a high-strength wood.",
     ),
     weldability: WeldabilityRating.notRecommended,
-    notes: "Good for outdoor utility use; softer and weaker than most hardwoods.",
+    notes:
+        "Good for outdoor utility use; softer and weaker than most hardwoods.",
   ),
 
   MaterialSpec(
@@ -651,16 +686,19 @@ const materials = <MaterialSpec>[
     category: MaterialCategory.wood,
     densityKgM3: 450,
     thermalExpansionMicroInInF: 2.0,
-    commonUse: "Paint-grade parts, drawer parts, templates, general shop builds",
+    commonUse:
+        "Paint-grade parts, drawer parts, templates, general shop builds",
     strength: StrengthProps(),
     hardness: HardnessRange(scale: "Janka lbf", min: 540, max: 540),
     machining: MachineProps(
       machinabilityPercent: 85,
       sfmNotes: "Easy machining; cuts cleanly with sharp tools.",
-      notes: "A very friendly hardwood for general shop use, but not highly wear resistant.",
+      notes:
+          "A very friendly hardwood for general shop use, but not highly wear resistant.",
     ),
     weldability: WeldabilityRating.notRecommended,
-    notes: "Great low-cost hardwood for utility parts and paint-grade projects.",
+    notes:
+        "Great low-cost hardwood for utility parts and paint-grade projects.",
   ),
 
   MaterialSpec(
@@ -674,7 +712,8 @@ const materials = <MaterialSpec>[
     machining: MachineProps(
       machinabilityPercent: 75,
       sfmNotes: "Machines well; sharp tooling helps reduce burn and tear-out.",
-      notes: "Dense and stable enough for many shop fixtures and working surfaces.",
+      notes:
+          "Dense and stable enough for many shop fixtures and working surfaces.",
     ),
     weldability: WeldabilityRating.notRecommended,
     notes: "Good balance of hardness, cost, and workability.",
@@ -690,11 +729,14 @@ const materials = <MaterialSpec>[
     hardness: HardnessRange(scale: "Janka lbf", min: 1450, max: 1450),
     machining: MachineProps(
       machinabilityPercent: 70,
-      sfmNotes: "Machines well with sharp tools; can burn if feeds are too light.",
-      notes: "Hard, dense, and durable. Excellent for wear-resistant wood parts.",
+      sfmNotes:
+          "Machines well with sharp tools; can burn if feeds are too light.",
+      notes:
+          "Hard, dense, and durable. Excellent for wear-resistant wood parts.",
     ),
     weldability: WeldabilityRating.notRecommended,
-    notes: "Very good shop wood when you need stiffness and surface durability.",
+    notes:
+        "Very good shop wood when you need stiffness and surface durability.",
   ),
 
   MaterialSpec(
@@ -702,16 +744,19 @@ const materials = <MaterialSpec>[
     category: MaterialCategory.wood,
     densityKgM3: 560,
     thermalExpansionMicroInInF: 2.0,
-    commonUse: "Furniture, handles, trim, shop projects where clean finish matters",
+    commonUse:
+        "Furniture, handles, trim, shop projects where clean finish matters",
     strength: StrengthProps(),
     hardness: HardnessRange(scale: "Janka lbf", min: 950, max: 950),
     machining: MachineProps(
       machinabilityPercent: 80,
       sfmNotes: "Machines very nicely; sands and finishes well.",
-      notes: "Stable and pleasant to work, with lower wear resistance than maple or oak.",
+      notes:
+          "Stable and pleasant to work, with lower wear resistance than maple or oak.",
     ),
     weldability: WeldabilityRating.notRecommended,
-    notes: "Excellent finish wood and still useful for many durable shop parts.",
+    notes:
+        "Excellent finish wood and still useful for many durable shop parts.",
   ),
 
   MaterialSpec(
@@ -736,16 +781,19 @@ const materials = <MaterialSpec>[
     category: MaterialCategory.wood,
     densityKgM3: 690,
     thermalExpansionMicroInInF: 2.2,
-    commonUse: "Tool handles, impact-resistant parts, shop handles, bats, shafts",
+    commonUse:
+        "Tool handles, impact-resistant parts, shop handles, bats, shafts",
     strength: StrengthProps(),
     hardness: HardnessRange(scale: "Janka lbf", min: 1320, max: 1320),
     machining: MachineProps(
       machinabilityPercent: 75,
       sfmNotes: "Machines well; good choice where toughness matters.",
-      notes: "Excellent shock resistance. Great for handles and impact-use parts.",
+      notes:
+          "Excellent shock resistance. Great for handles and impact-use parts.",
     ),
     weldability: WeldabilityRating.notRecommended,
-    notes: "One of the best woods for handles and parts that see repeated shock.",
+    notes:
+        "One of the best woods for handles and parts that see repeated shock.",
   ),
 
   MaterialSpec(
@@ -758,8 +806,10 @@ const materials = <MaterialSpec>[
     hardness: HardnessRange(scale: "Janka lbf", min: 1220, max: 1220),
     machining: MachineProps(
       machinabilityPercent: 70,
-      sfmNotes: "Machines well but open grain can splinter/tear with dull tooling.",
-      notes: "Strong and common. Open grain can affect finish and edge behavior.",
+      sfmNotes:
+          "Machines well but open grain can splinter/tear with dull tooling.",
+      notes:
+          "Strong and common. Open grain can affect finish and edge behavior.",
     ),
     weldability: WeldabilityRating.notRecommended,
     notes: "A solid general hardwood when you want toughness and availability.",
@@ -770,16 +820,19 @@ const materials = <MaterialSpec>[
     category: MaterialCategory.wood,
     densityKgM3: 770,
     thermalExpansionMicroInInF: 2.7,
-    commonUse: "Heavy-duty fixtures, outdoor projects, durable furniture, wear parts",
+    commonUse:
+        "Heavy-duty fixtures, outdoor projects, durable furniture, wear parts",
     strength: StrengthProps(),
     hardness: HardnessRange(scale: "Janka lbf", min: 1360, max: 1360),
     machining: MachineProps(
       machinabilityPercent: 68,
-      sfmNotes: "Machines well with sharp tooling; denser and tougher than red oak.",
+      sfmNotes:
+          "Machines well with sharp tooling; denser and tougher than red oak.",
       notes: "Closed pores improve moisture resistance compared with red oak.",
     ),
     weldability: WeldabilityRating.notRecommended,
-    notes: "Excellent durable hardwood when you want weight, hardness, and weather resistance.",
+    notes:
+        "Excellent durable hardwood when you want weight, hardness, and weather resistance.",
   ),
 
   MaterialSpec(
@@ -787,13 +840,16 @@ const materials = <MaterialSpec>[
     category: MaterialCategory.wood,
     densityKgM3: 830,
     thermalExpansionMicroInInF: 2.1,
-    commonUse: "Hammer handles, axe handles, impact tools, very tough wear parts",
+    commonUse:
+        "Hammer handles, axe handles, impact tools, very tough wear parts",
     strength: StrengthProps(),
     hardness: HardnessRange(scale: "Janka lbf", min: 1820, max: 1820),
     machining: MachineProps(
       machinabilityPercent: 60,
-      sfmNotes: "Tough cutting; use sharp tools, firm setup, and expect higher cutting force.",
-      notes: "Extremely tough and shock resistant, but harder on tooling than many woods.",
+      sfmNotes:
+          "Tough cutting; use sharp tools, firm setup, and expect higher cutting force.",
+      notes:
+          "Extremely tough and shock resistant, but harder on tooling than many woods.",
     ),
     weldability: WeldabilityRating.notRecommended,
     notes: "Top-tier handle wood when you want shock resistance and toughness.",
@@ -806,17 +862,14 @@ const materials = <MaterialSpec>[
     densityKgM3: 2400,
     thermalExpansionMicroInInF: 5.5,
     commonUse: "Slabs, foundations, walls, pads, general construction",
-    strength: StrengthProps(
-      yieldPsi: null,
-      tensilePsi: null,
-    ),
+    strength: StrengthProps(yieldPsi: null, tensilePsi: null),
     hardness: HardnessRange(scale: "Compressive psi", min: 3000, max: 5000),
     machining: MachineProps(
-      notes: "Cut or drill with masonry/diamond tooling; aggregate and reinforcement affect workability.",
+      notes:
+          "Cut or drill with masonry/diamond tooling; aggregate and reinforcement affect workability.",
     ),
     weldability: WeldabilityRating.notRecommended,
-    notes: "Thermal expansion varies with aggregate, moisture, mix, and reinforcement. 5.5 µin/in/°F is a practical normal-weight concrete estimate.",
+    notes:
+        "Thermal expansion varies with aggregate, moisture, mix, and reinforcement. 5.5 µin/in/°F is a practical normal-weight concrete estimate.",
   ),
-
 ];
-

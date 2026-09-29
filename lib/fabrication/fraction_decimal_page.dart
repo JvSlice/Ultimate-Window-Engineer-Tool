@@ -1,4 +1,3 @@
-//place holder to drop codeimport 'package:flutter/material.dart';
 import 'package:flutter/material.dart';
 import '../../terminal_scaffold.dart';
 import '../../widgets/terminal_fields.dart';
@@ -283,6 +282,7 @@ class _FractionDecimalPageState extends State<FractionDecimalPage> {
               label: _inputLabel,
               hint: _hintText,
               controller: inputCtrl,
+              keyboardType: TextInputType.text,
             ),
 
             const SizedBox(height: 16),

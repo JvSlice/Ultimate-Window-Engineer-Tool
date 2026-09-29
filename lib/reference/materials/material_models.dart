@@ -1,4 +1,4 @@
-enum MaterialCategory { steel, aluminum, plastic, wood, masonry }
+enum MaterialCategory { steel, aluminum, nonFerrous, plastic, wood, masonry }
 
 enum WeldabilityRating { excellent, good, fair, poor, notRecommended }
 
@@ -71,7 +71,8 @@ class MaterialSpec {
   final MaterialCategory category;
   final String? commonUse;
   final double densityKgM3; // base storage
-  final double? thermalExpansionMicroInInF; // coefficient of linear thermal expansion, µin/in/°F
+  final double?
+  thermalExpansionMicroInInF; // coefficient of linear thermal expansion, µin/in/°F
   final StrengthProps? strength;
   final HardnessRange? hardness;
   final MachineProps? machining;

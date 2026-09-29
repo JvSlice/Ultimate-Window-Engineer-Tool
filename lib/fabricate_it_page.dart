@@ -6,6 +6,7 @@ import 'terminal_scaffold.dart';
 import 'fabrication/drill_index_page.dart';
 import 'fabrication/weld_it_page.dart';
 import 'fabrication/fraction_decimal_page.dart';
+import 'fabrication/lathe_speed_feed_page.dart';
 
 // import 'drill_tap_selector_page';
 import 'fabrication/speed_feed_page.dart';
@@ -73,6 +74,21 @@ class _FabricateItBody extends StatelessWidget {
                   Navigator.push(
                     context,
                     MaterialPageRoute(builder: (_) => const SpeedFeedPage()),
+                  );
+                },
+              ),
+              const SizedBox(height: 12),
+
+              TerminalMenuButton(
+                accent: accent,
+                label: "Lathe Speed & Feed",
+                sublabel: "turning RPM and feed rate",
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => const LatheSpeedFeedPage(),
+                    ),
                   );
                 },
               ),

@@ -4,6 +4,7 @@ import '../../widgets/terminal_fields.dart';
 import 'material_data.dart';
 import 'material_models.dart';
 import 'material_details_page.dart';
+import 'material_compare_page.dart';
 
 class MaterialReferencePage extends StatefulWidget {
   const MaterialReferencePage({super.key});
@@ -39,11 +40,12 @@ class _MaterialReferencePageState extends State<MaterialReferencePage> {
     final accent = Theme.of(context).colorScheme.primary;
     final query = searchCtrl.text.trim();
 
-    final list = materials
-        .where((m) => filter == null ? true : m.category == filter)
-        .where((m) => _matchesSearch(m, query))
-        .toList()
-      ..sort((a, b) => a.name.compareTo(b.name));
+    final list =
+        materials
+            .where((m) => filter == null ? true : m.category == filter)
+            .where((m) => _matchesSearch(m, query))
+            .toList()
+          ..sort((a, b) => a.name.compareTo(b.name));
 
     return TerminalScaffold(
       title: "Material Reference",
@@ -54,6 +56,29 @@ class _MaterialReferencePageState extends State<MaterialReferencePage> {
             Text(
               "Search by material, category, use, or notes.",
               style: TextStyle(color: accent.withValues(alpha: 0.75)),
+            ),
+            const SizedBox(height: 14),
+
+            SizedBox(
+              width: double.infinity,
+              child: OutlinedButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => const MaterialComparePage(),
+                    ),
+                  );
+                },
+                style: OutlinedButton.styleFrom(
+                  side: BorderSide(color: accent, width: 2),
+                  padding: const EdgeInsets.symmetric(vertical: 14),
+                ),
+                child: Text(
+                  "Compare Materials",
+                  style: TextStyle(color: accent, fontWeight: FontWeight.w800),
+                ),
+              ),
             ),
             const SizedBox(height: 14),
 
@@ -99,6 +124,7 @@ class _MaterialReferencePageState extends State<MaterialReferencePage> {
                 _filterChip(accent, "ALL", null),
                 _filterChip(accent, "STEEL", MaterialCategory.steel),
                 _filterChip(accent, "ALUMINUM", MaterialCategory.aluminum),
+                _filterChip(accent, "NON-FERROUS", MaterialCategory.nonFerrous),
                 _filterChip(accent, "PLASTIC", MaterialCategory.plastic),
                 _filterChip(accent, "WOOD", MaterialCategory.wood),
                 _filterChip(accent, "MASONRY", MaterialCategory.masonry),
@@ -121,9 +147,7 @@ class _MaterialReferencePageState extends State<MaterialReferencePage> {
             if (list.isEmpty)
               terminalResultCard(
                 accent: accent,
-                lines: const [
-                  "No materials matched your search.",
-                ],
+                lines: const ["No materials matched your search."],
               )
             else
               ...list.map((m) => _materialTile(context, accent, m)),
@@ -160,9 +184,7 @@ class _MaterialReferencePageState extends State<MaterialReferencePage> {
         onPressed: () {
           Navigator.push(
             context,
-            MaterialPageRoute(
-              builder: (_) => MaterialDetailPage(material: m),
-            ),
+            MaterialPageRoute(builder: (_) => MaterialDetailPage(material: m)),
           );
         },
         style: OutlinedButton.styleFrom(
@@ -174,10 +196,7 @@ class _MaterialReferencePageState extends State<MaterialReferencePage> {
             Expanded(
               child: Text(
                 m.name,
-                style: TextStyle(
-                  color: accent,
-                  fontWeight: FontWeight.w800,
-                ),
+                style: TextStyle(color: accent, fontWeight: FontWeight.w800),
               ),
             ),
             Text(
