@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:ultimate_window_engineer_tool/analytics/analytics_service.dart';
 import 'package:ultimate_window_engineer_tool/conversions/unit_conversions.dart';
 import 'terminal_scaffold.dart';
 
@@ -191,6 +192,12 @@ class _ConvertItBodyState extends State<ConvertItBody>
       result = converted;
       copyValue = converted.split(" ").first;
     });
+
+    AnalyticsService.instance.logConversionPerformed(
+      toolLabel: selectedTool.label,
+      category: categoryLabel(selectedTool.category),
+      direction: direction == Direction.to ? 'to' : 'from',
+    );
   }
 
   Future<void> copyResult() async {

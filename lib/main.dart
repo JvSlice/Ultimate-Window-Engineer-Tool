@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import 'analytics/analytics_service.dart';
 import 'app_theme.dart';
 import 'splash_page.dart';
 //commet to get code to rerun
@@ -9,6 +10,10 @@ Future<void> main() async {
 
   final themeController = AppThemeController();
   await themeController.load();
+  await AnalyticsService.instance.initialize();
+  await AnalyticsService.instance.logAppOpened();
+  await AnalyticsService.instance.logSessionStarted();
+  await AnalyticsService.instance.logEvent(AnalyticsEvent.appVersion);
 
   runApp(MyApp(themeController: themeController));
 }

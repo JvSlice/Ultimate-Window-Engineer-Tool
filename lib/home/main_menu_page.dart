@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../analytics/analytics_service.dart';
 import '../app_theme.dart';
 import '../convert_it_page.dart';
 import '../fabricate_it_page.dart';
@@ -31,6 +32,7 @@ class _MainMenuPageState extends State<MainMenuPage> {
 
   late final MainMenuSearchEngine _searchEngine;
   late final List<SearchEntry> _searchEntries;
+  String _lastLoggedSearchQuery = '';
 
   @override
   void initState() {
@@ -54,7 +56,10 @@ class _MainMenuPageState extends State<MainMenuPage> {
     super.dispose();
   }
 
-  void _openPage(Widget page) {
+  void _openPage(Widget page, {String? title, String? source}) {
+    if (title != null) {
+      AnalyticsService.instance.logToolOpened(title, source: source);
+    }
     Navigator.of(context).push(MaterialPageRoute(builder: (_) => page));
   }
 
@@ -85,19 +90,47 @@ class _MainMenuPageState extends State<MainMenuPage> {
 
   void _openSearchEntry(SearchEntry entry) {
     _closeSearch();
-    _openPage(entry.builder(context));
+    _openPage(entry.builder(context), title: entry.title, source: 'search');
   }
 
   List<SearchHit> _buildSearchHits() {
-    return _searchEngine.buildHits(
-      query: _searchController.text,
+    final query = _searchController.text;
+    final hits = _searchEngine.buildHits(
+      query: query,
       entries: _searchEntries,
       onOpenEntry: _openSearchEntry,
       onOpenConvertIt: () {
         _closeSearch();
-        _openPage(const ConverItPage());
+        _openPage(const ConverItPage(), title: 'Convert It', source: 'search');
       },
     );
+
+    final trimmed = query.trim();
+    if (trimmed.isNotEmpty && trimmed != _lastLoggedSearchQuery) {
+      _lastLoggedSearchQuery = trimmed;
+      AnalyticsService.instance.logSearchPerformed(
+        query: trimmed,
+        resultCount: hits.length,
+      );
+    }
+
+    return [
+      for (var i = 0; i < hits.length; i++)
+        SearchHit(
+          title: hits[i].title,
+          category: hits[i].category,
+          description: hits[i].description,
+          kindLabel: hits[i].kindLabel,
+          onTap: () {
+            AnalyticsService.instance.logSearchResultSelected(
+              resultTitle: hits[i].title,
+              resultType: hits[i].kindLabel,
+              position: i + 1,
+            );
+            hits[i].onTap();
+          },
+        ),
+    ];
   }
 
   @override
@@ -199,16 +232,22 @@ class _MainMenuPageState extends State<MainMenuPage> {
                   childAspectRatio: isCompact ? 1.35 : 1.6,
                   children: [
                     terminalButton(context, "Convert it", () {
-                      _openPage(const ConverItPage());
+                      _openPage(const ConverItPage(), title: 'Convert It');
                     }),
                     terminalButton(context, "Fabricate it", () {
-                      _openPage(const FabricateItPage());
+                      _openPage(const FabricateItPage(), title: 'Fabricate It');
                     }),
                     terminalButton(context, "Reference it", () {
-                      _openPage(const ReferenceHomePage());
+                      _openPage(
+                        const ReferenceHomePage(),
+                        title: 'Reference It',
+                      );
                     }),
                     terminalButton(context, "Window Testing Tools", () {
-                      _openPage(const WindowTestingToolsPage());
+                      _openPage(
+                        const WindowTestingToolsPage(),
+                        title: 'Window Testing Tools',
+                      );
                     }),
                   ],
                 ),
@@ -221,7 +260,7 @@ class _MainMenuPageState extends State<MainMenuPage> {
                     icon: Icons.videogame_asset_outlined,
                     label: "FUN?",
                     onPressed: () {
-                      _openPage(const FunLinksPage());
+                      _openPage(const FunLinksPage(), title: 'FUN?');
                     },
                   ),
                   bottomCornerButton(
@@ -230,6 +269,7 @@ class _MainMenuPageState extends State<MainMenuPage> {
                     onPressed: () {
                       _openPage(
                         SettingsPage(themeController: widget.themeController),
+                        title: 'Settings',
                       );
                     },
                   ),

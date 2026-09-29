@@ -1,14 +1,27 @@
 import 'package:flutter/material.dart';
 
-class TerminalScaffold extends StatelessWidget {
+import 'analytics/analytics_service.dart';
+
+class TerminalScaffold extends StatefulWidget {
   final Widget child;
   final String title;
 
-  const TerminalScaffold({
-    super.key,
-    required this.child,
-    required this.title,
-  });
+  const TerminalScaffold({super.key, required this.child, required this.title});
+
+  @override
+  State<TerminalScaffold> createState() => _TerminalScaffoldState();
+}
+
+class _TerminalScaffoldState extends State<TerminalScaffold> {
+  bool _loggedPageView = false;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (_loggedPageView) return;
+    _loggedPageView = true;
+    AnalyticsService.instance.logPageViewed(widget.title);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -25,10 +38,7 @@ class TerminalScaffold extends StatelessWidget {
                 gradient: RadialGradient(
                   center: Alignment.center,
                   radius: 1.2,
-                  colors: [
-                    Colors.black,
-                    accent.withValues(alpha: 0.08),
-                  ],
+                  colors: [Colors.black, accent.withValues(alpha: 0.08)],
                 ),
               ),
             ),
@@ -37,9 +47,7 @@ class TerminalScaffold extends StatelessWidget {
           // Scanlines
           Positioned.fill(
             child: IgnorePointer(
-              child: CustomPaint(
-                painter: ScanlinesPainter(accent: accent),
-              ),
+              child: CustomPaint(painter: ScanlinesPainter(accent: accent)),
             ),
           ),
 
@@ -60,8 +68,9 @@ class TerminalScaffold extends StatelessWidget {
                         child: IconButton(
                           icon: Icon(Icons.menu, color: accent),
                           onPressed: () {
-                            Navigator.of(context)
-                                .popUntil((route) => route.isFirst);
+                            Navigator.of(
+                              context,
+                            ).popUntil((route) => route.isFirst);
                           },
                         ),
                       ),
@@ -69,7 +78,7 @@ class TerminalScaffold extends StatelessWidget {
                       // CENTER: Title
                       Expanded(
                         child: Text(
-                          title,
+                          widget.title,
                           textAlign: TextAlign.center,
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
@@ -86,18 +95,14 @@ class TerminalScaffold extends StatelessWidget {
                         width: 48,
                         child: Builder(
                           builder: (context) {
-                            final canPop =
-                                Navigator.of(context).canPop();
+                            final canPop = Navigator.of(context).canPop();
 
                             if (!canPop) {
                               return const SizedBox.shrink();
                             }
 
                             return IconButton(
-                              icon: Icon(
-                                Icons.arrow_back,
-                                color: accent,
-                              ),
+                              icon: Icon(Icons.arrow_back, color: accent),
                               onPressed: () {
                                 Navigator.of(context).pop();
                               },
@@ -110,7 +115,7 @@ class TerminalScaffold extends StatelessWidget {
                 ),
 
                 // ===== PAGE CONTENT =====
-                Expanded(child: child),
+                Expanded(child: widget.child),
               ],
             ),
           ),
@@ -132,11 +137,7 @@ class ScanlinesPainter extends CustomPainter {
       ..strokeWidth = 1;
 
     for (double y = 0; y < size.height; y += 4) {
-      canvas.drawLine(
-        Offset(0, y),
-        Offset(size.width, y),
-        paint,
-      );
+      canvas.drawLine(Offset(0, y), Offset(size.width, y), paint);
     }
   }
 

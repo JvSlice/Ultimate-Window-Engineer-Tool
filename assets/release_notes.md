@@ -1,5 +1,20 @@
 # Ultimate Window Engineer Release Notes
 
+## v1.0.5
+
+Released: 2026-08-06
+
+Build: 6
+
+### Added
+
+* Added a privacy-focused anonymous analytics foundation to help guide future UWE improvements.
+* Added an Analytics preference in Settings so anonymous usage analytics can be disabled.
+
+### Improved
+
+* Analytics now tracks high-level app usage such as page views, tool opens, searches, and conversions without collecting engineering inputs or raw search text.
+
 ## v1.0.4
 
 Released: 2026-08-05

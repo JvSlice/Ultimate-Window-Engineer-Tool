@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'analytics/analytics_service.dart';
 import 'app_theme.dart';
 import 'home/main_menu_page.dart';
 import 'release_notes/release_note.dart';
@@ -57,6 +58,8 @@ class _SplashPageState extends State<SplashPage> {
       _latestNote = notes.isEmpty ? null : notes.first;
       _ready = true;
     });
+
+    AnalyticsService.instance.logUserAction(AnalyticsEvent.whatsNewViewed);
 
     _timer = Timer(const Duration(seconds: 5), _finishSplash);
   }
