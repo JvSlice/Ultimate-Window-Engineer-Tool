@@ -37,6 +37,7 @@ import '../../window_testing_tools/spray_rack_pump_sizing_page.dart';
 import '../../reference/forklift_load_calculator_page.dart';
 import '../../reference/forklift_suspended_boom_calculator_page.dart';
 import '../../reference/fastener_torque_chart_page.dart';
+import '../../reference/forge_calculator_page.dart';
 import '../../reference/geometry_page.dart';
 import '../../reference/geometry_2d_page.dart';
 import '../../reference/geometry_3d_page.dart';
@@ -494,6 +495,27 @@ List<SearchEntry> buildSearchRegistry(AppThemeController themeController) {
       aliases: ['engineering equations'],
       routeId: 'reference.physics-equations',
       builder: (_) => const PhysicsEquationsPage(),
+    ),
+    SearchEntry(
+      title: 'Forge Calculator',
+      category: 'Reference',
+      description:
+          'Calculate starting stock cutoff length for forging with material loss.',
+      tags: [
+        'forge',
+        'forging',
+        'blacksmith',
+        'bladesmith',
+        'drawing out',
+        'draw length',
+        'cutoff length',
+        'starting stock',
+        'material volume',
+        'stock calculation',
+      ],
+      aliases: ['forging calculator', 'forge stock calculator'],
+      routeId: 'reference.forge-calculator',
+      builder: (_) => const ForgeCalculatorPage(),
     ),
     SearchEntry(
       title: 'Torque & Power',

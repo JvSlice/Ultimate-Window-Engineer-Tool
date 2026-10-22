@@ -1,5 +1,17 @@
 # Ultimate Window Engineer Release Notes
 
+## v1.0.6
+
+Released: 2026-10-22
+
+Build: 7
+
+### Added
+
+* Added a Forge Calculator under Reference It to find starting stock cutoff length from finished dimensions and stock cross-section.
+* Added Imperial and Metric input, adjustable material loss, live results, and approximate fractional-inch display to the Forge Calculator.
+* Added Forge Calculator to search with blacksmithing, drawing-out, cutoff-length, and stock terms.
+
 ## v1.0.5
 
 Released: 2026-08-06

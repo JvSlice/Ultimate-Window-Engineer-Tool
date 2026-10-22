@@ -7,6 +7,7 @@ import 'eletrical_tools/eletrical_tools_page.dart';
 import 'forklift_load_calculator_page.dart';
 import 'forklift_suspended_boom_calculator_page.dart';
 import 'fastener_torque_chart_page.dart';
+import 'forge_calculator_page.dart';
 import 'rigging/rigging_home_page.dart';
 
 class ReferenceHomePage extends StatelessWidget {
@@ -92,6 +93,10 @@ class ReferenceHomePage extends StatelessWidget {
           const SizedBox(height: 14),
           terminalButton("Fastener Torque Chart", () {
             _open(context, const FastenerTorqueChartPage());
+          }),
+          const SizedBox(height: 14),
+          terminalButton("Forge Calculator", () {
+            _open(context, const ForgeCalculatorPage());
           }),
         ],
       ),

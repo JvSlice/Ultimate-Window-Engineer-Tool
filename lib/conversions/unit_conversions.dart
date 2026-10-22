@@ -17,6 +17,9 @@ enum ConversionCategory {
 
 enum Direction { to, from }
 
+double inchesToMillimeters(double inches) => inches * 25.4;
+double millimetersToInches(double millimeters) => millimeters / 25.4;
+
 String categoryLabel(ConversionCategory c) {
   switch (c) {
     case ConversionCategory.pressureAir:
@@ -201,8 +204,8 @@ final List<ConversionTool> conversionTools = [
     category: ConversionCategory.length,
     toUnit: "in",
     fromUnit: "mm",
-    toFn: (input) => input / 25.4,
-    fromFn: (input) => input * 25.4,
+    toFn: millimetersToInches,
+    fromFn: inchesToMillimeters,
   ),
   ConversionTool(
     label: "Feet ↔ Meters",

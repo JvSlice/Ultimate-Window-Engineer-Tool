@@ -23,7 +23,7 @@ class _SplashPageState extends State<SplashPage> {
   static const _seenVersionKey = 'last_seen_splash_version';
 
   PackageInfo? _packageInfo;
-  ReleaseNote? _latestNote;
+  ReleaseNote? _versionNote;
   Timer? _timer;
   bool _ready = false;
   bool _navigating = false;
@@ -55,7 +55,11 @@ class _SplashPageState extends State<SplashPage> {
 
     setState(() {
       _packageInfo = info;
-      _latestNote = notes.isEmpty ? null : notes.first;
+      // Show changes for the installed version, even when notes for a newer
+      // version are already present in the asset.
+      _versionNote = notes
+          .where((note) => note.version == 'v${info.version}')
+          .firstOrNull;
       _ready = true;
     });
 
@@ -94,7 +98,7 @@ class _SplashPageState extends State<SplashPage> {
   Widget build(BuildContext context) {
     final accent = Theme.of(context).colorScheme.primary;
     final info = _packageInfo;
-    final note = _latestNote;
+    final note = _versionNote;
 
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
