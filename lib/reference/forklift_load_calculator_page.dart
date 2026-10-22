@@ -655,7 +655,7 @@ class _ForkliftLoadCalculatorPageState extends State<ForkliftLoadCalculatorPage>
                 onSelected: (_) => onChanged(VerticalCgDirection.above),
                 labelStyle: TextStyle(color: accent),
                 selectedColor: accent.withValues(alpha: 0.18),
-                backgroundColor: Colors.black,
+                backgroundColor: Theme.of(context).colorScheme.surfaceContainer,
                 side: BorderSide(color: accent),
               ),
               ChoiceChip(
@@ -664,7 +664,7 @@ class _ForkliftLoadCalculatorPageState extends State<ForkliftLoadCalculatorPage>
                 onSelected: (_) => onChanged(VerticalCgDirection.below),
                 labelStyle: TextStyle(color: accent),
                 selectedColor: accent.withValues(alpha: 0.18),
-                backgroundColor: Colors.black,
+                backgroundColor: Theme.of(context).colorScheme.surfaceContainer,
                 side: BorderSide(color: accent),
               ),
             ],
@@ -908,7 +908,7 @@ class _ForkliftLoadCalculatorPageState extends State<ForkliftLoadCalculatorPage>
       builder: (context) {
         final accent = Theme.of(context).colorScheme.primary;
         return AlertDialog(
-          backgroundColor: Colors.black,
+          backgroundColor: Theme.of(context).colorScheme.surfaceContainer,
           title: Text('Clear all rows?', style: TextStyle(color: accent)),
           content: Text(
             'This will remove all stored chart rows.',
@@ -994,7 +994,7 @@ class _ForkliftLoadCalculatorPageState extends State<ForkliftLoadCalculatorPage>
     final accent = Theme.of(context).colorScheme.primary;
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        backgroundColor: Colors.black,
+        backgroundColor: Theme.of(context).colorScheme.surfaceContainer,
         content: Text(message, style: TextStyle(color: accent)),
       ),
     );

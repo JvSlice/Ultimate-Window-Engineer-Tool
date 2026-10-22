@@ -20,7 +20,8 @@ const List<GasItem> gasGuide = [
     gas: "100% CO₂",
     process: "MIG (GMAW)",
     bestFor: "Steel • deep penetration • budget setups",
-    notes: "More spatter. Good for thicker steel. Typical flow ~20–30 CFH (setup dependent).",
+    notes:
+        "More spatter. Good for thicker steel. Typical flow ~20–30 CFH (setup dependent).",
   ),
   GasItem(
     gas: "75/25 Argon/CO₂",
@@ -58,7 +59,7 @@ class ShieldingGasPage extends StatelessWidget {
     Widget gasCard(GasItem g) {
       return Container(
         decoration: BoxDecoration(
-          color: Colors.black,
+          color: Theme.of(context).colorScheme.surfaceContainer,
           borderRadius: BorderRadius.circular(12),
           border: Border.all(color: accent, width: 2),
           boxShadow: [
@@ -75,14 +76,27 @@ class ShieldingGasPage extends StatelessWidget {
           children: [
             Text(
               g.gas,
-              style: TextStyle(color: accent, fontSize: 17, fontWeight: FontWeight.w900),
+              style: TextStyle(
+                color: accent,
+                fontSize: 17,
+                fontWeight: FontWeight.w900,
+              ),
             ),
             const SizedBox(height: 6),
-            Text("Process: ${g.process}", style: TextStyle(color: accent.withValues(alpha: 0.85))),
+            Text(
+              "Process: ${g.process}",
+              style: TextStyle(color: accent.withValues(alpha: 0.85)),
+            ),
             const SizedBox(height: 6),
-            Text("Best for: ${g.bestFor}", style: TextStyle(color: accent.withValues(alpha: 0.85))),
+            Text(
+              "Best for: ${g.bestFor}",
+              style: TextStyle(color: accent.withValues(alpha: 0.85)),
+            ),
             const SizedBox(height: 6),
-            Text("Notes: ${g.notes}", style: TextStyle(color: accent.withValues(alpha: 0.75))),
+            Text(
+              "Notes: ${g.notes}",
+              style: TextStyle(color: accent.withValues(alpha: 0.75)),
+            ),
           ],
         ),
       );

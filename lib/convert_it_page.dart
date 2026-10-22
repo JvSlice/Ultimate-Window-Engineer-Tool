@@ -331,7 +331,7 @@ class _ConvertItBodyState extends State<ConvertItBody>
                     decoration: BoxDecoration(
                       border: Border.all(color: accent, width: 2),
                       borderRadius: BorderRadius.circular(10),
-                      color: Colors.black,
+                      color: Theme.of(context).colorScheme.surfaceContainer,
                     ),
                     child: DropdownButton<ConversionTool>(
                       value:
@@ -344,7 +344,9 @@ class _ConvertItBodyState extends State<ConvertItBody>
                                 : null),
                       isExpanded: true,
                       underline: const SizedBox(),
-                      dropdownColor: Colors.black,
+                      dropdownColor: Theme.of(
+                        context,
+                      ).colorScheme.surfaceContainer,
                       style: TextStyle(color: accent),
                       iconEnabledColor: accent,
                       onChanged: filteredTools.isEmpty
@@ -411,7 +413,7 @@ class _ConvertItBodyState extends State<ConvertItBody>
                     decoration: BoxDecoration(
                       border: Border.all(color: accent, width: 2),
                       borderRadius: BorderRadius.circular(10),
-                      color: Colors.black,
+                      color: Theme.of(context).colorScheme.surfaceContainer,
                     ),
                     child: Row(
                       children: [

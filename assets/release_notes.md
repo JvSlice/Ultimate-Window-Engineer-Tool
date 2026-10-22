@@ -11,6 +11,7 @@ Build: 7
 * Added a Forge Calculator under Reference It to find starting stock cutoff length from finished dimensions and stock cross-section.
 * Added Imperial and Metric input, adjustable material loss, live results, and approximate fractional-inch display to the Forge Calculator.
 * Added Forge Calculator to search with blacksmithing, drawing-out, cutoff-length, and stock terms.
+* Added a selectable Black & Copper theme with a near-black background and copper accents.
 
 ## v1.0.5
 

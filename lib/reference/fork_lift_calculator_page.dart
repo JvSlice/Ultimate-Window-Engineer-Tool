@@ -10,8 +10,7 @@ class ForkliftLoadCalculatorPage extends StatefulWidget {
       _ForkliftLoadCalculatorPageState();
 }
 
-class _ForkliftLoadCalculatorPageState
-    extends State<ForkliftLoadCalculatorPage>
+class _ForkliftLoadCalculatorPageState extends State<ForkliftLoadCalculatorPage>
     with SingleTickerProviderStateMixin {
   late final TabController _tabController;
 
@@ -26,8 +25,9 @@ class _ForkliftLoadCalculatorPageState
   final TextEditingController _quickAttachmentShiftController =
       TextEditingController(text: '0');
 
-  final TextEditingController _rowMaxHeightController =
-      TextEditingController(text: '189');
+  final TextEditingController _rowMaxHeightController = TextEditingController(
+    text: '189',
+  );
   final TextEditingController _rowRatedCapacityController =
       TextEditingController(text: '9400');
   final TextEditingController _rowRatedLoadCenterController =
@@ -373,8 +373,9 @@ class _ForkliftLoadCalculatorPageState
       title: 'Reference Capacity Table',
       child: Column(
         children: points.map((center) {
-          final capacity =
-              center <= 0 ? 0.0 : math.max(0.0, remainingMoment / center);
+          final capacity = center <= 0
+              ? 0.0
+              : math.max(0.0, remainingMoment / center);
           return Padding(
             padding: const EdgeInsets.symmetric(vertical: 3),
             child: Row(
@@ -387,10 +388,7 @@ class _ForkliftLoadCalculatorPageState
                 ),
                 Text(
                   '${capacity.toStringAsFixed(0)} lb',
-                  style: TextStyle(
-                    color: accent,
-                    fontWeight: FontWeight.bold,
-                  ),
+                  style: TextStyle(color: accent, fontWeight: FontWeight.bold),
                 ),
               ],
             ),
@@ -587,10 +585,7 @@ class _ForkliftLoadCalculatorPageState
           Expanded(
             child: Text(
               label,
-              style: TextStyle(
-                color: accent,
-                fontSize: big ? 16 : 14,
-              ),
+              style: TextStyle(color: accent, fontSize: big ? 16 : 14),
             ),
           ),
           const SizedBox(width: 12),
@@ -640,10 +635,12 @@ class _ForkliftLoadCalculatorPageState
         attachmentPenaltyMoment: result.attachmentPenaltyMoment,
         remainingMoment: result.remainingMoment,
         estimatedCapacityLb: result.estimatedCapacityLb,
-        capacityAt72In:
-            result.remainingMoment <= 0 ? 0 : result.remainingMoment / 72.0,
-        capacityAt84In:
-            result.remainingMoment <= 0 ? 0 : result.remainingMoment / 84.0,
+        capacityAt72In: result.remainingMoment <= 0
+            ? 0
+            : result.remainingMoment / 72.0,
+        capacityAt84In: result.remainingMoment <= 0
+            ? 0
+            : result.remainingMoment / 84.0,
       );
     });
   }
@@ -663,8 +660,7 @@ class _ForkliftLoadCalculatorPageState
       return;
     }
 
-    final actualHeight =
-        _parseDouble(_chartActualHeightController.text) ?? 0.0;
+    final actualHeight = _parseDouble(_chartActualHeightController.text) ?? 0.0;
     final actualLoadCenter =
         _parseDouble(_chartActualLoadCenterController.text) ?? 0.0;
     final attachmentWeight =
@@ -755,11 +751,8 @@ class _ForkliftLoadCalculatorPageState
       builder: (context) {
         final accent = Theme.of(context).colorScheme.primary;
         return AlertDialog(
-          backgroundColor: Colors.black,
-          title: Text(
-            'Clear all rows?',
-            style: TextStyle(color: accent),
-          ),
+          backgroundColor: Theme.of(context).colorScheme.surfaceContainer,
+          title: Text('Clear all rows?', style: TextStyle(color: accent)),
           content: Text(
             'This will remove all stored chart rows.',
             style: TextStyle(color: accent),
@@ -819,9 +812,14 @@ class _ForkliftLoadCalculatorPageState
     final attachmentPenaltyMoment =
         math.max(0.0, attachmentWeightLb) *
         math.max(0.0, attachmentForwardShiftIn);
-    final remainingMoment = math.max(0.0, ratedMoment - attachmentPenaltyMoment);
-    final estimatedCapacityLb =
-        math.max(0.0, remainingMoment / actualLoadCenterIn);
+    final remainingMoment = math.max(
+      0.0,
+      ratedMoment - attachmentPenaltyMoment,
+    );
+    final estimatedCapacityLb = math.max(
+      0.0,
+      remainingMoment / actualLoadCenterIn,
+    );
 
     return _MomentCalcResult(
       ratedMoment: ratedMoment,
@@ -839,11 +837,8 @@ class _ForkliftLoadCalculatorPageState
     final accent = Theme.of(context).colorScheme.primary;
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        backgroundColor: Colors.black,
-        content: Text(
-          message,
-          style: TextStyle(color: accent),
-        ),
+        backgroundColor: Theme.of(context).colorScheme.surfaceContainer,
+        content: Text(message, style: TextStyle(color: accent)),
       ),
     );
   }

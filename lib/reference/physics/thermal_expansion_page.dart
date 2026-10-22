@@ -36,10 +36,9 @@ class _ThermalExpansionPageState extends State<ThermalExpansionPage> {
   }
 
   List<MaterialSpec> get _materialsWithExpansion {
-    final list = materials
-        .where((m) => m.thermalExpansionMicroInInF != null)
-        .toList()
-      ..sort((a, b) => a.name.compareTo(b.name));
+    final list =
+        materials.where((m) => m.thermalExpansionMicroInInF != null).toList()
+          ..sort((a, b) => a.name.compareTo(b.name));
     return list;
   }
 
@@ -97,7 +96,7 @@ class _ThermalExpansionPageState extends State<ThermalExpansionPage> {
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 12),
               decoration: BoxDecoration(
-                color: Colors.black,
+                color: Theme.of(context).colorScheme.surfaceContainer,
                 borderRadius: BorderRadius.circular(10),
                 border: Border.all(
                   color: accent.withValues(alpha: 0.6),
@@ -114,7 +113,7 @@ class _ThermalExpansionPageState extends State<ThermalExpansionPage> {
               child: DropdownButtonHideUnderline(
                 child: DropdownButton<MaterialSpec>(
                   value: selectedMaterial,
-                  dropdownColor: Colors.black,
+                  dropdownColor: Theme.of(context).colorScheme.surfaceContainer,
                   iconEnabledColor: accent,
                   isExpanded: true,
                   style: TextStyle(color: accent),

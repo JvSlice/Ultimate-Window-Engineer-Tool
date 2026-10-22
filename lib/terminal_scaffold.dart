@@ -26,9 +26,10 @@ class _TerminalScaffoldState extends State<TerminalScaffold> {
   @override
   Widget build(BuildContext context) {
     final accent = Theme.of(context).colorScheme.primary;
+    final background = Theme.of(context).colorScheme.surface;
 
     return Scaffold(
-      backgroundColor: Colors.black,
+      backgroundColor: background,
       body: Stack(
         children: [
           // Background glow
@@ -38,7 +39,7 @@ class _TerminalScaffoldState extends State<TerminalScaffold> {
                 gradient: RadialGradient(
                   center: Alignment.center,
                   radius: 1.2,
-                  colors: [Colors.black, accent.withValues(alpha: 0.08)],
+                  colors: [background, accent.withValues(alpha: 0.08)],
                 ),
               ),
             ),

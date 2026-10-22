@@ -148,7 +148,9 @@ class _DrillTapSelectorPageState extends State<DrillTapSelectorPage> {
               child: DropdownButton<ThreadSpec>(
                 value: selectedThread,
                 isExpanded: true,
-                dropdownColor: Colors.black, // black popup background
+                dropdownColor: Theme.of(
+                  context,
+                ).colorScheme.surfaceContainer, // black popup background
                 iconEnabledColor: accent,
                 underline: const SizedBox(),
 

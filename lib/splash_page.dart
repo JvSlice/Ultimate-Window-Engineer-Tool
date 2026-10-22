@@ -97,6 +97,8 @@ class _SplashPageState extends State<SplashPage> {
   @override
   Widget build(BuildContext context) {
     final accent = Theme.of(context).colorScheme.primary;
+    final background = Theme.of(context).colorScheme.surface;
+    final cardBackground = Theme.of(context).colorScheme.surfaceContainer;
     final info = _packageInfo;
     final note = _versionNote;
 
@@ -106,7 +108,7 @@ class _SplashPageState extends State<SplashPage> {
         if (_ready) _finishSplash();
       },
       child: Scaffold(
-        backgroundColor: Colors.black,
+        backgroundColor: background,
         body: Stack(
           children: [
             Positioned.fill(
@@ -115,7 +117,7 @@ class _SplashPageState extends State<SplashPage> {
                   gradient: RadialGradient(
                     center: Alignment.center,
                     radius: 1.0,
-                    colors: [accent.withValues(alpha: 0.16), Colors.black],
+                    colors: [accent.withValues(alpha: 0.16), background],
                   ),
                 ),
               ),
@@ -163,7 +165,7 @@ class _SplashPageState extends State<SplashPage> {
                               Container(
                                 padding: const EdgeInsets.all(18),
                                 decoration: BoxDecoration(
-                                  color: Colors.black,
+                                  color: cardBackground,
                                   border: Border.all(color: accent, width: 2),
                                   borderRadius: BorderRadius.circular(10),
                                 ),

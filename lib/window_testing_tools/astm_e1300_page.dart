@@ -227,13 +227,13 @@ class _AstmE1300PageState extends State<AstmE1300Page> {
           decoration: BoxDecoration(
             border: Border.all(color: accent, width: 2),
             borderRadius: BorderRadius.circular(10),
-            color: Colors.black,
+            color: Theme.of(context).colorScheme.surfaceContainer,
           ),
           child: DropdownButton<GlassType>(
             value: value,
             isExpanded: true,
             underline: const SizedBox(),
-            dropdownColor: Colors.black,
+            dropdownColor: Theme.of(context).colorScheme.surfaceContainer,
             iconEnabledColor: accent,
             style: TextStyle(color: accent),
             items: GlassType.values.map((g) {

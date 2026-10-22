@@ -91,7 +91,8 @@ class _PipePageState extends State<PipePage> {
         final innerH = outerH - (2 * wall);
 
         if (innerW < 0 || innerH < 0) {
-          warning = "Wall thickness is too large for the entered outer dimensions.";
+          warning =
+              "Wall thickness is too large for the entered outer dimensions.";
           return;
         }
 
@@ -125,11 +126,7 @@ class _PipePageState extends State<PipePage> {
     super.dispose();
   }
 
-  Widget _shapeButton(
-    Color accent,
-    String label,
-    TubeShape value,
-  ) {
+  Widget _shapeButton(Color accent, String label, TubeShape value) {
     final selected = shape == value;
 
     return Expanded(
@@ -142,15 +139,13 @@ class _PipePageState extends State<PipePage> {
         },
         style: OutlinedButton.styleFrom(
           side: BorderSide(color: accent, width: 2),
-          backgroundColor:
-              selected ? accent.withValues(alpha: 0.80) : Colors.transparent,
+          backgroundColor: selected
+              ? accent.withValues(alpha: 0.80)
+              : Colors.transparent,
         ),
         child: Text(
           label,
-          style: TextStyle(
-            color: accent,
-            fontWeight: FontWeight.w800,
-          ),
+          style: TextStyle(color: accent, fontWeight: FontWeight.w800),
         ),
       ),
     );
@@ -235,10 +230,7 @@ class _PipePageState extends State<PipePage> {
 
             Text(
               "Material",
-              style: TextStyle(
-                color: accent,
-                fontWeight: FontWeight.w800,
-              ),
+              style: TextStyle(color: accent, fontWeight: FontWeight.w800),
             ),
             const SizedBox(height: 8),
 
@@ -247,13 +239,13 @@ class _PipePageState extends State<PipePage> {
               decoration: BoxDecoration(
                 border: Border.all(color: accent, width: 2),
                 borderRadius: BorderRadius.circular(10),
-                color: Colors.black,
+                color: Theme.of(context).colorScheme.surfaceContainer,
               ),
               child: DropdownButton<MaterialSpec>(
                 value: selectedMaterial,
                 isExpanded: true,
                 underline: const SizedBox(),
-                dropdownColor: Colors.black,
+                dropdownColor: Theme.of(context).colorScheme.surfaceContainer,
                 iconEnabledColor: accent,
                 style: TextStyle(color: accent),
                 hint: Text(
@@ -263,10 +255,7 @@ class _PipePageState extends State<PipePage> {
                 items: materials.map((m) {
                   return DropdownMenuItem<MaterialSpec>(
                     value: m,
-                    child: Text(
-                      m.name,
-                      style: TextStyle(color: accent),
-                    ),
+                    child: Text(m.name, style: TextStyle(color: accent)),
                   );
                 }).toList(),
                 onChanged: (value) {
@@ -281,10 +270,7 @@ class _PipePageState extends State<PipePage> {
 
             SizedBox(
               width: double.infinity,
-              child: terminalCalcButton(
-                accent: accent,
-                onPressed: _calculate,
-              ),
+              child: terminalCalcButton(accent: accent, onPressed: _calculate),
             ),
 
             const SizedBox(height: 18),

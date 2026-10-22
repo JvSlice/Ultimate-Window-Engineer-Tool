@@ -29,7 +29,7 @@ class _SettingsPageState extends State<SettingsPage> {
             padding: const EdgeInsets.all(16),
             children: [
               Text(
-                "Accent Color",
+                "Appearance / Theme",
                 style: TextStyle(
                   color: accent,
                   fontSize: 20,
@@ -48,7 +48,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 ),
                 alignment: Alignment.center,
                 child: Text(
-                  "Current: ${widget.themeController.accentChoice.name}",
+                  "Current: ${_choiceLabel(widget.themeController.accentChoice)}",
                   style: TextStyle(color: accent, fontWeight: FontWeight.w600),
                 ),
               ),
@@ -86,6 +86,16 @@ class _SettingsPageState extends State<SettingsPage> {
                         AccentChoice.yellow,
                     onPressed: () => widget.themeController.setAccentChoice(
                       AccentChoice.yellow,
+                    ),
+                  ),
+                  _accentButton(
+                    label: "Black & Copper",
+                    accent: accent,
+                    selected:
+                        widget.themeController.accentChoice ==
+                        AccentChoice.blackCopper,
+                    onPressed: () => widget.themeController.setAccentChoice(
+                      AccentChoice.blackCopper,
                     ),
                   ),
                 ],
@@ -193,8 +203,12 @@ class _SettingsPageState extends State<SettingsPage> {
     return OutlinedButton(
       onPressed: onPressed,
       style: OutlinedButton.styleFrom(
-        foregroundColor: selected ? Colors.black : accent,
-        backgroundColor: selected ? accent : Colors.transparent,
+        foregroundColor: selected
+            ? widget.themeController.accentForegroundColor
+            : accent,
+        backgroundColor: selected
+            ? widget.themeController.selectionColor
+            : Colors.transparent,
         side: BorderSide(color: accent, width: 2),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
         padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 14),
@@ -202,4 +216,11 @@ class _SettingsPageState extends State<SettingsPage> {
       child: Text(label, style: const TextStyle(fontWeight: FontWeight.w700)),
     );
   }
+
+  String _choiceLabel(AccentChoice choice) => switch (choice) {
+    AccentChoice.green => 'Green',
+    AccentChoice.red => 'Red',
+    AccentChoice.yellow => 'Yellow',
+    AccentChoice.blackCopper => 'Black & Copper',
+  };
 }

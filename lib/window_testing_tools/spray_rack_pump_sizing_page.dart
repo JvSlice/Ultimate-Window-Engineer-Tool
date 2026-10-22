@@ -97,8 +97,9 @@ class _SprayRackPumpSizingPageState extends State<SprayRackPumpSizingPage> {
 
     _dropsController = TextEditingController(text: '7');
     _nozzlesPerDropController = TextEditingController(text: '7');
-    _spacingInController =
-        TextEditingController(text: defaultSpacingIn.toStringAsFixed(0));
+    _spacingInController = TextEditingController(
+      text: defaultSpacingIn.toStringAsFixed(0),
+    );
 
     _supplyLengthFtController = TextEditingController(text: '20');
     _supplyLengthInController = TextEditingController(text: '0');
@@ -414,7 +415,9 @@ class _SprayRackPumpSizingPageState extends State<SprayRackPumpSizingPage> {
               child: ElevatedButton(
                 onPressed: _runCalculation,
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.black,
+                  backgroundColor: Theme.of(
+                    context,
+                  ).colorScheme.surfaceContainer,
                   foregroundColor: accent,
                   side: BorderSide(color: accent, width: 1.2),
                   padding: const EdgeInsets.symmetric(vertical: 16),
@@ -489,7 +492,10 @@ class _SprayRackPumpSizingPageState extends State<SprayRackPumpSizingPage> {
                 title: 'Notes',
                 child: Text(
                   'This is a planning estimate for spray-rack sizing. It does not account for every hose loss, fitting, valve, elevation change, or calibration detail. Use it to decide whether your feed setup is probably adequate or if a pump is likely needed.',
-                  style: TextStyle(color: accent.withOpacity(0.9), height: 1.35),
+                  style: TextStyle(
+                    color: accent.withOpacity(0.9),
+                    height: 1.35,
+                  ),
                 ),
               ),
             ],
@@ -510,8 +516,10 @@ class _SprayRackPumpSizingPageState extends State<SprayRackPumpSizingPage> {
     );
 
     final int drops = _readInt(_dropsController, fallback: 1).clamp(1, 10000);
-    final int nozzlesPerDrop =
-        _readInt(_nozzlesPerDropController, fallback: 1).clamp(1, 10000);
+    final int nozzlesPerDrop = _readInt(
+      _nozzlesPerDropController,
+      fallback: 1,
+    ).clamp(1, 10000);
     final int totalNozzles = drops * nozzlesPerDrop;
 
     final double spacingIn = _readDouble(
@@ -573,8 +581,9 @@ class _SprayRackPumpSizingPageState extends State<SprayRackPumpSizingPage> {
     final double requiredFlowGph = areaFt2 * targetFlowGphPerFt2;
     final double requiredFlowGpm = requiredFlowGph / 60.0;
 
-    final double requiredFlowPerNozzleGpm =
-        totalNozzles > 0 ? requiredFlowGpm / totalNozzles : 0.0;
+    final double requiredFlowPerNozzleGpm = totalNozzles > 0
+        ? requiredFlowGpm / totalNozzles
+        : 0.0;
 
     // Q = K * sqrt(P)
     final double nozzleK = nozzleRatedPressurePsi > 0.0
@@ -583,16 +592,15 @@ class _SprayRackPumpSizingPageState extends State<SprayRackPumpSizingPage> {
 
     final double nozzlePressurePsi =
         (nozzleK > 0.0 && requiredFlowPerNozzleGpm > 0.0)
-            ? math.pow(requiredFlowPerNozzleGpm / nozzleK, 2).toDouble()
-            : 0.0;
+        ? math.pow(requiredFlowPerNozzleGpm / nozzleK, 2).toDouble()
+        : 0.0;
 
     final double effectiveHeaderLengthFt =
         _headerFeedLayout == HeaderFeedLayout.centerFed
-            ? supplyLengthFt / 2.0
-            : supplyLengthFt;
+        ? supplyLengthFt / 2.0
+        : supplyLengthFt;
 
-    final double headerVelocityFps =
-        _velocityFps(requiredFlowGpm, supplyIdIn);
+    final double headerVelocityFps = _velocityFps(requiredFlowGpm, supplyIdIn);
 
     final double dropFlowGpm = requiredFlowPerNozzleGpm * nozzlesPerDrop;
     final double dropVelocityFps = _velocityFps(dropFlowGpm, dropIdIn);
@@ -614,17 +622,22 @@ class _SprayRackPumpSizingPageState extends State<SprayRackPumpSizingPage> {
     final double estimatedSystemPressurePsi =
         nozzlePressurePsi + headerFrictionLossPsi + dropFrictionLossPsi;
 
-    final double systemPressureLowPsi =
-        math.max(0.0, estimatedSystemPressurePsi * pressureLowFactor);
-    final double systemPressureHighPsi =
-        math.max(0.0, estimatedSystemPressurePsi * pressureHighFactor);
+    final double systemPressureLowPsi = math.max(
+      0.0,
+      estimatedSystemPressurePsi * pressureLowFactor,
+    );
+    final double systemPressureHighPsi = math.max(
+      0.0,
+      estimatedSystemPressurePsi * pressureHighFactor,
+    );
 
     final double minimumPumpFlowGpm = requiredFlowGpm;
     final double recommendedPumpFlowGpm =
         minimumPumpFlowGpm * (1.0 + (safetyFactorPercent / 100.0));
 
-    final double rackCoverageWidthFt =
-        drops <= 1 ? (spacingIn / 12.0) : ((drops - 1) * spacingIn / 12.0);
+    final double rackCoverageWidthFt = drops <= 1
+        ? (spacingIn / 12.0)
+        : ((drops - 1) * spacingIn / 12.0);
     final double rackCoverageHeightFt = nozzlesPerDrop <= 1
         ? (spacingIn / 12.0)
         : ((nozzlesPerDrop - 1) * spacingIn / 12.0);
@@ -646,9 +659,7 @@ class _SprayRackPumpSizingPageState extends State<SprayRackPumpSizingPage> {
     }
 
     if (rackCoverageWidthFt < widthFt) {
-      warnings.add(
-        'Rack coverage width appears smaller than specimen width.',
-      );
+      warnings.add('Rack coverage width appears smaller than specimen width.');
     }
 
     if (rackCoverageHeightFt < heightFt) {
@@ -726,10 +737,7 @@ class _SprayRackPumpSizingPageState extends State<SprayRackPumpSizingPage> {
     return double.tryParse(controller.text.trim()) ?? fallback;
   }
 
-  int _readInt(
-    TextEditingController controller, {
-    int fallback = 0,
-  }) {
+  int _readInt(TextEditingController controller, {int fallback = 0}) {
     return int.tryParse(controller.text.trim()) ?? fallback;
   }
 
@@ -751,7 +759,8 @@ class _SprayRackPumpSizingPageState extends State<SprayRackPumpSizingPage> {
       return 0.0;
     }
 
-    final double headLossPer100Ft = 0.2083 *
+    final double headLossPer100Ft =
+        0.2083 *
         math.pow(100.0 / c, 1.852).toDouble() *
         math.pow(flowGpm, 1.852).toDouble() /
         math.pow(insideDiameterIn, 4.8655).toDouble();
@@ -771,7 +780,7 @@ class _SprayRackPumpSizingPageState extends State<SprayRackPumpSizingPage> {
       width: double.infinity,
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
-        color: Colors.black,
+        color: Theme.of(context).colorScheme.surfaceContainer,
         borderRadius: BorderRadius.circular(12),
         border: Border.all(color: accent, width: 1.2),
       ),
@@ -798,7 +807,7 @@ class _SprayRackPumpSizingPageState extends State<SprayRackPumpSizingPage> {
       width: double.infinity,
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
-        color: Colors.black,
+        color: Theme.of(context).colorScheme.surfaceContainer,
         borderRadius: BorderRadius.circular(12),
         border: Border.all(color: Colors.amber, width: 1.2),
       ),
@@ -901,7 +910,7 @@ class _SprayRackPumpSizingPageState extends State<SprayRackPumpSizingPage> {
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 12),
           decoration: BoxDecoration(
-            color: Colors.black,
+            color: Theme.of(context).colorScheme.surfaceContainer,
             borderRadius: BorderRadius.circular(10),
             border: Border.all(color: accent),
           ),
@@ -909,7 +918,7 @@ class _SprayRackPumpSizingPageState extends State<SprayRackPumpSizingPage> {
             child: DropdownButton<T>(
               value: value,
               isExpanded: true,
-              dropdownColor: Colors.black,
+              dropdownColor: Theme.of(context).colorScheme.surfaceContainer,
               iconEnabledColor: accent,
               style: TextStyle(color: accent),
               onChanged: onChanged,
@@ -930,8 +939,9 @@ class _SprayRackPumpSizingPageState extends State<SprayRackPumpSizingPage> {
     BuildContext context, {
     required TextEditingController controller,
     String? hintText,
-    TextInputType keyboardType =
-        const TextInputType.numberWithOptions(decimal: true),
+    TextInputType keyboardType = const TextInputType.numberWithOptions(
+      decimal: true,
+    ),
   }) {
     final Color accent = Theme.of(context).colorScheme.primary;
 
@@ -943,10 +953,12 @@ class _SprayRackPumpSizingPageState extends State<SprayRackPumpSizingPage> {
         hintText: hintText,
         hintStyle: TextStyle(color: accent.withOpacity(0.45)),
         filled: true,
-        fillColor: Colors.black,
+        fillColor: Theme.of(context).colorScheme.surfaceContainer,
         isDense: true,
-        contentPadding:
-            const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: 12,
+          vertical: 12,
+        ),
         enabledBorder: OutlineInputBorder(
           borderSide: BorderSide(color: accent),
           borderRadius: BorderRadius.circular(10),
@@ -963,10 +975,7 @@ class _SprayRackPumpSizingPageState extends State<SprayRackPumpSizingPage> {
     final Color accent = Theme.of(context).colorScheme.primary;
     return Text(
       text,
-      style: TextStyle(
-        color: accent,
-        fontWeight: FontWeight.w600,
-      ),
+      style: TextStyle(color: accent, fontWeight: FontWeight.w600),
     );
   }
 

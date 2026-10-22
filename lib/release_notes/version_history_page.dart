@@ -92,7 +92,7 @@ class _CurrentVersionPanel extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.black,
+        color: Theme.of(context).colorScheme.surfaceContainer,
         border: Border.all(color: accent, width: 2),
         borderRadius: BorderRadius.circular(10),
       ),
@@ -165,7 +165,7 @@ class _ReleaseNoteCard extends StatelessWidget {
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
       decoration: BoxDecoration(
-        color: Colors.black,
+        color: Theme.of(context).colorScheme.surfaceContainer,
         border: Border.all(color: accent.withValues(alpha: 0.75), width: 2),
         borderRadius: BorderRadius.circular(10),
       ),

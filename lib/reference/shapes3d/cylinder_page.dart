@@ -93,10 +93,7 @@ class _CylinderPageState extends State<CylinderPage> {
 
             Text(
               "Material",
-              style: TextStyle(
-                color: accent,
-                fontWeight: FontWeight.w800,
-              ),
+              style: TextStyle(color: accent, fontWeight: FontWeight.w800),
             ),
 
             const SizedBox(height: 8),
@@ -106,13 +103,13 @@ class _CylinderPageState extends State<CylinderPage> {
               decoration: BoxDecoration(
                 border: Border.all(color: accent, width: 2),
                 borderRadius: BorderRadius.circular(10),
-                color: Colors.black,
+                color: Theme.of(context).colorScheme.surfaceContainer,
               ),
               child: DropdownButton<MaterialSpec>(
                 value: selectedMaterial,
                 isExpanded: true,
                 underline: const SizedBox(),
-                dropdownColor: Colors.black,
+                dropdownColor: Theme.of(context).colorScheme.surfaceContainer,
                 iconEnabledColor: accent,
                 style: TextStyle(color: accent),
                 hint: Text(
@@ -122,10 +119,7 @@ class _CylinderPageState extends State<CylinderPage> {
                 items: materials.map((m) {
                   return DropdownMenuItem<MaterialSpec>(
                     value: m,
-                    child: Text(
-                      m.name,
-                      style: TextStyle(color: accent),
-                    ),
+                    child: Text(m.name, style: TextStyle(color: accent)),
                   );
                 }).toList(),
                 onChanged: (value) {
@@ -140,10 +134,7 @@ class _CylinderPageState extends State<CylinderPage> {
 
             SizedBox(
               width: double.infinity,
-              child: terminalCalcButton(
-                accent: accent,
-                onPressed: _calculate,
-              ),
+              child: terminalCalcButton(accent: accent, onPressed: _calculate),
             ),
 
             const SizedBox(height: 18),

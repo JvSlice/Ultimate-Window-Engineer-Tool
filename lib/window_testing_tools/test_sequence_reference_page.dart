@@ -4,11 +4,7 @@ import '../../widgets/terminal_fields.dart';
 
 enum PerformanceClass { r, lc, cw, aw }
 
-enum WindowType {
-  fixed,
-  operable,
-  terraceDoor,
-}
+enum WindowType { fixed, operable, terraceDoor }
 
 class TestProcedureProfile {
   final String title;
@@ -102,7 +98,10 @@ class _TestSequenceReferencePageState extends State<TestSequenceReferencePage> {
           "Reference workflow only. Product-specific operating requirements vary by standard and product family.",
     ),
 
-    _key(PerformanceClass.r, WindowType.terraceDoor): const TestProcedureProfile(
+    _key(
+      PerformanceClass.r,
+      WindowType.terraceDoor,
+    ): const TestProcedureProfile(
       title: "R • Terrace Door",
       dpNotes:
           "Use governing standard / PG basis for minimum DP and structural checks. Doors often have additional hardware and operation considerations.",
@@ -140,8 +139,7 @@ class _TestSequenceReferencePageState extends State<TestSequenceReferencePage> {
           "Confirm applicable air infiltration limit for fixed LC products.",
       lifeCycleNotes:
           "Usually limited for fixed products unless imposed by internal program requirements.",
-      thermalCycleNotes:
-          "Apply where required by qualification program.",
+      thermalCycleNotes: "Apply where required by qualification program.",
       steps: [
         "Confirm specimen and gateway-size basis.",
         "Run air infiltration test.",
@@ -161,14 +159,12 @@ class _TestSequenceReferencePageState extends State<TestSequenceReferencePage> {
       title: "LC • Casement / Awning / Hopper",
       dpNotes:
           "Use LC product requirements from the governing standard and gateway-size basis.",
-      waterNotes:
-          "Confirm required LC water basis and test setup.",
+      waterNotes: "Confirm required LC water basis and test setup.",
       airNotes:
           "Confirm operable air infiltration limits for the applicable product type.",
       lifeCycleNotes:
           "Life cycle / repetitive operation checks are commonly relevant.",
-      thermalCycleNotes:
-          "Include where required by program or product family.",
+      thermalCycleNotes: "Include where required by program or product family.",
       steps: [
         "Confirm specimen, hardware, and operating configuration.",
         "Verify class and gateway-size basis.",
@@ -186,7 +182,10 @@ class _TestSequenceReferencePageState extends State<TestSequenceReferencePage> {
           "Reference workflow only. Final requirements depend on governing standard and product family.",
     ),
 
-    _key(PerformanceClass.lc, WindowType.terraceDoor): const TestProcedureProfile(
+    _key(
+      PerformanceClass.lc,
+      WindowType.terraceDoor,
+    ): const TestProcedureProfile(
       title: "LC • Terrace Door",
       dpNotes:
           "Use LC door requirements from the governing standard and product-size basis.",
@@ -196,8 +195,7 @@ class _TestSequenceReferencePageState extends State<TestSequenceReferencePage> {
           "Use the applicable air infiltration requirement for the door type.",
       lifeCycleNotes:
           "Operational cycling is often significant for door qualification.",
-      thermalCycleNotes:
-          "Apply where required by the program.",
+      thermalCycleNotes: "Apply where required by the program.",
       steps: [
         "Confirm door hardware, threshold, and specimen details.",
         "Verify class / size basis.",
@@ -220,8 +218,7 @@ class _TestSequenceReferencePageState extends State<TestSequenceReferencePage> {
           "CW qualification typically involves higher-duty commercial expectations. Use governing standard and gateway-size basis for actual DP / PG thresholds.",
       waterNotes:
           "Use required CW water basis and any cap logic per your internal standard reference.",
-      airNotes:
-          "Confirm applicable fixed-unit air infiltration limit.",
+      airNotes: "Confirm applicable fixed-unit air infiltration limit.",
       lifeCycleNotes:
           "Generally not central for fixed products unless required by internal matrix.",
       thermalCycleNotes:
@@ -247,12 +244,9 @@ class _TestSequenceReferencePageState extends State<TestSequenceReferencePage> {
           "CW operable qualification generally combines stronger structural expectations with operability requirements.",
       waterNotes:
           "Confirm required water basis for the selected product type and edition.",
-      airNotes:
-          "Use applicable operable-window air infiltration limit.",
-      lifeCycleNotes:
-          "Life cycle / repeated operation is commonly important.",
-      thermalCycleNotes:
-          "Include where program or family requires it.",
+      airNotes: "Use applicable operable-window air infiltration limit.",
+      lifeCycleNotes: "Life cycle / repeated operation is commonly important.",
+      thermalCycleNotes: "Include where program or family requires it.",
       steps: [
         "Confirm specimen, hardware, and operation mode.",
         "Verify class / gateway-size basis.",
@@ -270,18 +264,19 @@ class _TestSequenceReferencePageState extends State<TestSequenceReferencePage> {
           "Reference workflow only. Final CW qualification is product- and standard-dependent.",
     ),
 
-    _key(PerformanceClass.cw, WindowType.terraceDoor): const TestProcedureProfile(
+    _key(
+      PerformanceClass.cw,
+      WindowType.terraceDoor,
+    ): const TestProcedureProfile(
       title: "CW • Terrace Door",
       dpNotes:
           "Use CW door requirements and the correct gateway-size basis from the governing standard.",
-      waterNotes:
-          "Confirm threshold/sill details and required water basis.",
+      waterNotes: "Confirm threshold/sill details and required water basis.",
       airNotes:
           "Use applicable air infiltration requirement for this door type.",
       lifeCycleNotes:
           "Life cycle and operation checks are often significant for doors.",
-      thermalCycleNotes:
-          "Apply where required by the qualification path.",
+      thermalCycleNotes: "Apply where required by the qualification path.",
       steps: [
         "Confirm specimen, threshold, and hardware details.",
         "Verify class / size basis.",
@@ -355,7 +350,10 @@ class _TestSequenceReferencePageState extends State<TestSequenceReferencePage> {
           "Reference workflow only. AW operable qualification depends on the governing standard and tested configuration.",
     ),
 
-    _key(PerformanceClass.aw, WindowType.terraceDoor): const TestProcedureProfile(
+    _key(
+      PerformanceClass.aw,
+      WindowType.terraceDoor,
+    ): const TestProcedureProfile(
       title: "AW • Terrace Door",
       dpNotes:
           "Use AW door requirements and the proper gateway-size basis from the governing standard.",
@@ -404,16 +402,14 @@ class _TestSequenceReferencePageState extends State<TestSequenceReferencePage> {
         onPressed: onPressed,
         style: OutlinedButton.styleFrom(
           side: BorderSide(color: accent, width: 2),
-          backgroundColor:
-              selected ? accent.withValues(alpha: 0.80) : Colors.transparent,
+          backgroundColor: selected
+              ? accent.withValues(alpha: 0.80)
+              : Colors.transparent,
         ),
         child: Text(
           label,
           textAlign: TextAlign.center,
-          style: TextStyle(
-            color: accent,
-            fontWeight: FontWeight.w800,
-          ),
+          style: TextStyle(color: accent, fontWeight: FontWeight.w800),
         ),
       ),
     );
@@ -428,7 +424,7 @@ class _TestSequenceReferencePageState extends State<TestSequenceReferencePage> {
       margin: const EdgeInsets.only(bottom: 14),
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
-        color: Colors.black,
+        color: Theme.of(context).colorScheme.surfaceContainer,
         borderRadius: BorderRadius.circular(10),
         border: Border.all(color: accent, width: 2),
         boxShadow: [
@@ -632,10 +628,7 @@ class _TestSequenceReferencePageState extends State<TestSequenceReferencePage> {
 
             terminalResultCard(
               accent: accent,
-              lines: [
-                "Loaded profile: ${p.title}",
-                p.disclaimer,
-              ],
+              lines: ["Loaded profile: ${p.title}", p.disclaimer],
             ),
 
             const SizedBox(height: 14),

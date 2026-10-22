@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../app_theme.dart';
 import '../../terminal_scaffold.dart';
 import '../../widgets/terminal_fields.dart';
 
@@ -15,7 +16,7 @@ class RatingReferencePage extends StatelessWidget {
       margin: const EdgeInsets.only(bottom: 14),
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
-        color: Colors.black,
+        color: terminalSurfaceForAccent(accent),
         borderRadius: BorderRadius.circular(10),
         border: Border.all(color: accent, width: 2),
         boxShadow: [
@@ -41,33 +42,20 @@ class RatingReferencePage extends StatelessWidget {
           const SizedBox(height: 8),
           Text(
             "Typical use:",
-            style: TextStyle(
-              color: accent,
-              fontWeight: FontWeight.w700,
-            ),
+            style: TextStyle(color: accent, fontWeight: FontWeight.w700),
           ),
           const SizedBox(height: 4),
           Text(
             useCase,
-            style: TextStyle(
-              color: accent.withValues(alpha: 0.82),
-            ),
+            style: TextStyle(color: accent.withValues(alpha: 0.82)),
           ),
           const SizedBox(height: 10),
           Text(
             "Notes:",
-            style: TextStyle(
-              color: accent,
-              fontWeight: FontWeight.w700,
-            ),
+            style: TextStyle(color: accent, fontWeight: FontWeight.w700),
           ),
           const SizedBox(height: 4),
-          Text(
-            notes,
-            style: TextStyle(
-              color: accent.withValues(alpha: 0.78),
-            ),
-          ),
+          Text(notes, style: TextStyle(color: accent.withValues(alpha: 0.78))),
         ],
       ),
     );
@@ -127,7 +115,6 @@ class RatingReferencePage extends StatelessWidget {
                   "Slding Window: No Minimum Size\n"
                   "Sliding Door:No Minimum Size\n"
                   "Terrace Door: Not available",
-
             ),
 
             _ratingCard(
@@ -177,7 +164,6 @@ class RatingReferencePage extends StatelessWidget {
                   "Folding Door: 94.49 x 82.68\n"
                   "Terrace Door:Not available",
             ),
-
 
             _ratingCard(
               accent: accent,

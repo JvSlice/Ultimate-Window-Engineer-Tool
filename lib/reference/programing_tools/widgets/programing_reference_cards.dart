@@ -12,9 +12,10 @@ class ProgrammingReferenceCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final accent = Theme.of(context).colorScheme.primary;
     final textTheme = Theme.of(context).textTheme;
+    final surface = Theme.of(context).colorScheme.surfaceContainer;
 
     return Card(
-      color: Colors.black,
+      color: surface,
       shape: RoundedRectangleBorder(
         side: BorderSide(color: accent.withValues(alpha: 0.45)),
         borderRadius: BorderRadius.circular(14),
@@ -49,7 +50,7 @@ class ProgrammingReferenceCard extends StatelessWidget {
             width: double.infinity,
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
-              color: Colors.black,
+              color: surface,
               border: Border.all(color: accent.withValues(alpha: 0.45)),
               borderRadius: BorderRadius.circular(10),
             ),

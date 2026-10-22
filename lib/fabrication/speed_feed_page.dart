@@ -174,7 +174,7 @@ class _SpeedFeedPageState extends State<SpeedFeedPage> {
               child: DropdownButtonHideUnderline(
                 child: DropdownButton<MaterialSpec>(
                   value: material,
-                  dropdownColor: Colors.black,
+                  dropdownColor: Theme.of(context).colorScheme.surfaceContainer,
                   iconEnabledColor: accent,
                   style: TextStyle(color: accent),
                   items: materialLibrary

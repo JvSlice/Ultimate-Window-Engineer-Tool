@@ -15,8 +15,9 @@ class _ForkliftSuspendedBoomCalculatorPageState
   // ============================================================
   // RATED PLATE / HEIGHT ROW INPUTS
   // ============================================================
-  final TextEditingController _rowMaxHeightController =
-      TextEditingController(text: '189');
+  final TextEditingController _rowMaxHeightController = TextEditingController(
+    text: '189',
+  );
   final TextEditingController _rowRatedCapacityController =
       TextEditingController(text: '9400');
   final TextEditingController _rowRatedLoadCenterController =
@@ -36,10 +37,12 @@ class _ForkliftSuspendedBoomCalculatorPageState
   final TextEditingController _actualLiftHeightController =
       TextEditingController(text: '120');
 
-  final TextEditingController _boomWeightController =
-      TextEditingController(text: '500');
-  final TextEditingController _boomCgForwardController =
-      TextEditingController(text: '24');
+  final TextEditingController _boomWeightController = TextEditingController(
+    text: '500',
+  );
+  final TextEditingController _boomCgForwardController = TextEditingController(
+    text: '24',
+  );
 
   final TextEditingController _hookHorizontalReachController =
       TextEditingController(text: '36');
@@ -50,8 +53,9 @@ class _ForkliftSuspendedBoomCalculatorPageState
   final TextEditingController _suspendedLoadWeightController =
       TextEditingController(text: '1000');
 
-  final TextEditingController _verticalDropController =
-      TextEditingController(text: '24');
+  final TextEditingController _verticalDropController = TextEditingController(
+    text: '24',
+  );
 
   SuspendedBoomCalcResult? _result;
 
@@ -247,10 +251,7 @@ class _ForkliftSuspendedBoomCalculatorPageState
       accent: accent,
       title: 'Stored Plate Rows',
       child: _chartRows.isEmpty
-          ? Text(
-              'No rows added.',
-              style: TextStyle(color: accent),
-            )
+          ? Text('No rows added.', style: TextStyle(color: accent))
           : Column(
               children: List.generate(_chartRows.length, (index) {
                 final row = _chartRows[index];
@@ -295,10 +296,7 @@ class _ForkliftSuspendedBoomCalculatorPageState
       accent: accent,
       title: 'Result',
       child: result == null
-          ? Text(
-              'No result yet.',
-              style: TextStyle(color: accent),
-            )
+          ? Text('No result yet.', style: TextStyle(color: accent))
           : Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -475,10 +473,7 @@ class _ForkliftSuspendedBoomCalculatorPageState
           Expanded(
             child: Text(
               label,
-              style: TextStyle(
-                color: accent,
-                fontSize: big ? 16 : 14,
-              ),
+              style: TextStyle(color: accent, fontSize: big ? 16 : 14),
             ),
           ),
           const SizedBox(width: 12),
@@ -503,20 +498,14 @@ class _ForkliftSuspendedBoomCalculatorPageState
   }
 
   void _runCalc() {
-    final actualHeight =
-        _parseDouble(_actualLiftHeightController.text) ?? 0.0;
-    final boomWeight =
-        _parseDouble(_boomWeightController.text) ?? 0.0;
-    final boomCgForward =
-        _parseDouble(_boomCgForwardController.text) ?? 0.0;
-    final hookReach =
-        _parseDouble(_hookHorizontalReachController.text) ?? 0.0;
+    final actualHeight = _parseDouble(_actualLiftHeightController.text) ?? 0.0;
+    final boomWeight = _parseDouble(_boomWeightController.text) ?? 0.0;
+    final boomCgForward = _parseDouble(_boomCgForwardController.text) ?? 0.0;
+    final hookReach = _parseDouble(_hookHorizontalReachController.text) ?? 0.0;
     final hoistRiggingWeight =
         _parseDouble(_hoistRiggingWeightController.text) ?? 0.0;
-    final loadWeight =
-        _parseDouble(_suspendedLoadWeightController.text) ?? 0.0;
-    final verticalDrop =
-        _parseDouble(_verticalDropController.text) ?? 0.0;
+    final loadWeight = _parseDouble(_suspendedLoadWeightController.text) ?? 0.0;
+    final verticalDrop = _parseDouble(_verticalDropController.text) ?? 0.0;
 
     if (_chartRows.isEmpty) {
       setState(() {
@@ -578,17 +567,16 @@ class _ForkliftSuspendedBoomCalculatorPageState
     final ratedMoment =
         selectedRow.ratedCapacityLb * selectedRow.ratedLoadCenterIn;
 
-    final boomMoment =
-        math.max(0.0, boomWeight) * math.max(0.0, boomCgForward);
+    final boomMoment = math.max(0.0, boomWeight) * math.max(0.0, boomCgForward);
     final riggingMoment =
         math.max(0.0, hoistRiggingWeight) * math.max(0.0, hookReach);
-    final loadMoment =
-        math.max(0.0, loadWeight) * math.max(0.0, hookReach);
+    final loadMoment = math.max(0.0, loadWeight) * math.max(0.0, hookReach);
 
     final totalUsedMoment = boomMoment + riggingMoment + loadMoment;
     final remainingMomentBeforeLoad = ratedMoment - boomMoment - riggingMoment;
-    final maxAllowableLoadLb =
-        hookReach > 0 ? math.max(0.0, remainingMomentBeforeLoad / hookReach) : 0.0;
+    final maxAllowableLoadLb = hookReach > 0
+        ? math.max(0.0, remainingMomentBeforeLoad / hookReach)
+        : 0.0;
 
     final isWithinMoment = loadWeight <= maxAllowableLoadLb;
 
@@ -662,11 +650,8 @@ class _ForkliftSuspendedBoomCalculatorPageState
       builder: (context) {
         final accent = Theme.of(context).colorScheme.primary;
         return AlertDialog(
-          backgroundColor: Colors.black,
-          title: Text(
-            'Clear all rows?',
-            style: TextStyle(color: accent),
-          ),
+          backgroundColor: Theme.of(context).colorScheme.surfaceContainer,
+          title: Text('Clear all rows?', style: TextStyle(color: accent)),
           content: Text(
             'This will remove all stored chart rows.',
             style: TextStyle(color: accent),
@@ -712,11 +697,8 @@ class _ForkliftSuspendedBoomCalculatorPageState
     final accent = Theme.of(context).colorScheme.primary;
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        backgroundColor: Colors.black,
-        content: Text(
-          message,
-          style: TextStyle(color: accent),
-        ),
+        backgroundColor: Theme.of(context).colorScheme.surfaceContainer,
+        content: Text(message, style: TextStyle(color: accent)),
       ),
     );
   }

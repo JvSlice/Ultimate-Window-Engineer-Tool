@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../app_theme.dart';
+
 Widget terminalNumberField({
   required Color accent,
   required String label,
@@ -21,7 +23,7 @@ Widget terminalNumberField({
       Container(
         padding: const EdgeInsets.symmetric(horizontal: 12),
         decoration: BoxDecoration(
-          color: Colors.black,
+          color: terminalSurfaceForAccent(accent),
           borderRadius: BorderRadius.circular(10),
           border: Border.all(color: accent.withValues(alpha: 0.6), width: 2),
           boxShadow: [
@@ -55,7 +57,7 @@ Widget terminalResultCard({
   return Container(
     padding: const EdgeInsets.all(14),
     decoration: BoxDecoration(
-      color: Colors.black,
+      color: terminalSurfaceForAccent(accent),
       borderRadius: BorderRadius.circular(12),
       border: Border.all(color: accent.withValues(alpha: 0.7), width: 2),
       boxShadow: [

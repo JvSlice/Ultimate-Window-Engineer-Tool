@@ -223,7 +223,7 @@ class _MaterialComparePageState extends State<MaterialComparePage> {
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 12),
           decoration: BoxDecoration(
-            color: Colors.black,
+            color: Theme.of(context).colorScheme.surfaceContainer,
             borderRadius: BorderRadius.circular(10),
             border: Border.all(color: accent.withValues(alpha: 0.6), width: 2),
           ),
@@ -231,7 +231,7 @@ class _MaterialComparePageState extends State<MaterialComparePage> {
             child: DropdownButton<MaterialSpec>(
               value: value,
               isExpanded: true,
-              dropdownColor: Colors.black,
+              dropdownColor: Theme.of(context).colorScheme.surfaceContainer,
               iconEnabledColor: accent,
               style: TextStyle(color: accent),
               items: items.map((material) {
@@ -262,7 +262,9 @@ class _MaterialComparePageState extends State<MaterialComparePage> {
   }) {
     return TableRow(
       decoration: BoxDecoration(
-        color: header ? accent.withValues(alpha: 0.14) : Colors.black,
+        color: header
+            ? accent.withValues(alpha: 0.14)
+            : Theme.of(context).colorScheme.surfaceContainer,
       ),
       children: cells.map((cell) {
         return Container(

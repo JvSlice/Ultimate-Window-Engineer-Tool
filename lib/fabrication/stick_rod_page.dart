@@ -22,45 +22,30 @@ const List<StickRod> stickRods = [
     rod: "E6010",
     bestFor: "Root passes • dirty/rusty steel • pipe • deep penetration",
     polarity: "DCEP (DC+), some run DCEN depending rod/brand",
-    notes: "Fast-freeze. Usually requires DC machine (not ideal on AC buzzbox).",
-    ampsBySize: {
-      "3/32": "40–85 A",
-      "1/8": "75–125 A",
-      "5/32": "110–170 A",
-    },
+    notes:
+        "Fast-freeze. Usually requires DC machine (not ideal on AC buzzbox).",
+    ampsBySize: {"3/32": "40–85 A", "1/8": "75–125 A", "5/32": "110–170 A"},
   ),
   StickRod(
     rod: "E6011",
     bestFor: "Similar to 6010 but works on AC • general repair",
     polarity: "AC or DCEP (DC+)",
     notes: "Fast-freeze. Good for less-clean material.",
-    ampsBySize: {
-      "3/32": "40–90 A",
-      "1/8": "75–130 A",
-      "5/32": "110–175 A",
-    },
+    ampsBySize: {"3/32": "40–90 A", "1/8": "75–130 A", "5/32": "110–175 A"},
   ),
   StickRod(
     rod: "E6013",
     bestFor: "Light fabrication • thin material • nice bead",
     polarity: "AC, DCEN, or DCEP (varies)",
     notes: "Easy rod. Moderate penetration. Good for sheet/clean steel.",
-    ampsBySize: {
-      "3/32": "60–90 A",
-      "1/8": "90–130 A",
-      "5/32": "120–180 A",
-    },
+    ampsBySize: {"3/32": "60–90 A", "1/8": "90–130 A", "5/32": "120–180 A"},
   ),
   StickRod(
     rod: "E7018",
     bestFor: "Structural • stronger welds • smooth bead",
     polarity: "DCEP (DC+), also available in AC version (7018AC)",
     notes: "Low-hydrogen. Keep dry (rod oven / sealed).",
-    ampsBySize: {
-      "3/32": "70–110 A",
-      "1/8": "100–160 A",
-      "5/32": "140–220 A",
-    },
+    ampsBySize: {"3/32": "70–110 A", "1/8": "100–160 A", "5/32": "140–220 A"},
   ),
 ];
 
@@ -74,7 +59,7 @@ class StickRodsPage extends StatelessWidget {
     Widget cardFor(StickRod r) {
       return Container(
         decoration: BoxDecoration(
-          color: Colors.black,
+          color: Theme.of(context).colorScheme.surfaceContainer,
           borderRadius: BorderRadius.circular(12),
           border: Border.all(color: accent, width: 2),
           boxShadow: [
@@ -99,16 +84,31 @@ class StickRodsPage extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 8),
-            Text("Best for: ${r.bestFor}", style: TextStyle(color: accent.withValues(alpha: 0.85))),
+            Text(
+              "Best for: ${r.bestFor}",
+              style: TextStyle(color: accent.withValues(alpha: 0.85)),
+            ),
             const SizedBox(height: 6),
-            Text("Polarity: ${r.polarity}", style: TextStyle(color: accent.withValues(alpha: 0.85))),
+            Text(
+              "Polarity: ${r.polarity}",
+              style: TextStyle(color: accent.withValues(alpha: 0.85)),
+            ),
             const SizedBox(height: 6),
-            Text("Notes: ${r.notes}", style: TextStyle(color: accent.withValues(alpha: 0.75))),
+            Text(
+              "Notes: ${r.notes}",
+              style: TextStyle(color: accent.withValues(alpha: 0.75)),
+            ),
             const SizedBox(height: 10),
-            Text("Typical amps (ballpark):", style: TextStyle(color: accent, fontWeight: FontWeight.w800)),
+            Text(
+              "Typical amps (ballpark):",
+              style: TextStyle(color: accent, fontWeight: FontWeight.w800),
+            ),
             const SizedBox(height: 6),
             ...r.ampsBySize.entries.map((e) {
-              return Text("• ${e.key}: ${e.value}", style: TextStyle(color: accent.withValues(alpha: 0.85)));
+              return Text(
+                "• ${e.key}: ${e.value}",
+                style: TextStyle(color: accent.withValues(alpha: 0.85)),
+              );
             }),
           ],
         ),

@@ -296,7 +296,7 @@ class _LatheSpeedFeedPageState extends State<LatheSpeedFeedPage> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12),
       decoration: BoxDecoration(
-        color: Colors.black,
+        color: Theme.of(context).colorScheme.surfaceContainer,
         borderRadius: BorderRadius.circular(10),
         border: Border.all(color: accent.withValues(alpha: 0.6), width: 2),
       ),
@@ -304,7 +304,7 @@ class _LatheSpeedFeedPageState extends State<LatheSpeedFeedPage> {
         child: DropdownButton<LatheRecommendation>(
           value: recommendation,
           isExpanded: true,
-          dropdownColor: Colors.black,
+          dropdownColor: Theme.of(context).colorScheme.surfaceContainer,
           iconEnabledColor: accent,
           style: TextStyle(color: accent),
           items: latheRecommendations.map((item) {

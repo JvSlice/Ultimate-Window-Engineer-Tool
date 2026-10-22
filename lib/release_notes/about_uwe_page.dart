@@ -25,7 +25,7 @@ class AboutUwePage extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
-                  color: Colors.black,
+                  color: Theme.of(context).colorScheme.surfaceContainer,
                   border: Border.all(color: accent, width: 2),
                   borderRadius: BorderRadius.circular(10),
                 ),

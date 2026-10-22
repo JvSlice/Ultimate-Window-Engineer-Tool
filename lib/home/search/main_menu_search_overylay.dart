@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../app_theme.dart';
 import 'search_models.dart';
 
 class MainMenuSearchOverlay extends StatelessWidget {
@@ -29,7 +30,7 @@ class MainMenuSearchOverlay extends StatelessWidget {
       decoration: BoxDecoration(
         border: Border.all(color: accent, width: 2),
         borderRadius: BorderRadius.circular(12),
-        color: Colors.black,
+        color: terminalSurfaceForAccent(accent),
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
