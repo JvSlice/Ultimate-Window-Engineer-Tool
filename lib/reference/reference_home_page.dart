@@ -8,6 +8,7 @@ import 'forklift_load_calculator_page.dart';
 import 'forklift_suspended_boom_calculator_page.dart';
 import 'fastener_torque_chart_page.dart';
 import 'forge_calculator_page.dart';
+import 'knife_bevel_calculator_page.dart';
 import 'rigging/rigging_home_page.dart';
 
 class ReferenceHomePage extends StatelessWidget {
@@ -97,6 +98,9 @@ class ReferenceHomePage extends StatelessWidget {
           const SizedBox(height: 14),
           terminalButton("Forge Calculator", () {
             _open(context, const ForgeCalculatorPage());
+          }),
+          terminalButton("Knife Bevel & Grinding Setup", () {
+            _open(context, const KnifeBevelCalculatorPage());
           }),
         ],
       ),

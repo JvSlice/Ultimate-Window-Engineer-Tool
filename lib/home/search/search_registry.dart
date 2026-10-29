@@ -38,6 +38,7 @@ import '../../reference/forklift_load_calculator_page.dart';
 import '../../reference/forklift_suspended_boom_calculator_page.dart';
 import '../../reference/fastener_torque_chart_page.dart';
 import '../../reference/forge_calculator_page.dart';
+import '../../reference/knife_bevel_calculator_page.dart';
 import '../../reference/geometry_page.dart';
 import '../../reference/geometry_2d_page.dart';
 import '../../reference/geometry_3d_page.dart';
@@ -516,6 +517,32 @@ List<SearchEntry> buildSearchRegistry(AppThemeController themeController) {
       aliases: ['forging calculator', 'forge stock calculator'],
       routeId: 'reference.forge-calculator',
       builder: (_) => const ForgeCalculatorPage(),
+    ),
+    SearchEntry(
+      title: 'Knife Bevel & Grinding Setup',
+      category: 'Reference It',
+      description:
+          'Calculate knife bevel angles, bevel height, grinding block setup, and compare saved grinding blocks.',
+      tags: [
+        'knife',
+        'blade',
+        'bevel',
+        'grind',
+        'grinding',
+        'hollow',
+        'convex',
+        'scandi',
+        'saber',
+        'chisel',
+      ],
+      aliases: [
+        'knife bevel calculator',
+        'grinding angle calculator',
+        'blade grind setup',
+        'belt grinder angle',
+      ],
+      routeId: 'reference.knife-bevel-calculator',
+      builder: (_) => const KnifeBevelCalculatorPage(),
     ),
     SearchEntry(
       title: 'Torque & Power',

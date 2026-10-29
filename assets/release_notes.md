@@ -1,5 +1,17 @@
 # Ultimate Window Engineer Release Notes
 
+## v1.0.7
+
+Released: 2026-10-29
+
+Build: 8
+
+### Added
+
+* Added a Knife Bevel & Grinding Setup calculator with Imperial and Metric inputs, target-bevel and existing-block modes, and dimensioned blade geometry.
+* Added straight, hollow, convex, and single-sided grind calculations, saved local grinding blocks, and setup comparisons.
+* Added the calculator to Reference It and search. The version change splash summarizes these updates on first launch.
+
 ## v1.0.6
 
 Released: 2026-10-22
