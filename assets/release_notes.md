@@ -1,5 +1,17 @@
 # Ultimate Window Engineer Release Notes
 
+## v1.0.8
+
+Released: 2026-11-02
+
+Build: 9
+
+### Improved
+
+* Refined Knife Bevel calculations for the verified fixed-angle block and flat-platen setup, including an optional measured-angle calibration override.
+* Redesigned the blade and grinding setup drawings, improved mobile spacing, and added bevel coverage, remaining flat height, and block comparisons.
+* Saved grinding blocks now retain nominal and measured angles; older saved blocks continue to load without applying the retired contact offset.
+
 ## v1.0.7
 
 Released: 2026-10-29

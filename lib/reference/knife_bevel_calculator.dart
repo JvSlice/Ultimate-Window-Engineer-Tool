@@ -5,7 +5,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../conversions/unit_conversions.dart';
 
-enum KnifeBevelMode { desiredBevel, existingBlock }
+enum KnifeBevelMode { desiredBevel, existingBlock, compareBlocks }
 
 enum KnifeGrindType { fullFlat, saber, scandi, hollow, convex, chisel }
 
@@ -41,6 +41,12 @@ extension KnifeGrindTypeLabels on KnifeGrindType {
   int get groundSides => this == KnifeGrindType.chisel ? 1 : 2;
 }
 
+String knifeCoverageGuidance(double coveragePercent) {
+  if (coveragePercent >= 95) return 'Near full-height bevel coverage';
+  if (coveragePercent >= 35) return 'Mid-height bevel coverage';
+  return 'Low bevel-height coverage; the grind name depends on its construction';
+}
+
 extension KnifeGrindingOrientationLabels on KnifeGrindingOrientation {
   String get label => this == KnifeGrindingOrientation.left ? 'Left' : 'Right';
   double get sign => this == KnifeGrindingOrientation.left ? -1 : 1;
@@ -62,6 +68,7 @@ class KnifeArc {
   final double sweepRadians;
   final List<KnifePoint> points;
   final double tangentAngleDegrees;
+  final double endTangentAngleDegrees;
 
   const KnifeArc({
     required this.center,
@@ -70,6 +77,7 @@ class KnifeArc {
     required this.sweepRadians,
     required this.points,
     required this.tangentAngleDegrees,
+    required this.endTangentAngleDegrees,
   });
 }
 
@@ -82,7 +90,7 @@ class KnifeBevelInput {
   final double edgeThickness;
   final double desiredBevelHeight;
   final double blockAngleDegrees;
-  final double seatOffsetDegrees;
+  final double? measuredGrindingAngleDegrees;
   final double curvatureRadius;
 
   const KnifeBevelInput({
@@ -94,7 +102,7 @@ class KnifeBevelInput {
     required this.edgeThickness,
     required this.desiredBevelHeight,
     required this.blockAngleDegrees,
-    required this.seatOffsetDegrees,
+    this.measuredGrindingAngleDegrees,
     required this.curvatureRadius,
   });
 }
@@ -103,9 +111,14 @@ class KnifeBevelResult {
   final double bevelAngleDegrees;
   final double totalIncludedAngleDegrees;
   final double bevelHeight;
+  final double bevelCoveragePercent;
+  final double remainingFlatHeight;
   final double actualBladeOrientationDegrees;
-  final double blockAngleDegrees;
-  final double seatOffsetDegrees;
+  final double nominalBlockAngleDegrees;
+  final double actualGrindingAngleDegrees;
+  final double? measuredGrindingAngleDegrees;
+  final double? edgeTangentAngleDegrees;
+  final double? shoulderTangentAngleDegrees;
   final double? requiredBlockAngleDegrees;
   final bool isAchievable;
   final String? note;
@@ -119,9 +132,14 @@ class KnifeBevelResult {
     required this.bevelAngleDegrees,
     required this.totalIncludedAngleDegrees,
     required this.bevelHeight,
+    required this.bevelCoveragePercent,
+    required this.remainingFlatHeight,
     required this.actualBladeOrientationDegrees,
-    required this.blockAngleDegrees,
-    required this.seatOffsetDegrees,
+    required this.nominalBlockAngleDegrees,
+    required this.actualGrindingAngleDegrees,
+    required this.measuredGrindingAngleDegrees,
+    required this.edgeTangentAngleDegrees,
+    required this.shoulderTangentAngleDegrees,
     required this.requiredBlockAngleDegrees,
     required this.isAchievable,
     required this.note,
@@ -147,7 +165,13 @@ KnifeBevelResult? calculateKnifeBevel(KnifeBevelInput input) {
   if (dimensions.any((value) => !value.isFinite || value <= 0) ||
       input.edgeThickness >= input.stockThickness ||
       !input.blockAngleDegrees.isFinite ||
-      !input.seatOffsetDegrees.isFinite ||
+      (input.mode != KnifeBevelMode.desiredBevel &&
+          (input.blockAngleDegrees.abs() <= 0 ||
+              input.blockAngleDegrees.abs() >= 90)) ||
+      (input.measuredGrindingAngleDegrees != null &&
+          (!input.measuredGrindingAngleDegrees!.isFinite ||
+              input.measuredGrindingAngleDegrees! <= 0 ||
+              input.measuredGrindingAngleDegrees! >= 90)) ||
       (input.grindType.isCurved &&
           (!input.curvatureRadius.isFinite || input.curvatureRadius <= 0))) {
     return null;
@@ -156,8 +180,9 @@ KnifeBevelResult? calculateKnifeBevel(KnifeBevelInput input) {
   final reduction = input.stockThickness - input.edgeThickness;
   final sideReduction = reduction / input.grindType.groundSides;
   final orientationSign = input.orientation.sign;
-  final actualOrientation =
-      orientationSign * input.blockAngleDegrees + input.seatOffsetDegrees;
+  final actualGrindingAngle =
+      input.measuredGrindingAngleDegrees ?? input.blockAngleDegrees.abs();
+  final actualOrientation = orientationSign * actualGrindingAngle;
 
   late final double bevelHeight;
   late final double bevelAngle;
@@ -187,7 +212,8 @@ KnifeBevelResult? calculateKnifeBevel(KnifeBevelInput input) {
           startAngleRadians: -upperArc.startAngleRadians,
           sweepRadians: -upperArc.sweepRadians,
           points: upperArc.points.reversed.map((p) => p.mirrorY()).toList(),
-          tangentAngleDegrees: upperArc.tangentAngleDegrees,
+          tangentAngleDegrees: -upperArc.tangentAngleDegrees,
+          endTangentAngleDegrees: -upperArc.endTangentAngleDegrees,
         );
       }
       bevelAngle = upperArc.tangentAngleDegrees.abs();
@@ -196,15 +222,15 @@ KnifeBevelResult? calculateKnifeBevel(KnifeBevelInput input) {
     }
 
     if (bevelAngle <= 0 || bevelAngle >= 90) return null;
-    blockAngle = orientationSign * (bevelAngle - input.seatOffsetDegrees);
+    blockAngle = bevelAngle;
   } else {
-    bevelAngle = actualOrientation.abs();
+    bevelAngle = actualGrindingAngle;
     if (bevelAngle <= 0 || bevelAngle >= 90) return null;
 
     if (input.grindType.isCurved) {
       final start = _upperEdgePoint(input);
       final radius = input.curvatureRadius;
-      final alpha = orientationSign * actualOrientation * math.pi / 180;
+      final alpha = orientationSign * actualGrindingAngle * math.pi / 180;
       final endX = _circleEndX(
         start: start,
         faceY: input.stockThickness / 2,
@@ -228,7 +254,8 @@ KnifeBevelResult? calculateKnifeBevel(KnifeBevelInput input) {
           startAngleRadians: -upperArc.startAngleRadians,
           sweepRadians: -upperArc.sweepRadians,
           points: upperArc.points.reversed.map((p) => p.mirrorY()).toList(),
-          tangentAngleDegrees: upperArc.tangentAngleDegrees,
+          tangentAngleDegrees: -upperArc.tangentAngleDegrees,
+          endTangentAngleDegrees: -upperArc.endTangentAngleDegrees,
         );
       }
     } else {
@@ -247,7 +274,6 @@ KnifeBevelResult? calculateKnifeBevel(KnifeBevelInput input) {
           KnifePoint(input.bladeHeight, -input.stockThickness / 2),
         ];
 
-  final classification = classifyKnifeGrind(bevelHeight, input.bladeHeight);
   final achievable = bevelHeight <= input.bladeHeight;
   final note = achievable
       ? null
@@ -259,11 +285,22 @@ KnifeBevelResult? calculateKnifeBevel(KnifeBevelInput input) {
         ? bevelAngle * 2
         : bevelAngle,
     bevelHeight: bevelHeight,
+    bevelCoveragePercent: bevelHeight / input.bladeHeight * 100,
+    remainingFlatHeight: math.max(0.0, input.bladeHeight - bevelHeight),
     actualBladeOrientationDegrees: input.mode == KnifeBevelMode.existingBlock
         ? actualOrientation
         : orientationSign * bevelAngle,
-    blockAngleDegrees: blockAngle,
-    seatOffsetDegrees: input.seatOffsetDegrees,
+    nominalBlockAngleDegrees: input.mode == KnifeBevelMode.existingBlock
+        ? input.blockAngleDegrees.abs()
+        : blockAngle.abs(),
+    actualGrindingAngleDegrees: input.mode == KnifeBevelMode.existingBlock
+        ? actualGrindingAngle
+        : bevelAngle,
+    measuredGrindingAngleDegrees: input.mode == KnifeBevelMode.existingBlock
+        ? input.measuredGrindingAngleDegrees
+        : null,
+    edgeTangentAngleDegrees: upperArc?.tangentAngleDegrees,
+    shoulderTangentAngleDegrees: upperArc?.endTangentAngleDegrees,
     requiredBlockAngleDegrees: input.mode == KnifeBevelMode.desiredBevel
         ? blockAngle.abs()
         : null,
@@ -273,15 +310,8 @@ KnifeBevelResult? calculateKnifeBevel(KnifeBevelInput input) {
     lowerBevelProfile: lowerProfile,
     upperArc: upperArc,
     lowerArc: lowerArc,
-    geometryClassification: classification,
+    geometryClassification: input.grindType,
   );
-}
-
-KnifeGrindType classifyKnifeGrind(double bevelHeight, double bladeHeight) {
-  final coverage = bevelHeight / bladeHeight;
-  if (coverage >= 0.95) return KnifeGrindType.fullFlat;
-  if (coverage >= 0.35) return KnifeGrindType.saber;
-  return KnifeGrindType.scandi;
 }
 
 double knifePresetHeight(KnifeGrindType type, double bladeHeight) {
@@ -368,6 +398,7 @@ KnifeArc? _circleThroughPoints({
   if (sweep.abs() > math.pi + 1e-8) return null;
 
   final tangent = startAngle + (hollow ? math.pi / 2 : -math.pi / 2);
+  final endTangent = endAngle + (hollow ? math.pi / 2 : -math.pi / 2);
   final points = List<KnifePoint>.generate(25, (index) {
     final angle = startAngle + sweep * index / 24;
     return KnifePoint(
@@ -382,6 +413,7 @@ KnifeArc? _circleThroughPoints({
     sweepRadians: sweep,
     points: points,
     tangentAngleDegrees: _degrees(tangent),
+    endTangentAngleDegrees: _degrees(endTangent),
   );
 }
 
@@ -410,14 +442,14 @@ class SavedKnifeGrindingBlock {
   final String name;
   final double angleDegrees;
   final KnifeGrindingOrientation orientation;
-  final double seatOffsetDegrees;
+  final double? measuredAngleDegrees;
 
   const SavedKnifeGrindingBlock({
     required this.id,
     required this.name,
     required this.angleDegrees,
     required this.orientation,
-    required this.seatOffsetDegrees,
+    this.measuredAngleDegrees,
   });
 
   Map<String, Object?> toJson() => {
@@ -425,7 +457,7 @@ class SavedKnifeGrindingBlock {
     'name': name,
     'angleDegrees': angleDegrees,
     'orientation': orientation.name,
-    'seatOffsetDegrees': seatOffsetDegrees,
+    'measuredAngleDegrees': measuredAngleDegrees,
   };
 
   static SavedKnifeGrindingBlock? fromJson(Object? value) {
@@ -433,8 +465,11 @@ class SavedKnifeGrindingBlock {
     final id = value['id'];
     final name = value['name'];
     final angle = value['angleDegrees'];
-    final offset = value['seatOffsetDegrees'];
-    if (id is! String || name is! String || angle is! num || offset is! num) {
+    final measured = value['measuredAngleDegrees'];
+    if (id is! String ||
+        name is! String ||
+        angle is! num ||
+        (measured != null && measured is! num)) {
       return null;
     }
     final orientation =
@@ -446,7 +481,7 @@ class SavedKnifeGrindingBlock {
       name: name,
       angleDegrees: angle.toDouble(),
       orientation: orientation,
-      seatOffsetDegrees: offset.toDouble(),
+      measuredAngleDegrees: (measured as num?)?.toDouble(),
     );
   }
 }

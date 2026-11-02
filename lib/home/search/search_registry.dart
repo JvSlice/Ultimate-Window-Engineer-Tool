@@ -522,7 +522,7 @@ List<SearchEntry> buildSearchRegistry(AppThemeController themeController) {
       title: 'Knife Bevel & Grinding Setup',
       category: 'Reference It',
       description:
-          'Calculate knife bevel angles, bevel height, grinding block setup, and compare saved grinding blocks.',
+          'Calculate knife bevel angles and heights, calibrate a fixed-angle grinding block, and compare knife grinding jigs.',
       tags: [
         'knife',
         'blade',
@@ -534,9 +534,16 @@ List<SearchEntry> buildSearchRegistry(AppThemeController themeController) {
         'scandi',
         'saber',
         'chisel',
+        'bladesmithing',
+        'full flat grind',
+        'knife grinding jig',
       ],
       aliases: [
         'knife bevel calculator',
+        'bevel calculator',
+        'grinding angle',
+        'grinding block',
+        'knife grinding jig',
         'grinding angle calculator',
         'blade grind setup',
         'belt grinder angle',

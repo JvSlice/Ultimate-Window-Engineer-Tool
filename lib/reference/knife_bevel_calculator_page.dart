@@ -2,6 +2,7 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 
+import '../app_theme.dart';
 import '../terminal_scaffold.dart';
 import 'knife_bevel_calculator.dart';
 
@@ -19,7 +20,8 @@ class _KnifeBevelCalculatorPageState extends State<KnifeBevelCalculatorPage> {
   final _edge = TextEditingController(text: '0.010');
   final _bevelHeight = TextEditingController(text: '0.75');
   final _blockAngle = TextEditingController(text: '12');
-  final _seatOffset = TextEditingController(text: '0');
+  final _measuredAngle = TextEditingController();
+  final _comparisonAngles = TextEditingController(text: '6, 10, 12, 15');
   final _radius = TextEditingController(text: '8');
   KnifeUnitSystem _units = KnifeUnitSystem.imperial;
   KnifeBevelMode _mode = KnifeBevelMode.desiredBevel;
@@ -52,7 +54,8 @@ class _KnifeBevelCalculatorPageState extends State<KnifeBevelCalculatorPage> {
     for (final controller in [
       ..._lengthControllers,
       _blockAngle,
-      _seatOffset,
+      _measuredAngle,
+      _comparisonAngles,
     ]) {
       controller.dispose();
     }
@@ -65,10 +68,7 @@ class _KnifeBevelCalculatorPageState extends State<KnifeBevelCalculatorPage> {
   KnifeBevelResult? get _result {
     final dimensions = _lengthControllers.map(_number).toList();
     final angle = _number(_blockAngle);
-    final offset = _number(_seatOffset);
-    if (dimensions.any((value) => value == null) ||
-        angle == null ||
-        offset == null) {
+    if (dimensions.any((value) => value == null) || angle == null) {
       return null;
     }
     return calculateKnifeBevel(
@@ -81,7 +81,7 @@ class _KnifeBevelCalculatorPageState extends State<KnifeBevelCalculatorPage> {
         edgeThickness: dimensions[2]!,
         desiredBevelHeight: dimensions[3]!,
         blockAngleDegrees: angle,
-        seatOffsetDegrees: offset,
+        measuredGrindingAngleDegrees: _number(_measuredAngle),
         curvatureRadius: _grind == KnifeGrindType.hollow
             ? dimensions[4]! / 2
             : dimensions[4]!,
@@ -109,18 +109,16 @@ class _KnifeBevelCalculatorPageState extends State<KnifeBevelCalculatorPage> {
     final angleController = TextEditingController(
       text: '${existing?.angleDegrees ?? _number(_blockAngle) ?? 12}',
     );
-    final offsetController = TextEditingController(
-      text: '${existing?.seatOffsetDegrees ?? _number(_seatOffset) ?? 0}',
+    final measuredController = TextEditingController(
+      text: existing?.measuredAngleDegrees?.toString() ?? '',
     );
     var orientation = existing?.orientation ?? _orientation;
     final accepted = await showDialog<bool>(
       context: context,
       builder: (context) => StatefulBuilder(
         builder: (context, dialogSetState) => AlertDialog(
-          backgroundColor: const Color(0xFF101810),
           title: Text(
             existing == null ? 'Save grinding block' : 'Edit grinding block',
-            style: const TextStyle(color: Colors.greenAccent),
           ),
           content: Column(
             mainAxisSize: MainAxisSize.min,
@@ -139,12 +137,12 @@ class _KnifeBevelCalculatorPageState extends State<KnifeBevelCalculatorPage> {
                 ),
               ),
               TextField(
-                controller: offsetController,
+                controller: measuredController,
                 keyboardType: const TextInputType.numberWithOptions(
                   decimal: true,
                 ),
                 decoration: const InputDecoration(
-                  labelText: 'Seat/contact offset (°)',
+                  labelText: 'Measured grind angle override (optional, °)',
                 ),
               ),
               DropdownButton<KnifeGrindingOrientation>(
@@ -175,11 +173,20 @@ class _KnifeBevelCalculatorPageState extends State<KnifeBevelCalculatorPage> {
     );
     final name = nameController.text.trim();
     final angle = double.tryParse(angleController.text);
-    final offset = double.tryParse(offsetController.text);
+    final measuredText = measuredController.text.trim();
+    final measured = measuredText.isEmpty
+        ? null
+        : double.tryParse(measuredText);
     nameController.dispose();
     angleController.dispose();
-    offsetController.dispose();
-    if (accepted != true || name.isEmpty || angle == null || offset == null) {
+    measuredController.dispose();
+    if (accepted != true ||
+        name.isEmpty ||
+        angle == null ||
+        angle <= 0 ||
+        angle >= 90 ||
+        (measuredText.isNotEmpty &&
+            (measured == null || measured <= 0 || measured >= 90))) {
       return;
     }
     final block = SavedKnifeGrindingBlock(
@@ -187,7 +194,7 @@ class _KnifeBevelCalculatorPageState extends State<KnifeBevelCalculatorPage> {
       name: name,
       angleDegrees: angle,
       orientation: orientation,
-      seatOffsetDegrees: offset,
+      measuredAngleDegrees: measured,
     );
     final updated = [..._blocks.where((item) => item.id != block.id), block];
     await _store.save(updated);
@@ -203,293 +210,592 @@ class _KnifeBevelCalculatorPageState extends State<KnifeBevelCalculatorPage> {
   @override
   Widget build(BuildContext context) {
     final accent = Theme.of(context).colorScheme.primary;
+    final secondary = Theme.of(
+      context,
+    ).colorScheme.onSurface.withValues(alpha: .75);
+    final surface = terminalSurfaceForAccent(accent);
     final result = _result;
     final unit = _units.lengthUnit;
     return TerminalScaffold(
       title: 'Knife Bevel & Grinding Setup',
-      child: ListView(
-        padding: const EdgeInsets.all(16),
-        children: [
-          Text(
-            'Calculate bevel geometry from dimensions or estimate the grind produced by a block setup.',
-            style: TextStyle(color: accent),
-          ),
-          const SizedBox(height: 12),
-          Wrap(
-            spacing: 8,
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          final fieldWidth = (constraints.maxWidth - 36)
+              .clamp(140.0, 320.0)
+              .toDouble();
+          return ListView(
+            padding: const EdgeInsets.all(12),
             children: [
-              for (final units in KnifeUnitSystem.values)
-                ChoiceChip(
-                  label: Text(
-                    units == KnifeUnitSystem.imperial
-                        ? 'Imperial (in)'
-                        : 'Metric (mm)',
-                  ),
-                  selected: units == _units,
-                  onSelected: (_) => _setUnits(units),
-                ),
-            ],
-          ),
-          const SizedBox(height: 12),
-          Wrap(
-            spacing: 8,
-            children: [
-              for (final mode in KnifeBevelMode.values)
-                ChoiceChip(
-                  label: Text(
-                    mode == KnifeBevelMode.desiredBevel
-                        ? 'Set bevel target'
-                        : 'Check existing block',
-                  ),
-                  selected: mode == _mode,
-                  onSelected: (_) => setState(() => _mode = mode),
-                ),
-            ],
-          ),
-          _drop<KnifeGrindType>(
-            'Grind profile',
-            _grind,
-            KnifeGrindType.values,
-            (v) => setState(() => _grind = v),
-            (v) => v.label,
-          ),
-          _drop<KnifeGrindingOrientation>(
-            'Grinding side',
-            _orientation,
-            KnifeGrindingOrientation.values,
-            (v) => setState(() => _orientation = v),
-            (v) => v.label,
-          ),
-          _field('Blade stock thickness ($unit)', _thickness, accent),
-          _field('Blade height from edge to spine ($unit)', _height, accent),
-          _field('Edge thickness ($unit)', _edge, accent),
-          if (_mode == KnifeBevelMode.desiredBevel)
-            _field('Target bevel height ($unit)', _bevelHeight, accent)
-          else ...[
-            _field(
-              'Block angle from belt perpendicular (°)',
-              _blockAngle,
-              accent,
-            ),
-            _field(
-              'Blade seat/contact offset from block (°)',
-              _seatOffset,
-              accent,
-            ),
-          ],
-          if (_grind.isCurved)
-            _field(
-              _grind == KnifeGrindType.hollow
-                  ? 'Wheel diameter ($unit)'
-                  : 'Convex profile radius ($unit)',
-              _radius,
-              accent,
-            ),
-          Text(
-            'A block angle alone does not determine bevel angle. Enter the measured blade-to-support contact offset; use 0° only when the blade sits flush to the block reference face.',
-            style: TextStyle(color: accent.withValues(alpha: .8)),
-          ),
-          if (_mode == KnifeBevelMode.desiredBevel) ...[
-            const SizedBox(height: 8),
-            Text(
-              'Quick height presets',
-              style: TextStyle(color: Colors.greenAccent),
-            ),
-            Wrap(
-              spacing: 6,
-              children: [
-                for (final type in [
-                  KnifeGrindType.fullFlat,
-                  KnifeGrindType.saber,
-                  KnifeGrindType.scandi,
-                ])
-                  ActionChip(
-                    label: Text(
-                      '${type.label} (${(type == KnifeGrindType.fullFlat
-                          ? 100
-                          : type == KnifeGrindType.saber
-                          ? 70
-                          : 30)}%)',
-                    ),
-                    onPressed: () {
-                      final h = _number(_height);
-                      if (h != null) {
-                        setState(
-                          () => _bevelHeight.text = _fmt(
-                            knifePresetHeight(type, h),
-                            5,
-                          ),
-                        );
-                      }
-                    },
-                  ),
-              ],
-            ),
-          ],
-          const SizedBox(height: 12),
-          if (result == null)
-            _card(accent, const [
-              'Enter valid positive dimensions; edge thickness must be below stock thickness.',
-            ])
-          else ...[
-            _card(accent, [
-              'Bevel angle (each side): ${_fmt(result.bevelAngleDegrees, 2)}°',
-              'Included angle: ${_fmt(result.totalIncludedAngleDegrees, 2)}°',
-              'Bevel height: ${_length(result.bevelHeight)}${result.isAchievable ? '' : ' — exceeds blade height'}',
-              if (result.requiredBlockAngleDegrees != null)
-                'Required block setting: ${_fmt(result.requiredBlockAngleDegrees!, 2)}° from belt perpendicular',
-              'Geometry classification: ${result.geometryClassification.label} (tool coverage heuristic)',
-              if (result.note != null) result.note!,
-            ]),
-            const SizedBox(height: 12),
-            _Diagram(
-              result: result,
-              stockThickness: _number(_thickness) ?? 0,
-              bladeHeight: _number(_height) ?? 0,
-              accent: accent,
-            ),
-          ],
-          const SizedBox(height: 16),
-          Row(
-            children: [
-              Expanded(
-                child: Text(
-                  'Saved grinding blocks',
-                  style: TextStyle(color: accent, fontSize: 18),
-                ),
+              Text(
+                'Knife bevel geometry and fixed-angle grinding setup.',
+                style: TextStyle(color: secondary),
               ),
-              IconButton(
-                onPressed: () => _saveBlock(),
-                icon: Icon(Icons.add, color: accent),
-              ),
-            ],
-          ),
-          if (_blocks.isEmpty)
-            Text(
-              'Save block name, angle, orientation, and contact offset for comparison.',
-              style: TextStyle(color: accent.withValues(alpha: .8)),
-            ),
-          for (final block in _blocks)
-            Card(
-              color: const Color(0xFF101810),
-              child: ListTile(
-                title: Text(block.name, style: TextStyle(color: accent)),
-                subtitle: Text(
-                  '${block.angleDegrees}° ${block.orientation.label}, seat offset ${block.seatOffsetDegrees}°',
-                  style: TextStyle(color: accent.withValues(alpha: .8)),
-                ),
-                onTap: () => setState(() {
-                  _blockAngle.text = '${block.angleDegrees}';
-                  _seatOffset.text = '${block.seatOffsetDegrees}';
-                  _orientation = block.orientation;
-                  _mode = KnifeBevelMode.existingBlock;
-                }),
-                trailing: Wrap(
+              const SizedBox(height: 8),
+              _panel(
+                surface,
+                accent,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    IconButton(
-                      onPressed: () => _saveBlock(existing: block),
-                      icon: Icon(Icons.edit, color: accent),
+                    Wrap(
+                      spacing: 6,
+                      runSpacing: 4,
+                      children: [
+                        for (final units in KnifeUnitSystem.values)
+                          ChoiceChip(
+                            label: Text(
+                              units == KnifeUnitSystem.imperial
+                                  ? 'Imperial (in)'
+                                  : 'Metric (mm)',
+                            ),
+                            selected: units == _units,
+                            onSelected: (_) => _setUnits(units),
+                          ),
+                      ],
                     ),
-                    IconButton(
-                      onPressed: () => _deleteBlock(block),
-                      icon: Icon(Icons.delete_outline, color: accent),
+                    const SizedBox(height: 6),
+                    Wrap(
+                      spacing: 6,
+                      runSpacing: 4,
+                      children: [
+                        for (final mode in KnifeBevelMode.values)
+                          ChoiceChip(
+                            label: Text(switch (mode) {
+                              KnifeBevelMode.desiredBevel => 'Set target',
+                              KnifeBevelMode.existingBlock => 'Check block',
+                              KnifeBevelMode.compareBlocks => 'Compare blocks',
+                            }),
+                            selected: mode == _mode,
+                            onSelected: (_) => setState(() => _mode = mode),
+                          ),
+                      ],
                     ),
+                    Wrap(
+                      spacing: 12,
+                      runSpacing: 2,
+                      children: [
+                        SizedBox(
+                          width: fieldWidth,
+                          child: _drop<KnifeGrindType>(
+                            'Grind profile',
+                            _grind,
+                            KnifeGrindType.values,
+                            (v) => setState(() => _grind = v),
+                            (v) => v.label,
+                          ),
+                        ),
+                        SizedBox(
+                          width: fieldWidth,
+                          child: _drop<KnifeGrindingOrientation>(
+                            'Grinding side',
+                            _orientation,
+                            KnifeGrindingOrientation.values,
+                            (v) => setState(() => _orientation = v),
+                            (v) => v.label,
+                          ),
+                        ),
+                        SizedBox(
+                          width: fieldWidth,
+                          child: _field(
+                            'Stock thickness ($unit)',
+                            _thickness,
+                            accent,
+                          ),
+                        ),
+                        SizedBox(
+                          width: fieldWidth,
+                          child: _field(
+                            'Blade height ($unit)',
+                            _height,
+                            accent,
+                          ),
+                        ),
+                        SizedBox(
+                          width: fieldWidth,
+                          child: _field(
+                            'Edge thickness ($unit)',
+                            _edge,
+                            accent,
+                          ),
+                        ),
+                        if (_mode == KnifeBevelMode.desiredBevel)
+                          SizedBox(
+                            width: fieldWidth,
+                            child: _field(
+                              'Target bevel height ($unit)',
+                              _bevelHeight,
+                              accent,
+                            ),
+                          ),
+                        if (_mode == KnifeBevelMode.existingBlock) ...[
+                          SizedBox(
+                            width: fieldWidth,
+                            child: _field(
+                              'Nominal block angle (°)',
+                              _blockAngle,
+                              accent,
+                            ),
+                          ),
+                          SizedBox(
+                            width: fieldWidth,
+                            child: _field(
+                              'Measured grinding angle override (optional, °)',
+                              _measuredAngle,
+                              accent,
+                            ),
+                          ),
+                        ],
+                        if (_mode == KnifeBevelMode.compareBlocks)
+                          SizedBox(
+                            width: constraints.maxWidth - 20,
+                            child: _field(
+                              'Block angles to compare (comma-separated, degrees)',
+                              _comparisonAngles,
+                              accent,
+                            ),
+                          ),
+                        if (_grind.isCurved)
+                          SizedBox(
+                            width: fieldWidth,
+                            child: _field(
+                              _grind == KnifeGrindType.hollow
+                                  ? 'Wheel diameter ($unit)'
+                                  : 'Convex profile radius ($unit)',
+                              _radius,
+                              accent,
+                            ),
+                          ),
+                      ],
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      'For the verified flat-platen setup, the blade follows the block angle. A measured angle overrides the nominal block angle when provided.',
+                      style: TextStyle(color: secondary, fontSize: 12),
+                    ),
+                    if (_mode == KnifeBevelMode.desiredBevel) ...[
+                      const SizedBox(height: 5),
+                      Text(
+                        'Optional starting presets (editable)',
+                        style: TextStyle(color: accent, fontSize: 12),
+                      ),
+                      Wrap(
+                        spacing: 4,
+                        children: [
+                          for (final type in [
+                            KnifeGrindType.fullFlat,
+                            KnifeGrindType.saber,
+                            KnifeGrindType.scandi,
+                          ])
+                            ActionChip(
+                              label: Text(
+                                '${type.label} ${type == KnifeGrindType.fullFlat
+                                    ? '100'
+                                    : type == KnifeGrindType.saber
+                                    ? '70'
+                                    : '30'}%',
+                              ),
+                              onPressed: () {
+                                final h = _number(_height);
+                                if (h != null) {
+                                  setState(
+                                    () => _bevelHeight.text = _fmt(
+                                      knifePresetHeight(type, h),
+                                      5,
+                                    ),
+                                  );
+                                }
+                              },
+                            ),
+                        ],
+                      ),
+                    ],
                   ],
                 ),
               ),
-            ),
-          if (_mode == KnifeBevelMode.existingBlock && _blocks.isNotEmpty) ...[
-            const SizedBox(height: 8),
-            Text(
-              'Block comparison (current blade dimensions and seat/contact settings)',
-              style: TextStyle(color: accent, fontSize: 17),
-            ),
-            for (final angle in [10.0, 12.0, 15.0, 20.0])
-              _compareAngle(angle, accent),
-            for (final block in _blocks) _comparison(block, accent),
-          ],
-          const SizedBox(height: 16),
+              const SizedBox(height: 8),
+              if (_mode != KnifeBevelMode.compareBlocks) ...[
+                if (result == null)
+                  _panel(
+                    surface,
+                    accent,
+                    child: Text(
+                      'Enter valid dimensions and an angle below 90°. Edge thickness must be below stock thickness.',
+                      style: TextStyle(
+                        color: Theme.of(context).colorScheme.error,
+                      ),
+                    ),
+                  )
+                else ...[
+                  _resultsPanel(context, result, accent, surface),
+                  const SizedBox(height: 8),
+                  _panel(
+                    surface,
+                    accent,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Blade cross-section',
+                          style: TextStyle(
+                            color: accent,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        SizedBox(
+                          height: 250,
+                          child: _BladeDiagram(
+                            result: result,
+                            thickness: _number(_thickness) ?? 0,
+                            bladeHeight: _number(_height) ?? 0,
+                            edgeThickness: _number(_edge) ?? 0,
+                            unit: unit,
+                            accent: accent,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  _panel(
+                    surface,
+                    accent,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Fixed-angle grinding setup',
+                          style: TextStyle(
+                            color: accent,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        SizedBox(
+                          height: 230,
+                          child: _GrindingSetupDiagram(
+                            result: result,
+                            accent: accent,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ],
+              if (_mode == KnifeBevelMode.compareBlocks ||
+                  _mode == KnifeBevelMode.existingBlock) ...[
+                const SizedBox(height: 8),
+                _panel(
+                  surface,
+                  accent,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Grinding block comparison',
+                        style: TextStyle(
+                          color: accent,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        'Same blade dimensions and grind profile; nominal angle is used unless a saved block has a measured override.',
+                        style: TextStyle(color: secondary, fontSize: 12),
+                      ),
+                      for (final angle in _comparisonValues)
+                        _comparisonRow('$angle° block', angle, null, accent),
+                      for (final block in _blocks)
+                        _comparisonRow(
+                          block.name,
+                          block.angleDegrees,
+                          block.measuredAngleDegrees,
+                          accent,
+                        ),
+                    ],
+                  ),
+                ),
+              ],
+              const SizedBox(height: 8),
+              _panel(
+                surface,
+                accent,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Text(
+                            'Saved grinding blocks',
+                            style: TextStyle(
+                              color: accent,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                        IconButton(
+                          visualDensity: VisualDensity.compact,
+                          onPressed: () => _saveBlock(),
+                          icon: Icon(Icons.add, color: accent),
+                        ),
+                      ],
+                    ),
+                    if (_blocks.isEmpty)
+                      Text(
+                        'Save a nominal angle and optional measured angle for reuse.',
+                        style: TextStyle(color: secondary, fontSize: 12),
+                      ),
+                    for (final block in _blocks)
+                      ListTile(
+                        dense: true,
+                        contentPadding: EdgeInsets.zero,
+                        title: Text(
+                          block.name,
+                          style: TextStyle(color: accent),
+                        ),
+                        subtitle: Text(
+                          '${_fmt(block.angleDegrees, 2)}° nominal${block.measuredAngleDegrees == null ? '' : ' · ${_fmt(block.measuredAngleDegrees!, 2)}° measured'} · ${block.orientation.label}',
+                          style: TextStyle(color: secondary, fontSize: 12),
+                        ),
+                        onTap: () => setState(() {
+                          _blockAngle.text = '${block.angleDegrees}';
+                          _measuredAngle.text =
+                              block.measuredAngleDegrees?.toString() ?? '';
+                          _orientation = block.orientation;
+                          _mode = KnifeBevelMode.existingBlock;
+                        }),
+                        trailing: Wrap(
+                          spacing: 0,
+                          children: [
+                            IconButton(
+                              visualDensity: VisualDensity.compact,
+                              tooltip: 'Edit',
+                              onPressed: () => _saveBlock(existing: block),
+                              icon: Icon(Icons.edit, size: 19, color: accent),
+                            ),
+                            IconButton(
+                              visualDensity: VisualDensity.compact,
+                              tooltip: 'Delete',
+                              onPressed: () => _deleteBlock(block),
+                              icon: Icon(
+                                Icons.delete_outline,
+                                size: 19,
+                                color: accent,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 8),
+              _panel(
+                surface,
+                accent,
+                child: Theme(
+                  data: Theme.of(
+                    context,
+                  ).copyWith(dividerColor: Colors.transparent),
+                  child: ExpansionTile(
+                    tilePadding: EdgeInsets.zero,
+                    childrenPadding: EdgeInsets.zero,
+                    title: Text(
+                      'How it works',
+                      style: TextStyle(
+                        color: accent,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    children: [
+                      Text(
+                        'In the confirmed fixed-angle setup, the block establishes blade orientation relative to the flat belt/platen. The nominal block angle is used directly; an optional measured angle is a calibration override. For a straight symmetrical bevel, α = atan((t − e)/(2b)) and b = (t − e)/(2 tan α); included angle = 2α. A single-sided grind uses the full thickness reduction. Coverage is bevel height ÷ blade height; a low percentage alone does not identify a Scandi grind. Hollow profiles use wheel radius, and convex profiles use the entered arc radius; their tangent angle changes along the curve, so a single flat-grind angle does not describe the entire face.',
+                        style: TextStyle(
+                          color: secondary,
+                          height: 1.35,
+                          fontSize: 12,
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          );
+        },
+      ),
+    );
+  }
+
+  Widget _resultsPanel(
+    BuildContext context,
+    KnifeBevelResult result,
+    Color accent,
+    Color surface,
+  ) {
+    final title = _mode == KnifeBevelMode.desiredBevel
+        ? 'Target results'
+        : 'Block results';
+    final mainLines = <String>[
+      'Bevel angle per side: ${_fmt(result.bevelAngleDegrees, 2)}°',
+      if (result.requiredBlockAngleDegrees != null)
+        'Required nominal block angle: ${_fmt(result.requiredBlockAngleDegrees!, 2)}°',
+      if (_mode == KnifeBevelMode.existingBlock)
+        'Nominal block angle: ${_fmt(result.nominalBlockAngleDegrees, 2)}°',
+      if (_mode == KnifeBevelMode.existingBlock)
+        'Angle used: ${_fmt(result.actualGrindingAngleDegrees, 2)}°${result.measuredGrindingAngleDegrees == null ? ' (nominal)' : ' (measured override)'}',
+      'Bevel height: ${_length(result.bevelHeight)}',
+    ];
+    return _panel(
+      surface,
+      accent,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
           Text(
-            'Model notes: straight symmetric bevel uses α = atan((t − e)/(2b)); single-sided bevel uses α = atan((t − e)/b). The inverse solves b from α. Hollow geometry uses the entered wheel diameter; convex geometry uses the entered arc radius. Circle solutions that cannot meet the selected edge and face geometry are rejected. Coverage bands used for FFG/Saber/Scandi labels are guidance, not a universal grind standard.',
-            style: TextStyle(color: accent, height: 1.35),
+            title,
+            style: TextStyle(color: accent, fontWeight: FontWeight.bold),
           ),
+          for (final line in mainLines)
+            Padding(
+              padding: const EdgeInsets.only(top: 3),
+              child: Text(
+                line,
+                style: TextStyle(
+                  color: accent,
+                  fontSize: 15,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ),
+          const Divider(height: 12),
+          if (_grind.groundSides == 2)
+            Text(
+              'Included angle: ${_fmt(result.totalIncludedAngleDegrees, 2)}°    Coverage: ${_fmt(result.bevelCoveragePercent, 1)}%',
+              style: TextStyle(color: accent, fontSize: 12),
+            ),
+          if (_grind.groundSides == 1)
+            Text(
+              'Single-sided face angle: ${_fmt(result.bevelAngleDegrees, 2)}°    Coverage: ${_fmt(result.bevelCoveragePercent, 1)}%',
+              style: TextStyle(color: accent, fontSize: 12),
+            ),
+          Text(
+            'Remaining flat height: ${_length(result.remainingFlatHeight)}',
+            style: TextStyle(color: accent, fontSize: 12),
+          ),
+          Text(
+            'Selected profile: ${_grind.label} · ${knifeCoverageGuidance(result.bevelCoveragePercent)}',
+            style: TextStyle(color: accent, fontSize: 12),
+          ),
+          if (result.edgeTangentAngleDegrees != null)
+            Text(
+              'Curved profile tangent: edge ${_fmt(result.edgeTangentAngleDegrees!.abs(), 2)}° · shoulder ${_fmt(result.shoulderTangentAngleDegrees!.abs(), 2)}°',
+              style: TextStyle(color: accent, fontSize: 12),
+            ),
+          if (!result.isAchievable || result.note != null)
+            Text(
+              result.note ?? 'Bevel height exceeds the available blade height.',
+              style: TextStyle(
+                color: Theme.of(context).colorScheme.error,
+                fontSize: 12,
+              ),
+            ),
         ],
       ),
     );
   }
 
-  Widget _comparison(SavedKnifeGrindingBlock block, Color accent) {
+  Widget _comparisonRow(
+    String name,
+    double angle,
+    double? measured,
+    Color accent,
+  ) {
     final t = _number(_thickness), h = _number(_height), e = _number(_edge);
     if (t == null || h == null || e == null) return const SizedBox.shrink();
-    final r = calculateKnifeBevel(
+    final result = calculateKnifeBevel(
       KnifeBevelInput(
         mode: KnifeBevelMode.existingBlock,
-        grindType: KnifeGrindType.fullFlat,
-        orientation: block.orientation,
-        stockThickness: t,
-        bladeHeight: h,
-        edgeThickness: e,
-        desiredBevelHeight: h,
-        blockAngleDegrees: block.angleDegrees,
-        seatOffsetDegrees: block.seatOffsetDegrees,
-        curvatureRadius: 0,
-      ),
-    );
-    if (r == null) return const SizedBox.shrink();
-    return Text(
-      '${block.name}: ${_fmt(r.bevelAngleDegrees, 2)}° / ${_length(r.bevelHeight)} bevel — ${r.geometryClassification.label}',
-      style: TextStyle(color: accent),
-    );
-  }
-
-  Widget _compareAngle(double angle, Color accent) {
-    final t = _number(_thickness),
-        h = _number(_height),
-        e = _number(_edge),
-        offset = _number(_seatOffset);
-    if (t == null || h == null || e == null || offset == null) {
-      return const SizedBox.shrink();
-    }
-    final r = calculateKnifeBevel(
-      KnifeBevelInput(
-        mode: KnifeBevelMode.existingBlock,
-        grindType: KnifeGrindType.fullFlat,
+        grindType: _grind,
         orientation: _orientation,
         stockThickness: t,
         bladeHeight: h,
         edgeThickness: e,
-        desiredBevelHeight: h,
+        desiredBevelHeight: _number(_bevelHeight) ?? h,
         blockAngleDegrees: angle,
-        seatOffsetDegrees: offset,
-        curvatureRadius: 0,
+        measuredGrindingAngleDegrees: measured,
+        curvatureRadius: _grind == KnifeGrindType.hollow
+            ? (_number(_radius) ?? 0) / 2
+            : (_number(_radius) ?? 0),
       ),
     );
-    return Text(
-      '$angle° block: ${r == null ? 'invalid geometry' : '${_fmt(r.bevelAngleDegrees, 2)}° bevel / ${_length(r.bevelHeight)} — ${r.geometryClassification.label}'}',
-      style: TextStyle(color: accent),
+    if (result == null) {
+      return Text(
+        '$name: invalid geometry',
+        style: TextStyle(
+          color: Theme.of(context).colorScheme.error,
+          fontSize: 12,
+        ),
+      );
+    }
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 2),
+      child: Text(
+        '$name${measured == null ? '' : ' (${_fmt(measured, 2)}° measured)'}: ${_fmt(result.bevelHeight, 4)} ${_units.lengthUnit} · ${_fmt(result.bevelCoveragePercent, 1)}% · ${result.isAchievable ? 'fits' : 'exceeds blade height'}',
+        style: TextStyle(color: accent, fontSize: 12),
+      ),
     );
   }
 
-  Widget _field(String label, TextEditingController controller, Color accent) =>
-      Padding(
-        padding: const EdgeInsets.only(top: 8),
-        child: TextField(
-          controller: controller,
-          onChanged: (_) => setState(() {}),
-          keyboardType: const TextInputType.numberWithOptions(
-            decimal: true,
-            signed: true,
-          ),
-          style: TextStyle(color: accent),
-          decoration: InputDecoration(
-            labelText: label,
-            labelStyle: TextStyle(color: accent.withValues(alpha: .85)),
-            enabledBorder: UnderlineInputBorder(
-              borderSide: BorderSide(color: accent.withValues(alpha: .4)),
-            ),
-          ),
+  List<double> get _comparisonValues => _comparisonAngles.text
+      .split(RegExp(r'[,;\s]+'))
+      .map(double.tryParse)
+      .whereType<double>()
+      .where((angle) => angle > 0 && angle < 90)
+      .toSet()
+      .toList(growable: false);
+
+  Widget _panel(Color surface, Color accent, {required Widget child}) => Card(
+    color: surface,
+    margin: EdgeInsets.zero,
+    shape: RoundedRectangleBorder(
+      side: BorderSide(color: accent.withValues(alpha: .35)),
+      borderRadius: BorderRadius.circular(4),
+    ),
+    child: Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
+      child: child,
+    ),
+  );
+
+  Widget _field(
+    String label,
+    TextEditingController controller,
+    Color accent,
+  ) => Padding(
+    padding: const EdgeInsets.only(top: 3, bottom: 3),
+    child: TextField(
+      controller: controller,
+      onChanged: (_) => setState(() {}),
+      keyboardType: const TextInputType.numberWithOptions(
+        decimal: true,
+        signed: true,
+      ),
+      style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
+      decoration: InputDecoration(
+        labelText: label,
+        isDense: true,
+        contentPadding: const EdgeInsets.symmetric(horizontal: 9, vertical: 10),
+        labelStyle: TextStyle(
+          color: Theme.of(context).colorScheme.onSurface.withValues(alpha: .8),
         ),
-      );
+        enabledBorder: UnderlineInputBorder(
+          borderSide: BorderSide(color: accent.withValues(alpha: .4)),
+        ),
+      ),
+    ),
+  );
 
   Widget _drop<T>(
     String label,
@@ -499,6 +805,7 @@ class _KnifeBevelCalculatorPageState extends State<KnifeBevelCalculatorPage> {
     String Function(T) labelOf,
   ) => DropdownButtonFormField<T>(
     initialValue: value,
+    isExpanded: true,
     decoration: InputDecoration(labelText: label),
     items: values
         .map((v) => DropdownMenuItem(value: v, child: Text(labelOf(v))))
@@ -507,36 +814,35 @@ class _KnifeBevelCalculatorPageState extends State<KnifeBevelCalculatorPage> {
       if (v != null) onChanged(v);
     },
   );
-
-  Widget _card(Color accent, List<String> lines) => Card(
-    color: const Color(0xFF101810),
-    child: Padding(
-      padding: const EdgeInsets.all(12),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: lines
-            .map(
-              (line) => Padding(
-                padding: const EdgeInsets.symmetric(vertical: 3),
-                child: Text(line, style: TextStyle(color: accent)),
-              ),
-            )
-            .toList(),
-      ),
-    ),
-  );
 }
 
-class _Diagram extends StatelessWidget {
-  const _Diagram({
+String _precision(double value) {
+  final formatted = value.toStringAsPrecision(5);
+  if (formatted.contains('e')) return formatted;
+  return formatted
+      .replaceFirst(RegExp(r'(\.\d*?[1-9])0+$'), r'$1')
+      .replaceFirst(RegExp(r'\.0+$'), '');
+}
+
+String _dimensionPrecision(double value) {
+  if (value == 0) return '0.000';
+  final rounded = value.toStringAsFixed(3);
+  if (double.tryParse(rounded) == 0) return _precision(value);
+  return rounded;
+}
+
+class _BladeDiagram extends StatelessWidget {
+  const _BladeDiagram({
     required this.result,
-    required this.stockThickness,
+    required this.thickness,
     required this.bladeHeight,
+    required this.edgeThickness,
+    required this.unit,
     required this.accent,
   });
   final KnifeBevelResult result;
-  final double stockThickness;
-  final double bladeHeight;
+  final double thickness, bladeHeight, edgeThickness;
+  final String unit;
   final Color accent;
 
   @override
@@ -544,33 +850,19 @@ class _Diagram extends StatelessWidget {
     builder: (context, constraints) {
       final width = constraints.maxWidth.isFinite
           ? constraints.maxWidth
-          : 600.0;
+          : 480.0;
       return InteractiveViewer(
         minScale: 1,
-        maxScale: 5,
-        child: SizedBox(
-          width: width,
-          height: 380,
-          child: Column(
-            children: [
-              SizedBox(
-                width: width,
-                height: 260,
-                child: CustomPaint(
-                  painter: _BevelPainter(
-                    result,
-                    stockThickness,
-                    bladeHeight,
-                    accent,
-                  ),
-                ),
-              ),
-              SizedBox(
-                width: width,
-                height: 120,
-                child: CustomPaint(painter: _SetupPainter(result, accent)),
-              ),
-            ],
+        maxScale: 4,
+        child: CustomPaint(
+          size: Size(width, 250),
+          painter: _BladePainter(
+            result,
+            thickness,
+            bladeHeight,
+            edgeThickness,
+            unit,
+            accent,
           ),
         ),
       );
@@ -578,162 +870,379 @@ class _Diagram extends StatelessWidget {
   );
 }
 
-class _SetupPainter extends CustomPainter {
-  const _SetupPainter(this.result, this.color);
+class _GrindingSetupDiagram extends StatelessWidget {
+  const _GrindingSetupDiagram({required this.result, required this.accent});
   final KnifeBevelResult result;
-  final Color color;
+  final Color accent;
 
   @override
-  void paint(Canvas canvas, Size size) {
-    final pen = Paint()
-      ..color = color
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 2;
-    final x = size.width * .70;
-    final base = size.height - 18.0;
-    final radians = result.actualBladeOrientationDegrees * math.pi / 180;
-    final length = math.min(size.width * .45, 150.0);
-    final end = Offset(
-      x - math.sin(radians) * length,
-      base - math.cos(radians) * length,
-    );
-    canvas.drawLine(Offset(x, 6), Offset(x, base), pen);
-    canvas.drawLine(
-      Offset(x - length * .55, base),
-      Offset(x + length * .55, base),
-      pen,
-    );
-    canvas.drawLine(Offset(x, base), end, pen);
-    canvas.drawArc(
-      Rect.fromCircle(center: Offset(x, base), radius: 24),
-      -math.pi / 2 - radians,
-      radians,
-      false,
-      pen,
-    );
-    final angleLabel =
-        '${result.actualBladeOrientationDegrees.abs().toStringAsFixed(1)}° blade to belt perpendicular';
-    final tp = TextPainter(
-      text: TextSpan(
-        text: angleLabel,
-        style: TextStyle(color: color, fontSize: 12),
-      ),
-      textDirection: TextDirection.ltr,
-    )..layout(maxWidth: size.width * .62);
-    tp.paint(canvas, Offset(8, 12));
-    final belt = TextPainter(
-      text: TextSpan(
-        text: 'BELT',
-        style: TextStyle(color: color, fontSize: 11),
-      ),
-      textDirection: TextDirection.ltr,
-    )..layout();
-    belt.paint(canvas, Offset(x + 5, 5));
-  }
-
-  @override
-  bool shouldRepaint(covariant _SetupPainter old) =>
-      old.result != result || old.color != color;
+  Widget build(BuildContext context) => LayoutBuilder(
+    builder: (context, constraints) {
+      final width = constraints.maxWidth.isFinite
+          ? constraints.maxWidth
+          : 480.0;
+      return InteractiveViewer(
+        minScale: 1,
+        maxScale: 4,
+        child: CustomPaint(
+          size: Size(width, 230),
+          painter: _GrindingSetupPainter(result, accent),
+        ),
+      );
+    },
+  );
 }
 
-class _BevelPainter extends CustomPainter {
-  _BevelPainter(this.result, this.thickness, this.height, this.color);
+class _BladePainter extends CustomPainter {
+  const _BladePainter(
+    this.result,
+    this.thickness,
+    this.height,
+    this.edge,
+    this.unit,
+    this.color,
+  );
   final KnifeBevelResult result;
-  final double thickness, height;
+  final double thickness, height, edge;
+  final String unit;
   final Color color;
 
   @override
   void paint(Canvas canvas, Size size) {
-    final scale = math.min((size.width - 56) / height, 125 / thickness);
-    final origin = Offset(24, size.height / 2);
-    Offset map(KnifePoint p) =>
-        Offset(origin.dx + p.x * scale, origin.dy - p.y * scale);
+    if (thickness <= 0 || height <= 0) return;
+    final scale = math.min(
+      (size.width - 112) / height,
+      (size.height - 76) / thickness,
+    );
+    if (!scale.isFinite || scale <= 0) return;
+    final x0 = 58.0;
+    final cy = size.height * .43;
+    Offset map(KnifePoint p) => Offset(x0 + p.x * scale, cy - p.y * scale);
     final pen = Paint()
       ..color = color
       ..style = PaintingStyle.stroke
-      ..strokeWidth = 2;
+      ..strokeWidth = 1.7;
     final fill = Paint()
-      ..color = color.withValues(alpha: .08)
+      ..color = color.withValues(alpha: .10)
       ..style = PaintingStyle.fill;
-    final outline = Path()
-      ..moveTo(origin.dx, origin.dy - thickness * scale / 2)
-      ..lineTo(origin.dx + height * scale, origin.dy - thickness * scale / 2)
-      ..lineTo(origin.dx + height * scale, origin.dy + thickness * scale / 2)
-      ..lineTo(origin.dx, origin.dy + thickness * scale / 2)
-      ..close();
-    canvas.drawPath(outline, fill);
-    canvas.drawPath(outline, pen);
-    for (final profile in [
-      result.upperBevelProfile,
-      result.lowerBevelProfile,
-    ]) {
-      if (profile.length < 2) continue;
-      final path = Path()..moveTo(map(profile.first).dx, map(profile.first).dy);
-      for (final point in profile.skip(1)) {
+    final upper = [...result.upperBevelProfile];
+    if (upper.isNotEmpty && upper.last.x < height) {
+      upper.add(KnifePoint(height, thickness / 2));
+    }
+    final lower = result.geometryClassification == KnifeGrindType.chisel
+        ? result.lowerBevelProfile.reversed.toList()
+        : result.lowerBevelProfile;
+    final path = Path();
+    if (upper.isNotEmpty && lower.isNotEmpty) {
+      path.moveTo(map(upper.first).dx, map(upper.first).dy);
+      for (final point in upper.skip(1)) {
         final p = map(point);
         path.lineTo(p.dx, p.dy);
       }
-      canvas.drawPath(path, pen);
+      if (lower.first.x < height) {
+        final spineBottom = map(KnifePoint(height, -thickness / 2));
+        path.lineTo(spineBottom.dx, spineBottom.dy);
+      }
+      for (final point in lower) {
+        final p = map(point);
+        path.lineTo(p.dx, p.dy);
+      }
+      path.close();
     }
-    final top = Offset(origin.dx, origin.dy - thickness * scale / 2);
-    final end = Offset(
-      origin.dx + result.bevelHeight * scale,
-      origin.dy - thickness * scale / 2,
+    canvas.drawPath(path, fill);
+    canvas.drawPath(path, pen);
+    final centerPaint = Paint()
+      ..color = color.withValues(alpha: .65)
+      ..strokeWidth = 1;
+    for (var x = x0; x < x0 + height * scale; x += 9) {
+      canvas.drawLine(
+        Offset(x, cy),
+        Offset(math.min(x + 5, x0 + height * scale), cy),
+        centerPaint,
+      );
+    }
+    final edgeTop = map(KnifePoint(0, edge / 2));
+    final shoulderTop = map(KnifePoint(result.bevelHeight, thickness / 2));
+    final shoulderBottomY = map(KnifePoint(0, -thickness / 2)).dy;
+    final dimensionY = math.min(size.height - 24, shoulderBottomY + 34);
+    final extensionPaint = Paint()
+      ..color = color.withValues(alpha: .45)
+      ..strokeWidth = 1;
+    canvas.drawLine(
+      map(KnifePoint(0, -thickness / 2)),
+      Offset(x0, dimensionY + 3),
+      extensionPaint,
     );
     canvas.drawLine(
-      top + const Offset(0, -18),
-      end + const Offset(0, -18),
+      map(KnifePoint(result.bevelHeight, -thickness / 2)),
+      Offset(x0 + result.bevelHeight * scale, dimensionY + 3),
+      extensionPaint,
+    );
+    _dimension(
+      canvas,
+      Offset(x0, dimensionY),
+      Offset(x0 + result.bevelHeight * scale, dimensionY),
+      '${_dimensionPrecision(result.bevelHeight)} $unit bevel',
+      color,
+    );
+    final fullY = math.min(size.height - 7, dimensionY + 20);
+    canvas.drawLine(
+      map(KnifePoint(0, -thickness / 2)),
+      Offset(x0, fullY + 2),
+      extensionPaint,
+    );
+    canvas.drawLine(
+      map(KnifePoint(height, -thickness / 2)),
+      Offset(x0 + height * scale, fullY + 2),
+      extensionPaint,
+    );
+    _dimension(
+      canvas,
+      Offset(x0, fullY),
+      Offset(x0 + height * scale, fullY),
+      '${_dimensionPrecision(height)} $unit blade height',
+      color,
+    );
+    final thicknessX = math.min(size.width - 54, x0 + height * scale + 12);
+    _dimension(
+      canvas,
+      Offset(thicknessX, map(KnifePoint(height, thickness / 2)).dy),
+      Offset(thicknessX, map(KnifePoint(height, -thickness / 2)).dy),
+      't ${_dimensionPrecision(thickness)} $unit',
+      color,
+    );
+    final edgeX = x0 - 20;
+    canvas.drawLine(edgeTop, Offset(edgeX - 2, edgeTop.dy), extensionPaint);
+    canvas.drawLine(
+      map(KnifePoint(0, -edge / 2)),
+      Offset(edgeX - 2, map(KnifePoint(0, -edge / 2)).dy),
+      extensionPaint,
+    );
+    _dimension(
+      canvas,
+      Offset(edgeX, edgeTop.dy),
+      Offset(edgeX, map(KnifePoint(0, -edge / 2)).dy),
+      'e ${_dimensionPrecision(edge)} $unit',
+      color,
+    );
+    final shoulderAngleDegrees =
+        result.shoulderTangentAngleDegrees?.abs() ?? result.bevelAngleDegrees;
+    final angle = shoulderAngleDegrees * math.pi / 180;
+    canvas.drawArc(
+      Rect.fromCircle(center: shoulderTop, radius: 20),
+      math.pi,
+      -angle,
+      false,
       pen,
     );
     _label(
       canvas,
-      result.bevelHeight.toStringAsFixed(3),
-      Offset((top.dx + end.dx) / 2, top.dy - 30),
+      '${shoulderAngleDegrees.toStringAsFixed(2)}° / side',
+      Offset(shoulderTop.dx + 6, shoulderTop.dy - 29),
       color,
     );
-    final ang = result.bevelAngleDegrees * math.pi / 180;
-    final arcRect = Rect.fromCircle(center: top, radius: 24);
-    canvas.drawArc(arcRect, 0, -ang, false, pen);
+    if (result.totalIncludedAngleDegrees != result.bevelAngleDegrees) {
+      _label(
+        canvas,
+        'Included ${result.totalIncludedAngleDegrees.toStringAsFixed(2)}°',
+        Offset(x0 + 4, 8),
+        color,
+      );
+    }
     _label(
       canvas,
-      '${result.bevelAngleDegrees.toStringAsFixed(1)}°',
-      top + const Offset(35, -24),
+      'Blade centerline',
+      Offset(x0 + height * scale * .55, cy + 4),
       color,
-    );
-    canvas.drawLine(
-      Offset(
-        origin.dx + height * scale + 12,
-        origin.dy - thickness * scale / 2,
-      ),
-      Offset(
-        origin.dx + height * scale + 12,
-        origin.dy + thickness * scale / 2,
-      ),
-      pen,
     );
     _label(
       canvas,
-      't=${thickness.toStringAsFixed(3)}',
-      Offset(origin.dx + height * scale + 14, origin.dy - 5),
+      'Bevel shoulder',
+      Offset(shoulderTop.dx + 4, shoulderTop.dy - 19),
       color,
     );
-  }
-
-  void _label(Canvas canvas, String text, Offset at, Color color) {
-    final tp = TextPainter(
-      text: TextSpan(
-        text: text,
-        style: TextStyle(color: color, fontSize: 12),
-      ),
-      textDirection: TextDirection.ltr,
-    )..layout();
-    tp.paint(canvas, at);
   }
 
   @override
-  bool shouldRepaint(covariant _BevelPainter old) =>
+  bool shouldRepaint(covariant _BladePainter old) =>
       old.result != result ||
       old.thickness != thickness ||
       old.height != height ||
+      old.edge != edge ||
+      old.unit != unit ||
       old.color != color;
+}
+
+class _GrindingSetupPainter extends CustomPainter {
+  const _GrindingSetupPainter(this.result, this.color);
+  final KnifeBevelResult result;
+  final Color color;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final angle = result.actualGrindingAngleDegrees * math.pi / 180;
+    final restY = size.height * .76;
+    final beltX = size.width * .17;
+    final blockStart = size.width * .24;
+    final blockEnd = size.width * .67;
+    final bladeEdge = Offset(
+      beltX,
+      restY + math.tan(angle) * (blockStart - beltX),
+    );
+    final bladeLength = size.width * .63;
+    final bladeSpine = Offset(
+      bladeEdge.dx + math.cos(angle) * bladeLength,
+      bladeEdge.dy - math.sin(angle) * bladeLength,
+    );
+    final normal = Offset(math.sin(angle) * 8, math.cos(angle) * 8);
+    final pen = Paint()
+      ..color = color
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 2;
+    final thin = Paint()
+      ..color = color
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 1.4;
+    final fill = Paint()
+      ..color = color.withValues(alpha: .11)
+      ..style = PaintingStyle.fill;
+    // Vertical moving belt and flat platen.
+    canvas.drawLine(Offset(beltX, 14), Offset(beltX, size.height - 8), pen);
+    canvas.drawLine(
+      Offset(beltX - 5, 14),
+      Offset(beltX - 5, size.height - 8),
+      thin,
+    );
+    _label(canvas, 'BELT / FLAT PLATEN', Offset(4, 2), color);
+    // Horizontal tool rest.
+    final restEnd = size.width - 12;
+    canvas.drawLine(Offset(beltX - 14, restY), Offset(restEnd, restY), pen);
+    canvas.drawLine(
+      Offset(beltX + 6, restY + 5),
+      Offset(restEnd, restY + 5),
+      thin,
+    );
+    _label(
+      canvas,
+      'HORIZONTAL TOOL REST',
+      Offset(size.width * .53, restY + 9),
+      color,
+    );
+    // Fixed-angle block: its support face is exactly parallel to the blade.
+    final blockTopStart = Offset(blockStart, restY);
+    final blockTopEnd = Offset(
+      blockEnd,
+      restY - math.tan(angle) * (blockEnd - blockStart),
+    );
+    final block = Path()
+      ..moveTo(blockTopStart.dx, blockTopStart.dy)
+      ..lineTo(blockTopEnd.dx, blockTopEnd.dy)
+      ..lineTo(blockEnd, restY)
+      ..lineTo(blockStart, restY)
+      ..close();
+    canvas.drawPath(block, fill);
+    canvas.drawPath(block, pen);
+    _label(
+      canvas,
+      'FIXED-ANGLE BLOCK',
+      Offset(blockStart + 7, restY - 23),
+      color,
+    );
+    // Blade plate, edge touching the belt, supported by the block without pivoting.
+    final blade = Path()
+      ..moveTo(bladeEdge.dx, bladeEdge.dy)
+      ..lineTo(bladeSpine.dx, bladeSpine.dy)
+      ..lineTo(bladeSpine.dx + normal.dx, bladeSpine.dy - normal.dy)
+      ..lineTo(bladeEdge.dx + normal.dx, bladeEdge.dy - normal.dy)
+      ..close();
+    canvas.drawPath(blade, fill);
+    canvas.drawPath(blade, pen);
+    _label(
+      canvas,
+      'BLADE SPINE',
+      Offset(bladeSpine.dx - 54, bladeSpine.dy - 17),
+      color,
+    );
+    _label(
+      canvas,
+      'Edge contacts belt',
+      Offset(beltX + 7, bladeEdge.dy - 13),
+      color,
+    );
+    _label(
+      canvas,
+      'Flat reference face',
+      Offset(blockEnd - 53, blockTopEnd.dy - 13),
+      color,
+    );
+    // Arc center is the true intersection of the block face and horizontal rest.
+    canvas.drawArc(
+      Rect.fromCircle(center: blockTopStart, radius: 24),
+      -angle,
+      angle,
+      false,
+      pen,
+    );
+    _label(
+      canvas,
+      'Block ${result.nominalBlockAngleDegrees.toStringAsFixed(2)}°',
+      Offset(blockStart + 3, restY - 38),
+      color,
+    );
+    _label(
+      canvas,
+      'Grinding ${result.actualGrindingAngleDegrees.toStringAsFixed(2)}°',
+      Offset(size.width * .40, 13),
+      color,
+    );
+  }
+
+  @override
+  bool shouldRepaint(covariant _GrindingSetupPainter old) =>
+      old.result != result || old.color != color;
+}
+
+void _dimension(
+  Canvas canvas,
+  Offset start,
+  Offset end,
+  String label,
+  Color color,
+) {
+  final paint = Paint()
+    ..color = color.withValues(alpha: .8)
+    ..strokeWidth = 1;
+  canvas.drawLine(start, end, paint);
+  _arrow(canvas, start, end, paint);
+  _arrow(canvas, end, start, paint);
+  final mid = Offset((start.dx + end.dx) / 2, (start.dy + end.dy) / 2);
+  _label(canvas, label, Offset(mid.dx - 35, mid.dy - 16), color);
+}
+
+void _arrow(Canvas canvas, Offset tip, Offset from, Paint paint) {
+  final angle = math.atan2(from.dy - tip.dy, from.dx - tip.dx);
+  const size = 5.0;
+  final path = Path()
+    ..moveTo(tip.dx, tip.dy)
+    ..lineTo(
+      tip.dx + size * math.cos(angle + .45),
+      tip.dy + size * math.sin(angle + .45),
+    )
+    ..moveTo(tip.dx, tip.dy)
+    ..lineTo(
+      tip.dx + size * math.cos(angle - .45),
+      tip.dy + size * math.sin(angle - .45),
+    );
+  canvas.drawPath(path, paint);
+}
+
+void _label(Canvas canvas, String text, Offset at, Color color) {
+  final painter = TextPainter(
+    text: TextSpan(
+      text: text,
+      style: TextStyle(color: color, fontSize: 10),
+    ),
+    textDirection: TextDirection.ltr,
+  )..layout();
+  painter.paint(canvas, at);
 }
