@@ -1,5 +1,16 @@
 # Ultimate Window Engineer Release Notes
 
+## v1.0.9
+
+Released: 2026-11-02
+
+Build: 10
+
+### Improved
+
+* Added clearer spacing between Reference It tools and knife grind controls.
+* Improved fixed-angle grinding setup readability with a larger angle readout, less crowded drawing labels, and a component legend.
+
 ## v1.0.8
 
 Released: 2026-11-02

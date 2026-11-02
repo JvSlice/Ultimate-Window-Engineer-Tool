@@ -270,9 +270,14 @@ class _KnifeBevelCalculatorPageState extends State<KnifeBevelCalculatorPage> {
                           ),
                       ],
                     ),
+                    const SizedBox(height: 8),
+                    Text(
+                      'Grind profile and grinding side',
+                      style: TextStyle(color: accent, fontSize: 12),
+                    ),
                     Wrap(
                       spacing: 12,
-                      runSpacing: 2,
+                      runSpacing: 12,
                       children: [
                         SizedBox(
                           width: fieldWidth,
@@ -292,6 +297,16 @@ class _KnifeBevelCalculatorPageState extends State<KnifeBevelCalculatorPage> {
                             KnifeGrindingOrientation.values,
                             (v) => setState(() => _orientation = v),
                             (v) => v.label,
+                          ),
+                        ),
+                        SizedBox(
+                          width: fieldWidth,
+                          child: Padding(
+                            padding: const EdgeInsets.only(top: 3),
+                            child: Text(
+                              'Blade dimensions and setup',
+                              style: TextStyle(color: accent, fontSize: 12),
+                            ),
                           ),
                         ),
                         SizedBox(
@@ -467,14 +482,57 @@ class _KnifeBevelCalculatorPageState extends State<KnifeBevelCalculatorPage> {
                           style: TextStyle(
                             color: accent,
                             fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                          ),
+                        ),
+                        const SizedBox(height: 3),
+                        Text(
+                          'The blade is held edge-up against the belt and seated against the block. It stays fixed during grinding.',
+                          style: TextStyle(
+                            color: Theme.of(
+                              context,
+                            ).colorScheme.onSurface.withValues(alpha: .8),
+                            fontSize: 13,
+                            height: 1.25,
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          'Nominal block: ${_fmt(result.nominalBlockAngleDegrees, 2)}°  ·  Angle used: ${_fmt(result.actualGrindingAngleDegrees, 2)}°',
+                          style: TextStyle(
+                            color: accent,
+                            fontSize: 13,
+                            fontWeight: FontWeight.w600,
                           ),
                         ),
                         SizedBox(
-                          height: 230,
+                          height: 250,
                           child: _GrindingSetupDiagram(
                             result: result,
                             accent: accent,
                           ),
+                        ),
+                        Wrap(
+                          spacing: 12,
+                          runSpacing: 4,
+                          children: [
+                            Text(
+                              'Belt / flat platen',
+                              style: TextStyle(color: accent, fontSize: 12),
+                            ),
+                            Text(
+                              'Fixed-angle block',
+                              style: TextStyle(color: accent, fontSize: 12),
+                            ),
+                            Text(
+                              'Blade flat face sits on block',
+                              style: TextStyle(color: accent, fontSize: 12),
+                            ),
+                            Text(
+                              'Horizontal tool rest',
+                              style: TextStyle(color: accent, fontSize: 12),
+                            ),
+                          ],
                         ),
                       ],
                     ),
@@ -1099,34 +1157,30 @@ class _GrindingSetupPainter extends CustomPainter {
       ..color = color
       ..style = PaintingStyle.stroke
       ..strokeWidth = 2;
-    final thin = Paint()
-      ..color = color
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 1.4;
+    final platenFill = Paint()..color = color.withValues(alpha: .3);
     final fill = Paint()
       ..color = color.withValues(alpha: .11)
       ..style = PaintingStyle.fill;
-    // Vertical moving belt and flat platen.
+    // A solid platen makes the vertical belt reference easy to see.
+    canvas.drawRect(
+      Rect.fromLTRB(beltX - 9, 22, beltX - 3, size.height - 10),
+      platenFill,
+    );
     canvas.drawLine(Offset(beltX, 14), Offset(beltX, size.height - 8), pen);
-    canvas.drawLine(
-      Offset(beltX - 5, 14),
-      Offset(beltX - 5, size.height - 8),
-      thin,
-    );
-    _label(canvas, 'BELT / FLAT PLATEN', Offset(4, 2), color);
-    // Horizontal tool rest.
+    _label(canvas, 'BELT', Offset(4, 4), color, fontSize: 12);
+    // The horizontal rest is drawn as a beam rather than a single line.
     final restEnd = size.width - 12;
-    canvas.drawLine(Offset(beltX - 14, restY), Offset(restEnd, restY), pen);
-    canvas.drawLine(
-      Offset(beltX + 6, restY + 5),
-      Offset(restEnd, restY + 5),
-      thin,
+    canvas.drawRect(
+      Rect.fromLTRB(beltX - 15, restY, restEnd, restY + 6),
+      platenFill,
     );
+    canvas.drawLine(Offset(beltX - 15, restY), Offset(restEnd, restY), pen);
     _label(
       canvas,
-      'HORIZONTAL TOOL REST',
-      Offset(size.width * .53, restY + 9),
+      'TOOL REST',
+      Offset(size.width * .75, restY + 9),
       color,
+      fontSize: 11,
     );
     // Fixed-angle block: its support face is exactly parallel to the blade.
     final blockTopStart = Offset(blockStart, restY);
@@ -1142,12 +1196,6 @@ class _GrindingSetupPainter extends CustomPainter {
       ..close();
     canvas.drawPath(block, fill);
     canvas.drawPath(block, pen);
-    _label(
-      canvas,
-      'FIXED-ANGLE BLOCK',
-      Offset(blockStart + 7, restY - 23),
-      color,
-    );
     // Blade plate, edge touching the belt, supported by the block without pivoting.
     final blade = Path()
       ..moveTo(bladeEdge.dx, bladeEdge.dy)
@@ -1159,21 +1207,17 @@ class _GrindingSetupPainter extends CustomPainter {
     canvas.drawPath(blade, pen);
     _label(
       canvas,
-      'BLADE SPINE',
-      Offset(bladeSpine.dx - 54, bladeSpine.dy - 17),
+      'SPINE',
+      Offset(bladeSpine.dx - 38, bladeSpine.dy - 20),
       color,
+      fontSize: 11,
     );
     _label(
       canvas,
-      'Edge contacts belt',
-      Offset(beltX + 7, bladeEdge.dy - 13),
+      'EDGE',
+      Offset(beltX + 8, bladeEdge.dy - 17),
       color,
-    );
-    _label(
-      canvas,
-      'Flat reference face',
-      Offset(blockEnd - 53, blockTopEnd.dy - 13),
-      color,
+      fontSize: 11,
     );
     // Arc center is the true intersection of the block face and horizontal rest.
     canvas.drawArc(
@@ -1185,15 +1229,10 @@ class _GrindingSetupPainter extends CustomPainter {
     );
     _label(
       canvas,
-      'Block ${result.nominalBlockAngleDegrees.toStringAsFixed(2)}°',
-      Offset(blockStart + 3, restY - 38),
+      '${result.actualGrindingAngleDegrees.toStringAsFixed(2)}°',
+      Offset(blockStart + 24, restY - 34),
       color,
-    );
-    _label(
-      canvas,
-      'Grinding ${result.actualGrindingAngleDegrees.toStringAsFixed(2)}°',
-      Offset(size.width * .40, 13),
-      color,
+      fontSize: 12,
     );
   }
 
@@ -1236,11 +1275,17 @@ void _arrow(Canvas canvas, Offset tip, Offset from, Paint paint) {
   canvas.drawPath(path, paint);
 }
 
-void _label(Canvas canvas, String text, Offset at, Color color) {
+void _label(
+  Canvas canvas,
+  String text,
+  Offset at,
+  Color color, {
+  double fontSize = 10,
+}) {
   final painter = TextPainter(
     text: TextSpan(
       text: text,
-      style: TextStyle(color: color, fontSize: 10),
+      style: TextStyle(color: color, fontSize: fontSize),
     ),
     textDirection: TextDirection.ltr,
   )..layout();

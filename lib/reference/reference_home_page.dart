@@ -99,6 +99,7 @@ class ReferenceHomePage extends StatelessWidget {
           terminalButton("Forge Calculator", () {
             _open(context, const ForgeCalculatorPage());
           }),
+          const SizedBox(height: 14),
           terminalButton("Knife Bevel & Grinding Setup", () {
             _open(context, const KnifeBevelCalculatorPage());
           }),
