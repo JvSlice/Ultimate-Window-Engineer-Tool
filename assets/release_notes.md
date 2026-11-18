@@ -1,5 +1,15 @@
 # Ultimate Window Engineer Release Notes
 
+## v1.0.10
+
+Released: 2026-11-17
+
+Build: 11
+
+### Added
+
+* Added a link to Viking Chess under Fun Links.
+
 ## v1.0.9
 
 Released: 2026-11-02

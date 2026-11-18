@@ -68,6 +68,10 @@ class FunLinksPage extends StatelessWidget {
               "Holo Chess / Dejarik",
               "https://jvslice.github.io/HoloChess/",
             ),
+            funButton(
+              "Viking Chess",
+              "https://jvslice.github.io/VikingChess/",
+            ),
           ],
         ),
       ),
